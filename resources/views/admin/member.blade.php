@@ -80,57 +80,57 @@
 </form>
 
 
-          <div class="overflow-x-auto">
-            <table class="min-w-full table-auto border-collapse">
-              <thead>
-                <tr class="bg-gray-100">
-                  <th class="px-4 py-2 border text-left">Id</th>
-                  <th class="px-4 py-2 border text-left">Full Name</th>
-                  <th class="px-4 py-2 border text-left">Position</th>
-                  <th class="px-4 py-2 border text-left">Profile Photo</th>
-                  <th class="px-4 py-2 border text-left">Created at</th>
-                  <th class="px-4 py-2 border text-left">Updated at</th>
-                  <th class="px-4 py-2 border text-left">Action Delete</th>
-                  <th class="px-4 py-2 border text-left">Action Edit</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($membersmodel as $data)
+<div class="overflow-x-auto">
+  <table class="min-w-full table-auto border-collapse">
+    <thead>
+      <tr class="bg-blue-900 text-white">
+        <th class="hidden">Id</th>
+        <th class="px-4 py-2 border-b text-left">Full Name</th>
+        <th class="px-4 py-2 border-b text-left">Position</th>
+        <th class="px-4 py-2 border-b text-left">Profile Photo</th>
+        <th class="hidden">Created at</th>
+        <th class="hidden">Updated at</th>
+        <th class="px-4 py-2 border-b text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach($membersmodel as $data)
+        <tr class="bg-white odd:bg-gray-100 hover:bg-gray-200">
+          <td class="hidden">{{ $data->id }}</td>
+          <td class="px-4 py-2 border-b text-start">{{ $data->fullname }}</td>
+          <td class="px-4 py-2 border-b text-start">{{ $data->position }}</td>
+          <td class="px-4 py-2 border-b text-start">
+            @if($data->profile_imgpath)
+              <img src="{{ asset('storage/' . $data->profile_imgpath) }}"
+                   alt="Profile Photo"
+                   class="w-20 h-20 object-cover rounded-full border" />
+            @else
+              N/A
+            @endif
+          </td>
+          <td class="hidden">{{ $data->created_at }}</td>
+          <td class="hidden">{{ $data->updated_at }}</td>
+          <td class="px-4 py-2 border-b space-x-2">
+            <a href="{{ route('deletemember', $data->id) }}"
+               class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
+              Delete
+            </a>
+            <button 
+              class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
+              data-id="{{ $data->id }}"
+              data-fullname="{{ $data->fullname }}"
+              data-position="{{ $data->position }}">
+              Edit
+            </button>
+          </td>
+        </tr>
+      @endforeach
+    </tbody>
+  </table>
+</div>
 
-                    <tr>
-                        <td>{{ $data->id }}</td>
-                        <td class="text-start">{{ $data->fullname }}</td>
-                        <td class="text-start">{{ $data->position }}</td>
-                        <td class="text-start">
-                          @if($data->profile_imgpath)
-                            <img src="{{ asset('storage/' . $data->profile_imgpath) }}" alt="Profile Photo" style="width: 100px; height: 100px; object-fit:cover;">
-                          @else
-                            N/A
-                          @endif
-                        </td>
-                        <td>{{ $data->created_at }}</td>
-                        <td>{{ $data->updated_at }}</td>
-                        <td>
-                          <a href="{{ route('deletemember', $data->id) }}"
-                             class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
-                             Delete
-                          </a>
-                        </td>
-                        <td>
-                          <button 
-                              class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
-                              data-id="{{ $data->id }}"
-                              data-fullname="{{ $data->fullname }}"
-                              data-position="{{ $data->position }}">
-                              Edit
-                          </button>
-                        </td>
-                    </tr>
-                @endforeach
-              </tbody>
-              
-            </table>
-          </div>
+
+
         </div>
 
         <div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">

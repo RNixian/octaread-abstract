@@ -99,25 +99,6 @@
       </div>
     </div>
   </div>
-
-  <div class="flex-1 p-8">
-    <div class="max-w-6xl w-full mx-auto">
-      <h2 class="text-2xl font-bold mb-6 text-center">Dashboard</h2>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-        <div class="bg-white shadow-md rounded p-4">
-          <h2 class="text-md font-semibold mb-4 text-center">Total Number of Books</h2>
-          <h2 class="text-10x5 font-bold mb-6 text-center" style="font-size: 8rem;">{{ $TotalFavBooks }}</h2>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-
   
   @include('pages.userfooter')
 

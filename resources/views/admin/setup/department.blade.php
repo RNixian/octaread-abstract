@@ -51,46 +51,43 @@
 <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Search</button>
 </form>
 
-          <div class="overflow-x-auto">
-            <table class="min-w-full table-auto border-collapse">
-              <thead>
-                <tr class="bg-gray-100">
-                  <th class="px-4 py-2 border text-left">Id</th>
-                  <th class="px-4 py-2 border text-left">Department</th>
-                  <th class="px-4 py-2 border text-left">Created at</th>
-                  <th class="px-4 py-2 border text-left">Updated at</th>
-                  <th class="px-4 py-2 border text-left">Action Delete</th>
-                  <th class="px-4 py-2 border text-left">Action Edit</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($departmentmodel as $data)
 
-                    <tr>
-                        <td>{{ $data->id }}</td>
-                        <td class="text-start">{{ $data->department }}</td>
-                        <td>{{ $data->created_at }}</td>
-                        <td>{{ $data->updated_at }}</td>
-                        <td>
-                          <a href="{{ route('deletedept', $data->id) }}"
-                             class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
-                             Delete
-                          </a>
-                        </td>
-                        <td>
-                          <button 
-                              class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
-                              data-id="{{ $data->id }}"
-                              data-department="{{ $data->department }}">
-                              Edit
-                          </button>
-                        </td>
-                    </tr>
-                @endforeach
-              </tbody>
-              
-            </table>
-          </div>
+<div class="overflow-x-auto">
+  <table class="min-w-full table-auto border-collapse">
+    <thead>
+      <tr class="bg-blue-900 text-white">
+        <th class="hidden">Id</th>
+        <th class="px-4 py-2 border-b text-left">Department</th>
+        <th class="px-4 py-2 border-b text-left">Created at</th>
+        <th class="px-4 py-2 border-b text-left">Updated at</th>
+        <th class="px-4 py-2 border-b text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach($departmentmodel as $data)
+        <tr class="bg-white odd:bg-gray-100 hover:bg-gray-200">
+          <td class="hidden">{{ $data->id }}</td>
+          <td class="px-4 py-2 border-b text-start">{{ $data->department }}</td>
+          <td class="px-4 py-2 border-b">{{ $data->created_at }}</td>
+          <td class="px-4 py-2 border-b">{{ $data->updated_at }}</td>
+          <td class="px-4 py-2 border-b space-x-4">
+            <a href="{{ route('deletedept', $data->id) }}"
+               class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
+              Delete
+            </a>
+            <button 
+              class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
+              data-id="{{ $data->id }}"
+              data-department="{{ $data->department }}">
+              Edit
+            </button>
+          </td>
+        </tr>
+      @endforeach
+    </tbody>
+  </table>
+</div>
+
         </div>
 
         <div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">

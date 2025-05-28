@@ -17,12 +17,10 @@
             <a href="{{ url('/pages/userdashboard') }}" class="nav-link">
                 <i class="fas fa-house"></i> Home
             </a>
-
-
     
             @if(session()->has('firstname'))
                 <a href="{{ url('/pages/ebook') }}" class="nav-link">
-                    <i class="fas fa-book"></i> E-Book
+                    <i class="fas fa-book"></i> Research
                 </a>
                 <a href="{{ url('/pages/favorites') }}" class="nav-link">
                     <i class="fas fa-heart"></i> Favorites

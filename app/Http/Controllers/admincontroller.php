@@ -314,11 +314,14 @@ public function deletebook(Request $request, $id) {
 
     if (strtolower($book->category) === "graduate") {
         return redirect()->route('admin.graduate')->with('success', 'Book deleted successfully.');
-    } else {
-        return redirect()->route('admin.undergraduate')->with('success', 'Book deleted successfully.');
+    } elseif (strtolower($book->category) === "employee"){
+        return redirect()->route('admin.employeebook')->with('success', 'Book deleted successfully.');
+    }else{
+        return redirect()->route('admin.undergraduate')->with('success', 'Book updated successfully.');
     }
-}
+    }
 
+    
 public function updatebook(Request $request, $id) {
     $request->validate([
         'title' => 'required|string|max:255',

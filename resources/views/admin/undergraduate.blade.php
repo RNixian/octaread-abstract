@@ -56,67 +56,60 @@
           <div class="overflow-x-auto">
             <table class="min-w-full table-auto border-collapse">
               <thead>
-                <tr class="bg-gray-100">
-                  <th class="px-4 py-2 border text-left">Id</th>
-                  <th class="px-4 py-2 border text-left">Title</th>
-                  <th class="px-4 py-2 border text-left">Author</th>
-                  <th class="px-4 py-2 border text-left">Year</th>
-                  <th class="px-4 py-2 border text-left">Category</th>
-                  <th class="px-4 py-2 border text-left">Department</th>
-                  <th class="px-4 py-2 border text-left">PDF File</th>
-                  <th class="px-4 py-2 border text-left">Created at</th>
-                  <th class="px-4 py-2 border text-left">Updated at</th>
-                  <th class="px-4 py-2 border text-left">Action Delete</th>
-                  <th class="px-4 py-2 border text-left">Action Edit</th>
+                <tr class="bg-blue-900 text-white">
+                  <th class="hidden">Id</th>
+                  <th class="px-4 py-2 border-b text-left w-[200px]">Title</th>
+                  <th class="px-4 py-2 border-b text-left">Author</th>
+                  <th class="px-4 py-2 border-b text-left">Year</th>
+                  <th class="px-4 py-2 border-b text-left">Category</th>
+                  <th class="px-4 py-2 border-b text-left">Department</th>
+                  <th class="px-4 py-2 border-b text-left">PDF File</th>
+                  <th class="hidden">Created at</th>
+                  <th class="hidden">Updated at</th>
+                  <th class="px-4 py-2 border-b text-left" colspan="2">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 @foreach($booksmodel as $data)
                   @if($data->category === 'Under-Graduate')
-                    <tr>
-                        <td>{{ $data->id }}</td>
-                        <td class="text-start">{{ $data->title }}</td>
-                        <td class="text-start">{{ $data->author }}</td>
-                        <td class="text-start">{{ $data->year }}</td>
-                        <td class="text-start">{{ $data->category }}</td>
-                        <td class="text-start">{{ $data->department }}</td>
-                        <!-- PDF File button -->
-                        <td class="text-start">
-                          <a href="{{ asset('storage/' . $data->pdf_filepath) }}"
-                             class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
-                             target="_blank">
-                            View
-                          </a>
-                        </td>
-                        <td>{{ $data->created_at }}</td>
-                        <td>{{ $data->updated_at }}</td>
-                        <td>
+                    <tr class="bg-white odd:bg-gray-100 hover:bg-gray-200">
+                      <td class="hidden border-b">{{ $data->id }}</td>
+                      <td class="text-start border-b px-4 py-2 w-[200px]">{{ $data->title }}</td>
+                      <td class="text-start border-b px-4 py-2">{{ $data->author }}</td>
+                      <td class="text-start border-b px-4 py-2">{{ $data->year }}</td>
+                      <td class="text-start border-b px-4 py-2">{{ $data->category }}</td>
+                      <td class="text-start border-b px-4 py-2">{{ $data->department }}</td>
+                      <td class="text-start border-b px-4 py-2">
+                        <a href="{{ asset('storage/' . $data->pdf_filepath) }}"
+                           class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
+                           target="_blank">
+                          View
+                        </a>
+                      </td>
+                      <td class="hidden border-b">{{ $data->created_at }}</td>
+                      <td class="hidden border-b">{{ $data->updated_at }}</td>
+                      <td colspan="2" class="border-b px-4 py-2">
+                        <div class="flex flex-col space-y-2">
                           <a href="{{ route('deletebook', $data->id) }}"
-                             class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
-                             Delete
+                             class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-center">
+                            Delete
                           </a>
-                        </td>
-                        <td>
-                          <!-- Edit link with data attributes -->
                           <button 
-                              class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
-                              data-id="{{ $data->id }}"
-                              data-title="{{ $data->title }}"
-                              data-author="{{ $data->author }}"
-                              data-year="{{ $data->year }}"
-                              data-category="{{ $data->category }}"
-                              data-department="{{ $data->department }}">
-                              Edit
+                            class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
+                            data-id="{{ $data->id }}">
+                            Edit
                           </button>
-                        </td>
+                        </div>
+                      </td>
                     </tr>
                   @endif
                 @endforeach
               </tbody>
-              
             </table>
           </div>
         </div>
+        
+        
 
         <!-- Update Modal -->
         <div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">

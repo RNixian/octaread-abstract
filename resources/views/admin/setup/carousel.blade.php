@@ -52,54 +52,53 @@
 
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
 
-          <div class="overflow-x-auto">
-            <table class="min-w-full table-auto border-collapse">
-              <thead>
-                <tr class="bg-gray-100">
-                  <th class="px-4 py-2 border text-left">Id</th>
-                  <th class="px-4 py-2 border text-left">carousel</th>
-                  <th class="px-4 py-2 border text-left">Order</th>
-                  <th class="px-4 py-2 border text-left">Created at</th>
-                  <th class="px-4 py-2 border text-left">Updated at</th>
-                  <th class="px-4 py-2 border text-left">Action Delete</th>
-                  <th class="px-4 py-2 border text-left">Action Edit</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($carouselmodel as $data)
 
-                    <tr>
-                        <td>{{ $data->id }}</td>
-                        <td class="text-start">
-                          @if($data->carousel_imgpath)
-                            <img src="{{ asset('storage/' . $data->carousel_imgpath) }}" alt="Cover Photo" style="width: 100px; height: 100px; object-fit:cover;">
-                          @else
-                            N/A
-                          @endif
-                        </td>
-                        <td class="text-start">{{ $data->display_order }}</td>
-                        <td>{{ $data->created_at }}</td>
-                        <td>{{ $data->updated_at }}</td>
-                        <td>
-                          <a href="{{ route('deletecarousel', $data->id) }}"
-                             class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
-                             Delete
-                          </a>
-                        </td>
-                        <td>
-                          <button 
-                              class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
-                              data-id="{{ $data->id }}"
-                              data-display_order="{{ $data->display_order }}">
-                              Edit
-                          </button>
-                        </td>
-                    </tr>
-                @endforeach
-              </tbody>
-              
-            </table>
-          </div>
+       <div class="overflow-x-auto">
+  <table class="min-w-full table-auto border-collapse">
+    <thead>
+      <tr class="bg-blue-900 text-white">
+        <th class="hidden">Id</th>
+        <th class="px-4 py-2 border-b text-left">Carousel</th>
+        <th class="px-4 py-2 border-b text-left">Order</th>
+        <th class="hidden">Created at</th>
+        <th class="hidden">Updated at</th>
+        <th class="px-4 py-2 border-b text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach($carouselmodel as $data)
+        <tr class="bg-white odd:bg-gray-100 hover:bg-gray-200">
+          <td class="hidden">{{ $data->id }}</td>
+          <td class="px-4 py-2 border-b text-start">
+            @if($data->carousel_imgpath)
+              <img src="{{ asset('storage/' . $data->carousel_imgpath) }}"
+                   alt="Carousel"
+                   class="w-4 0 h-25 object-cover rounded border" />
+            @else
+              N/A
+            @endif
+          </td>
+          <td class="px-4 py-2 border-b text-start">{{ $data->display_order }}</td>
+          <td class="hidden">{{ $data->created_at }}</td>
+          <td class="hidden">{{ $data->updated_at }}</td>
+          <td class="px-4 py-2 border-b space-x-2">
+            <a href="{{ route('deletecarousel', $data->id) }}"
+               class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
+              Delete
+            </a>
+            <button 
+              class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
+              data-id="{{ $data->id }}"
+              data-display_order="{{ $data->display_order }}">
+              Edit
+            </button>
+          </td>
+        </tr>
+      @endforeach
+    </tbody>
+  </table>
+</div>
+
         </div>
 
         <div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">

@@ -42,6 +42,7 @@
           </div>
 
 
+
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
 
  <!-- Search and Filter -->
@@ -52,45 +53,41 @@
 </form>
 
           <div class="overflow-x-auto">
-            <table class="min-w-full table-auto border-collapse">
-              <thead>
-                <tr class="bg-gray-100">
-                  <th class="px-4 py-2 border text-left">Id</th>
-                  <th class="px-4 py-2 border text-left">Course</th>
-                  <th class="px-4 py-2 border text-left">Created at</th>
-                  <th class="px-4 py-2 border text-left">Updated at</th>
-                  <th class="px-4 py-2 border text-left">Action Delete</th>
-                  <th class="px-4 py-2 border text-left">Action Edit</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($coursemodel as $data)
+  <table class="min-w-full table-auto border-collapse">
+    <thead>
+      <tr class="bg-blue-900 text-white">
+        <th class="hidden">Id</th>
+        <th class="px-4 py-2 border-b text-left">Course</th>
+        <th class="px-4 py-2 border-b text-left">Created at</th>
+        <th class="px-4 py-2 border-b text-left">Updated at</th>
+        <th class="px-4 py-2 border-b text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach($coursemodel as $data)
+        <tr class="bg-white odd:bg-gray-100 hover:bg-gray-200">
+          <td class="hidden">{{ $data->id }}</td>
+          <td class="px-4 py-2 border-b text-start">{{ $data->course }}</td>
+          <td class="px-4 py-2 border-b">{{ $data->created_at }}</td>
+          <td class="px-4 py-2 border-b">{{ $data->updated_at }}</td>
+          <td class="px-4 py-2 border-b space-x-4">
+            <a href="{{ route('deletecourse', $data->id) }}"
+               class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
+              Delete
+            </a>
+            <button 
+              class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
+              data-id="{{ $data->id }}"
+              data-course="{{ $data->course }}">
+              Edit
+            </button>
+          </td>
+        </tr>
+      @endforeach
+    </tbody>
+  </table>
+</div>
 
-                    <tr>
-                        <td>{{ $data->id }}</td>
-                        <td class="text-start">{{ $data->course }}</td>
-                        <td>{{ $data->created_at }}</td>
-                        <td>{{ $data->updated_at }}</td>
-                        <td>
-                          <a href="{{ route('deletecourse', $data->id) }}"
-                             class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
-                             Delete
-                          </a>
-                        </td>
-                        <td>
-                          <button 
-                              class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
-                              data-id="{{ $data->id }}"
-                              data-course="{{ $data->course }}">
-                              Edit
-                          </button>
-                        </td>
-                    </tr>
-                @endforeach
-              </tbody>
-              
-            </table>
-          </div>
         </div>
 
         <div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
