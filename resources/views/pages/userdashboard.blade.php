@@ -6,6 +6,7 @@
     <title>OctaRead Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <style>
@@ -96,82 +97,199 @@
       </div>
   </div>
 
-  <div class="container mt-5">
-    <h3 class="mb-4 text-center">Library Team</h3>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-        @foreach($members as $member)
-            <div class="col">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="{{ asset('storage/' . $member->profile_imgpath) }}" 
-                         class="card-img-top" 
-                         alt="Profile Image" 
-                         style="object-fit: cover; height: 250px;">
-                    <div class="card-body text-center">
-                        <h5 class="card-title mb-1">{{ $member->fullname }}</h5>
-                        <p class="card-text text-muted">{{ $member->position }}</p>
-                    </div>
-                </div>
-            </div>
-        @endforeach
+  <div class="max-w-7xl mx-auto mt-10 px-4">
+    <h3 class="mb-8 text-center text-3xl font-extrabold text-gray-900">Library Team</h3>
+  
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      @foreach($members as $member)
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 flex flex-col h-full">
+          <img 
+            src="{{ asset('storage/' . $member->profile_imgpath) }}" 
+            alt="Profile Image of {{ $member->fullname }}" 
+            class="rounded-t-xl object-cover h-64 w-full"
+          >
+          <div class="p-6 flex flex-col flex-grow items-center justify-center text-center">
+            <h5 class="text-xl font-semibold text-gray-900 mb-1 break-words whitespace-normal">
+              {{ $member->fullname }}
+            </h5>
+            <p class="text-gray-600 text-sm break-words whitespace-normal">
+              {{ $member->position }}
+            </p>
+          </div>
+        </div>
+      @endforeach
     </div>
-</div>
+  </div>
+  
 
  
-<div class="container mt-5 card h-100 shadow-sm border-0">
-    <h3 class="mb-4 text-center">Services</h3>
-<ul>
-<li>tulog</li>
-<li>kain</li>
-<li>laro</li>
-<li>mang-bash</li>
-</ul>
-</div>
+<section class="py-16 px-4 text-center container mx-auto mt-10">
+  <h2 class="text-4xl font-extrabold mb-6 text-gray-900">PROGRAMS AND SERVICES</h2>
+  <h1 class="text-2xl font-medium mb-12 text-gray-600 max-w-3xl mx-auto">
+    The Research Center shall implement the following programs and attributes
+  </h1>
+
+  <div class="flex flex-wrap justify-center gap-8">
+    
+    <!-- Service Card Template -->
+    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
+      <div class="px-8 py-8">
+        <div class="text-5xl mb-6 select-none">📚</div>
+        <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Support Resources</h3>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Provides resources, workshops, and consultations for all research stages (proposal writing, methodology, data analysis, publication).
+        </p>
+      </div>
+    </div>
+
+    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
+      <div class="px-8 py-8">
+        <div class="text-5xl mb-6 select-none">🤝</div>
+        <h3 class="text-xl font-semibold mb-3 text-gray-900">Mentorship Connections</h3>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Connects experienced faculty researchers with students for guidance and project development.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
+      <div class="px-8 py-8">
+        <div class="text-5xl mb-6 select-none">💰</div>
+        <h3 class="text-xl font-semibold mb-3 text-gray-900">Student Research Funding</h3>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Offers funding and support for outstanding student-led research projects.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
+      <div class="px-8 py-8">
+        <div class="text-5xl mb-6 select-none">🌐</div>
+        <h3 class="text-xl font-semibold mb-3 text-gray-900">Interdisciplinary Research</h3>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Facilitates the creation of interdisciplinary research groups to tackle complex problems.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
+      <div class="px-8 py-8">
+        <div class="text-5xl mb-6 select-none">🎤</div>
+        <h3 class="text-xl font-semibold mb-3 text-gray-900">Guest Researcher Lectures</h3>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Invites renowned researchers to present their work and foster collaboration with on-campus researchers.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
+      <div class="px-8 py-8">
+        <div class="text-5xl mb-6 select-none">🖼️</div>
+        <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Showcases</h3>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Provides a platform for faculty and students to showcase their research to the wider community.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
+      <div class="px-8 py-8">
+        <div class="text-5xl mb-6 select-none">📝</div>
+        <h3 class="text-xl font-semibold mb-3 text-gray-900">Grant Application Support</h3>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Offers dedicated staff support to help researchers navigate the grant application process.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
+      <div class="px-8 py-8">
+        <div class="text-5xl mb-6 select-none">🧪</div>
+        <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Technology Access</h3>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Provides access to cutting-edge equipment and technologies for various research disciplines.
+        </p>
+      </div>
+    </div>
+
+    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
+      <div class="px-8 py-8">
+        <div class="text-5xl mb-6 select-none">📊</div>
+        <h3 class="text-xl font-semibold mb-3 text-gray-900">Data Training & Ethics</h3>
+        <p class="text-sm text-gray-700 leading-relaxed">
+          Offers training and support for researchers in data collection, storage, analysis, and ethical use.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
 
 <!-- Book Grid -->
-<div class="container mt-5 card h-100 shadow-sm border-0">
-    <h3 class="mb-4 text-center">Recently Added</h3>
-<div class="row mt-3">
+<div class="max-w-7xl mx-auto mt-10 px-4">
+  <h2 class="mb-8 text-center text-3xl font-extrabold text-gray-900">Recently Added</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
     @forelse ($ebooks as $book)
-      <div class="col-md-3 mb-4">
-        <div class="card book-card h-100 shadow-sm">
-          <img src="{{ asset('images/default_pdf_picture.jpg/' . $book->cover_photo) }}" class="card-img-top" alt="Book Cover">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ $book->title }}</h5>
-            <p class="card-text text-muted mb-1"><i class="bi bi-person-fill"></i> {{ $book->author }}</p>
-            <p class="card-text"><small>{{ $book->department }} | {{ $book->category }}</small></p>
-            <div class="mt-auto d-flex justify-content-between align-items-center">
-                 <a href="{{ asset('storage/' . $book->pdf_filepath) }}"
-                  class="btn btn-sm btn-custom-red"
-                  target="_blank">
-                 Read
-               </a>
+      <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 flex flex-col h-full">
+        <img 
+          src="{{ asset('images/default_pdf_picture.jpg/' . $book->cover_photo) }}" 
+          alt="Book Cover" 
+          class="rounded-t-xl object-cover h-48 w-full"
+        >
+        <div class="p-6 flex flex-col flex-grow">
+          <h5 class="text-lg font-semibold text-gray-900 mb-2 break-words whitespace-normal">{{ $book->title }}</h5>
+          <p class="text-sm text-gray-600 mb-1 flex items-center gap-2 break-words whitespace-normal">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 16 16"><path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3z"/><path fill-rule="evenodd" d="M8 8a3 3 0 100-6 3 3 0 000 6z"/></svg>
+            {{ $book->author }}
+          </p>
+          <p class="text-sm text-gray-500 mb-4 break-words whitespace-normal"><small>{{ $book->department }} | {{ $book->category }}</small></p>
 
-                 <form action="{{ route('favorites.store') }}" method="POST">
+          {{-- Example of a long description field you might have --}}
+          @if(isset($book->description))
+          <p class="text-gray-700 text-sm mb-4 break-words whitespace-normal max-h-24 overflow-auto">
+            {{ $book->description }}
+          </p>
+          @endif
 
-                  @php
-                  $isFavorited = auth()->user() && auth()->user()->favorites->contains($book->id);
-                @endphp
-                
-                  @csrf
-                  <input type="hidden" name="ebook_id" value="{{ $book->id }}">
-                  <button type="submit" class="favorite-btn {{ $isFavorited ? 'favorited' : '' }}" title="Add to Favorites">
-                    <i class="bi bi-heart-fill"></i>
-                  </button>
-                </form>
-                
-            </div>
+          <div class="mt-auto flex justify-between items-center">
+            <a 
+              href="{{ asset('storage/' . $book->pdf_filepath) }}" 
+              target="_blank"
+              class="inline-block bg-red-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-red-700 transition"
+            >
+              Read
+            </a>
+
+            <form action="{{ route('favorites.store') }}" method="POST" class="ml-2">
+              @php
+                $isFavorited = auth()->user() && auth()->user()->favorites->contains($book->id);
+              @endphp
+              @csrf
+              <input type="hidden" name="ebook_id" value="{{ $book->id }}">
+              <button 
+                type="submit" 
+                class="text-red-600 hover:text-red-700 focus:outline-none"
+                title="Add to Favorites"
+              >
+                <i class="bi bi-heart-fill {{ $isFavorited ? 'text-red-700' : 'text-gray-300' }}"></i>
+              </button>
+            </form>
           </div>
         </div>
       </div>
     @empty
-      <div class="col-12">
-        <div class="alert alert-warning text-center" role="alert">
+      <div class="col-span-full">
+        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded text-center" role="alert">
           No books found.
         </div>
       </div>
     @endforelse
   </div>
 </div>
+
 
 
    @include('pages.userfooter')
