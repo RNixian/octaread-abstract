@@ -42,27 +42,21 @@
                 <label class="block text-gray-700 font-bold mb-2" for="year">Year</label>
                 <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="number" id="year" name="year" required>
             </div>
-        
-
+     
             <div class="mb-4">
                 <label class="block text-gray-700 font-bold mb-2" for="category">Category</label>
-                <select class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" id="category" name="category" required>
-                    <option value="">Select Category</option>
-                    <option value="Graduate">Graduate</option>
-                    <option value="Under-Graduate">Under-Graduate</option>
-                    <option value="Employee">Employee</option>
+                <select name="category" id="category" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <option value="">-- Select Category --</option>
+                    @foreach ($res_out_cats as $category)
+                        <option value="{{ $category->out_cat }}">{{ $category->out_cat }}</option>
+                    @endforeach
                 </select>
             </div>
-
+ 
             <div class="mb-4">
                 <label class="block text-gray-700 font-bold mb-2" for="department">Department</label>
-                <select class="form-control" name="department" id="department" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <select name="department" id="department" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     <option value="">-- Select Department --</option>
-                    @foreach ($departments as $dept)
-                    <option value="{{ $dept->department }}" {{ old('department') == $dept->department ? 'selected' : '' }}>
-                        {{ $dept->department }}
-                    </option>                    
-                    @endforeach
                 </select>
             </div>
 
@@ -82,7 +76,36 @@
                 </a>
             </div>
         </form>
-
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#category').change(function () {
+            let category = $(this).val();
+
+            $('#department').html('<option value="">-- Loading... --</option>');
+
+            if (category) {
+                $.ajax({
+                    url: '/get-departments/' + encodeURIComponent(category),
+                    type: 'GET',
+                    success: function (data) {
+                        $('#department').empty().append('<option value="">-- Select Department --</option>');
+                        $.each(data, function (key, value) {
+                            $('#department').append('<option value="' + value + '">' + value + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#department').html('<option value="">-- Select Department --</option>');
+            }
+        });
+    });
+</script>
+
+
+
+
 </body>
 </html>

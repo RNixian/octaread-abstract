@@ -3,7 +3,7 @@
 
     <header class="d-flex justify-content-between align-items-center p-3 custom-header-bg">
         <div class="d-flex align-items-center">
-            <img src="{{ asset('images/octaread_logo.png') }}" alt="Logo" style="height: 40px; width: auto;">
+            <img src="{{ asset('images/RnMLogo.png') }}" alt="Logo" style="height: 40px; width: auto;">
         </div>
     
         @if(session()->has('firstname'))

@@ -7,8 +7,11 @@ use App\Models\adminmodel;
 use App\Models\booksmodel; 
 use App\Models\carouselmodel; 
 use App\Models\contactmodel; 
-use App\Models\coursemodel; 
+use App\Models\programmodel; 
+use App\Models\programplusmodel;
 use App\Models\departmentmodel; 
+use App\Models\rocmodel; 
+use App\Models\underrocmodel; 
 use App\Models\membersModel; 
 use App\Models\usermodel; 
 use App\Models\positionmodel; 
@@ -111,10 +114,9 @@ class admincontroller extends Controller
 public function add_new_books()
 {
     $departments = departmentmodel::all(); // or however you're getting departments
-    return view('admin.add_new_books', compact('departments'));
+    $res_out_cats = rocmodel::all();
+    return view('admin.add_new_books', compact('departments', 'res_out_cats'));
 }
-
-
 
     public function storebooks(Request $request)
     {
@@ -134,16 +136,7 @@ public function add_new_books()
     
   
         $ebook = booksmodel::create($validatedData);
-    
-        if (strtolower($validatedData['category']) === 'graduate') {
-            return redirect()->route('admin.graduate')->with('success', 'Graduate book uploaded successfully.');
-        } elseif (strtolower($validatedData['category']) === 'under-graduate') {
-            return redirect()->route('admin.undergraduate')->with('success', 'Undergraduate book uploaded successfully.');
-        } elseif (strtolower($validatedData['category']) === 'employee') {
-            return redirect()->route('admin.employeebook')->with('success', 'Undergraduate book uploaded successfully.');
-        } else {
-            return redirect()->back()->with('success', 'Book uploaded, but category is unrecognized.');
-        }
+        return redirect()->route('admin.graduate')->with('success', 'Book successfully added.');
     }
     
     public function departmentBooks(Request $request)
@@ -153,10 +146,21 @@ public function add_new_books()
         return view('admin.add_new_books', compact( 'departments'));
     }
     
-    public function dept()
+    public function getDepartments($out_cat)
     {
-        return $this->belongsTo(departmentmodel::class, 'department_id', 'id');
+        // First, find the category's ID
+        $category = rocmodel::where('out_cat', $out_cat)->first();
+    
+        if (!$category) {
+            return response()->json([]);
+        }
+    
+        // Then get all departments under that category
+        $departments = underrocmodel::where('out_cat_id', $category->id)->pluck('under_roc');
+    
+        return response()->json($departments);
     }
+
 
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -166,15 +170,22 @@ public function add_new_books()
     {
         return view('admin.graduate');
     }
-
-  
     public function graduateBooks(Request $request)
     {
-        $departments = departmentmodel::all();
+        $under_res_out_cats = underrocmodel::all();
+        $res_out_cats = rocmodel::all();
+    
+        // TEMP DEBUG
+        if ($res_out_cats->isEmpty()) {
+            dd('No categories found in rocmodel table');
+        }
+    
+        // Get distinct out_cat values for category selection
+        $categories = $res_out_cats->pluck('out_cat')->unique()->values();
     
         $query = booksmodel::query();
     
-        if ($request->has('search') && $request->search) {
+        if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('title', 'like', '%' . $request->search . '%')
                   ->orWhere('author', 'like', '%' . $request->search . '%')
@@ -186,24 +197,39 @@ public function add_new_books()
             });
         }
     
-        if ($request->has('department') && $request->department) {
+        if ($request->filled('department')) {
             $query->where('department', $request->department);
         }
     
-
-        $booksmodel = $query->where('category', 'Graduate')->get();
-        $countgrads = $booksmodel->count();
+        if ($request->filled('out_cat')) {
+            $query->where('category', $request->out_cat); // ✅ Filter by out_cat
+        }
     
-        return view('admin.graduate', compact('booksmodel', 'countgrads', 'departments'));
+        $books = $query->get();
+        $countgrads = $query->count();
+    
+        return view('admin.graduate', compact(
+            'books',
+            'countgrads',
+            'under_res_out_cats',
+            'res_out_cats',
+            'categories'
+        ));
     }
     
 
+    public function gettingDepartments($category)
+{
+    $departments = booksmodel::where('category', $category)
+                    ->distinct()
+                    ->pluck('department');
 
-    public function depts()
-    {
-        return $this->belongsTo(departmentmodel::class, 'department_id', 'department');
-    }
-    
+    return response()->json($departments);
+}
+
+
+
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 //UNDERGRADUATE
@@ -415,6 +441,7 @@ public function editdept($id){
         return redirect()->route('admin.setup.department');
     }
     
+    
 
     public function searchDept(Request $request)
     {
@@ -440,68 +467,131 @@ public function editdept($id){
 
 
 
-//COURSE-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//PROGRAM-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-public function course()
+public function program()
 {
-return view ('admin.setup.course');
+return view ('admin.setup.program');
 }
 
-public function storecourse(Request $request)
+public function storeprogram(Request $request)
 {
     $data = $request->validate([
-        'course'  => 'required',
+        'program'  => 'required',
     ]);
-    $newcourse = coursemodel::create($data); 
-    return redirect(route('admin.setup.course'));
+    $newprogram = programmodel::create($data); 
+    return redirect(route('admin.setup.program'));
 }
 
 
-public function deletecourse($id)
+public function deleteprogram($id)
 {
-    $dept = coursemodel::findOrFail($id);
+    $dept = programmodel::findOrFail($id);
     $dept->delete(); 
 
-    return redirect()->back()->with('success', 'Course deleted successfully!');
+    return redirect()->back()->with('success', 'Program deleted successfully!');
 }
 
-public function editcourse($id){
+public function editprogram($id){
 
-    $task = coursemodel::find($id);
-    return view('admin.setup.course', compact('course'));
+    $task = programmodel::find($id);
+    return view('admin.setup.program', compact('program'));
     }
     
-    public function updatecourse(Request $request, $id) {
+    public function updateprogram(Request $request, $id) {
         $request->validate([
-            'course' => 'required|min:1|max:255|alpha',
+            'program' => 'required|min:1|max:255|alpha',
         ]);
     
-         $post = coursemodel::find($id);
+         $post = programmodel::find($id);
          $post->fill($request->all());
          $post->save();
-        return redirect()->route('admin.setup.course');
+        return redirect()->route('admin.setup.program');
     }
     
 
-    public function searchCourse(Request $request)
+    public function searchprogram(Request $request)
     {
-        $courses = coursemodel::all();
+        $programs = programmodel::all();
     
-        $query = coursemodel::query();
+        $query = programmodel::query();
     
         if ($request->has('search') && $request->search) {
             $query->where(function ($q) use ($request) {
-                $q->where('course', 'like', '%' . $request->search . '%')
+                $q->where('program', 'like', '%' . $request->search . '%')
                   ->orWhere('created_at', 'like', '%' . $request->search . '%')
                   ->orWhere('updated_at', 'like', '%' . $request->search . '%');
             });
         }
     
-        $coursemodel = $query->get();
+        $programmodel = $query->get();
     
-        return view('admin.setup.course', compact('coursemodel', 'courses'));
+        return view('admin.setup.program', compact('programmodel', 'programs'));
     }
 
+//PROGRAMPLUS----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+public function programplus()
+{
+return view ('admin.setup.programplus');
+}
+
+public function storeprogramplus(Request $request)
+{
+    $data = $request->validate([
+        'programplus'  => 'required',
+    ]);
+    $newprogramplus = programplusmodel::create($data); 
+    return redirect(route('admin.setup.programplus'));
+}
+
+
+public function deleteprogramplus($id)
+{
+    $plus = programplusmodel::findOrFail($id);
+    $plus->delete(); 
+
+    return redirect()->back()->with('success', 'Program deleted successfully!');
+}
+
+public function editprogramplus($id){
+
+    $task = programplusmodel::find($id);
+    return view('admin.setup.programplus', compact('programplus'));
+    }
+    
+    public function updateprogramplus(Request $request, $id) {
+        $request->validate([
+            'programplus' => 'required|min:1|max:255|alpha',
+        ]);
+    
+         $post = programplusmodel::find($id);
+         $post->fill($request->all());
+         $post->save();
+        return redirect()->route('admin.setup.programplus');
+    }
+    
+ 
+
+
+    public function searchprogramplus(Request $request)
+    {
+        $programpluss = programplusmodel::all();
+    
+        $query = programplusmodel::query();
+    
+        if ($request->has('search') && $request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('programplus', 'like', '%' . $request->search . '%')
+                  ->orWhere('created_at', 'like', '%' . $request->search . '%')
+                  ->orWhere('updated_at', 'like', '%' . $request->search . '%');
+            });
+        }
+    
+        $programplusmodel = $query->get();
+    
+        return view('admin.setup.programplus', compact('programplusmodel', 'programpluss'));
+    }
 
 //CAROUSEL-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -563,69 +653,198 @@ public function updatecarousel(Request $request, $id) {
    
 }
 
-//POSITION----------------------------------------------------------------------------------------------------------------------
+//RESEARCH OUTPUT CATEGORIES----------------------------------------------------------------------------------------------------------------------
 
-public function position()
+public function resoutcat()
 {
-return view ('admin.setup.position');
+return view ('admin.setup.resoutcat');
 }
 
-public function storeposition(Request $request)
+public function storeout_cat(Request $request)
 {
     $data = $request->validate([
-        'position'  => 'required',
+        'out_cat'  => 'required',
 
     ]);
-    $newposition = positionmodel::create($data); 
-    return redirect(route('admin.setup.position'));
+    $newout_cat = rocmodel::create($data); 
+    return redirect(route('admin.setup.resoutcat'));
 }
 
 
-public function deleteposition($id)
+public function deleteout_cat($id)
 {
-    $position = positionmodel::findOrFail($id);
-    $position->delete(); 
+    $out_cat = rocmodel::findOrFail($id);
+    $out_cat->delete(); 
 
-    return redirect()->back()->with('success', 'Position deleted successfully!');
+    return redirect()->back()->with('success', 'Output Category has been deleted successfully!');
 }
 
-public function editposition($id){
+public function editout_cat($id){
 
-    $position = positionmodel::find($id);
-    return view('admin.setup.position', compact('position'));
+    $out_cat = rocmodel::find($id);
+    return view('admin.setup.resoutcat', compact('out_cat'));
     }
     
-    public function updateposition(Request $request, $id) {
+    public function updateout_cat(Request $request, $id) {
         $request->validate([
-            'position' => 'required|min:1|max:255|alpha',
+            'out_cat' => 'required|min:1|max:255',
         ]);
     
-         $post = positionmodel::find($id);
+         $post = rocmodel::find($id);
          $post->fill($request->all());
          $post->save();
-        return redirect()->route('admin.setup.position');
+        return redirect()->route('admin.setup.resoutcat');
     }
 
-    public function searchPosition(Request $request)
+    public function searchout_cat(Request $request)
     {
-        $positions = positionmodel::all();
+        $out_cats = rocmodel::all();
     
-        $query = positionmodel::query();
+        $query = rocmodel::query();
     
         if ($request->has('search') && $request->search) {
             $query->where(function ($q) use ($request) {
-                $q->where('position', 'like', '%' . $request->search . '%')
+                $q->where('out_cat', 'like', '%' . $request->search . '%')
                   ->orWhere('created_at', 'like', '%' . $request->search . '%')
                   ->orWhere('updated_at', 'like', '%' . $request->search . '%');
             });
         }
     
-        $positionmodel = $query->get();
+        $rocmodel = $query->get();
     
-        return view('admin.setup.position', compact('positionmodel', 'positions'));
+        return view('admin.setup.resoutcat', compact('rocmodel', 'out_cats'));
+    }
+
+//UNDER RESEARCH OUTPUT CATEGORIES----------------------------------------------------------------------------------------------------------------------
+
+public function underresoutcat()
+{
+    return view ('admin.setup.under_out_cat');
+}
+
+public function storeunder_out_cat(Request $request)
+{
+    $data = $request->validate([
+        'out_cat_id' => 'required|exists:research_out_cat,id',
+        'under_roc'  => 'required|string|max:255',
+
+    ]);
+    $new_under_out_cat = underrocmodel::create($data); 
+    return redirect(route('admin.setup.under_out_cat'));
+}
+
+
+public function deleteunder_out_cat($id)
+{
+    $under_out_cat = underrocmodel::findOrFail($id);
+    $under_out_cat->delete(); 
+
+    return redirect()->back()->with('success', 'Under Output Category has been deleted successfully!');
+}
+
+public function editunder_out_cat($id){
+
+    $under_out_cat = underrocmodel::find($id);
+    return view('admin.setup.under_out_cat', compact('under_out_cat'));
+    }
+    
+    public function updateunder_out_cat(Request $request, $id) {
+        $request->validate([
+            'out_cat_id' => 'required|exists:research_out_cat,id',
+            'under_roc'  => 'required|string|max:255',
+        ]);
+    
+         $post = underrocmodel::find($id);
+         $post->fill($request->all());
+         $post->save();
+        return redirect()->route('admin.setup.under_out_cat');
     }
 
 
+    public function searchunder_out_cat(Request $request)
+    {
+        $under_out_cats = underrocmodel::all();
+        $res_out_category = rocmodel::all();
+        $query = underrocmodel::query();
+    
+        if ($request->has('search') && $request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('out_cat_id', 'like', '%' . $request->search . '%')
+                ->orWhere('under_roc', 'like', '%' . $request->search . '%')
+                  ->orWhere('created_at', 'like', '%' . $request->search . '%')
+                  ->orWhere('updated_at', 'like', '%' . $request->search . '%');
+            });
+        }
+    
+        $underrocmodel = $query->get();
+    
+        return view('admin.setup.under_out_cat', compact('underrocmodel', 'under_out_cats', 'res_out_category'));
+    }
+
+
+
+    //POSITION----------------------------------------------------------------------------------------------------------------------
+
+    public function position()
+    {
+    return view ('admin.setup.position');
+    }
+    
+    public function storeposition(Request $request)
+    {
+        $data = $request->validate([
+            'position'  => 'required',
+    
+        ]);
+        $newposition = positionmodel::create($data); 
+        return redirect(route('admin.setup.position'));
+    }
+    
+    
+    public function deleteposition($id)
+    {
+        $position = positionmodel::findOrFail($id);
+        $position->delete(); 
+    
+        return redirect()->back()->with('success', 'Position deleted successfully!');
+    }
+    
+    public function editposition($id){
+    
+        $position = positionmodel::find($id);
+        return view('admin.setup.position', compact('position'));
+        }
+        
+        public function updateposition(Request $request, $id) {
+            $request->validate([
+                'position' => 'required|min:1|max:255|alpha',
+            ]);
+        
+             $post = positionmodel::find($id);
+             $post->fill($request->all());
+             $post->save();
+            return redirect()->route('admin.setup.position');
+        }
+    
+        public function searchPosition(Request $request)
+        {
+            $positions = positionmodel::all();
+        
+            $query = positionmodel::query();
+        
+            if ($request->has('search') && $request->search) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('position', 'like', '%' . $request->search . '%')
+                      ->orWhere('created_at', 'like', '%' . $request->search . '%')
+                      ->orWhere('updated_at', 'like', '%' . $request->search . '%');
+                });
+            }
+        
+            $positionmodel = $query->get();
+        
+            return view('admin.setup.position', compact('positionmodel', 'positions'));
+        }
+    
 
 
     
@@ -644,9 +863,6 @@ public function storemember(Request $request)
         'fullname' => 'required|string',
         'position' => 'required|string',
         'profile_imgpath' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
-       
-
-    
     ]);
 
     if ($request->hasFile('profile_imgpath')) {

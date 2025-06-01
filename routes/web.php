@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\admincontroller;
 use App\Http\Controllers\usercontroller;
 use App\Http\Controllers\ProfileController;
@@ -50,12 +52,17 @@ Route::get('/admin/add_new_books', [admincontroller::class, 'add_new_books'])->n
 Route::post('/admin/add_new_books', [admincontroller::class, 'storebooks'])->name('admin.storebooks');
 //Route::get('/admin/add_new_books', [admincontroller::class, 'departmentBooks'])->name('admin.add_new_books');
 
+Route::get('/get-departments/{out_cat}', [admincontroller::class, 'getDepartments']);
+
 //GRADUATE----------------------------------------------------------------------------------------------------------------------------------------
-Route::get('/admin/graduate-table', [admincontroller::class, 'graduate_table'])->name('admin.graduate');
+// ONLY use this route
+Route::get('/admin/graduate', [AdminController::class, 'graduateBooks'])->name('admin.graduate');
 Route::get('/delete-book/{id}', [admincontroller::class, 'deletebook'])->name('deletebook');
 Route::get('/edit-book/{id}', [admincontroller::class, 'editbook'])->name('editbook');
 Route::put('/update-book/{id}', [admincontroller::class, 'updatebook'])->name('updatebook');
 Route::get('/admin/graduate', [AdminController::class, 'graduateBooks'])->name('admin.graduate');
+
+Route::get('/get-departments/{out_cat}', [admincontroller::class, 'gettingDepartments']);
 
 //GRADUATE----------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/employee-table', [admincontroller::class, 'employee_table'])->name('admin.employeebook');
@@ -83,13 +90,21 @@ Route::get('/delete-dept/{id}', [admincontroller::class, 'deletedept'])->name('d
 Route::get('/edit-dept/{id}', [admincontroller::class, 'editdept'])->name('editdept');
 Route::put('/update-dept/{id}', [admincontroller::class, 'updatedept'])->name('updatedept');
 
-//COURSE-------------------------------------------------------------------------------------------------------------------------------------------
-Route::get('/admin/setup/course', [admincontroller::class, 'course'])->name('admin.setup.course');
-Route::post('/admin/setup/course', [admincontroller::class, 'storecourse'])->name('admin.setup.storecourse');
-Route::get('/admin/setup/course', [admincontroller::class, 'searchCourse'])->name('admin.setup.course');
-Route::get('/delete-course/{id}', [admincontroller::class, 'deletecourse'])->name('deletecourse');
-Route::get('/edit-course/{id}', [admincontroller::class, 'editcourse'])->name('editcourse');
-Route::put('/update-course/{id}', [admincontroller::class, 'updatecourse'])->name('updatecourse');
+//PROGRAM-------------------------------------------------------------------------------------------------------------------------------------------
+Route::get('/admin/setup/program', [admincontroller::class, 'program'])->name('admin.setup.program');
+Route::post('/admin/setup/program', [admincontroller::class, 'storeprogram'])->name('admin.setup.storeprogram');
+Route::get('/admin/setup/program', [admincontroller::class, 'searchprogram'])->name('admin.setup.program');
+Route::get('/delete-program/{id}', [admincontroller::class, 'deleteprogram'])->name('deleteprogram');
+Route::get('/edit-program/{id}', [admincontroller::class, 'editprogram'])->name('editprogram');
+Route::put('/update-program/{id}', [admincontroller::class, 'updateprogram'])->name('updateprogram');
+
+//PROGRAMPLUS-------------------------------------------------------------------------------------------------------------------------------------------
+Route::get('/admin/setup/programplus', [admincontroller::class, 'programplus'])->name('admin.setup.programplus');
+Route::post('/admin/setup/programplus', [admincontroller::class, 'storeprogramplus'])->name('admin.setup.storeprogramplus');
+Route::get('/admin/setup/programplus', [admincontroller::class, 'searchprogramplus'])->name('admin.setup.programplus');
+Route::get('/delete-programplus/{id}', [admincontroller::class, 'deleteprogramplus'])->name('deleteprogramplus');
+Route::get('/edit-programplus/{id}', [admincontroller::class, 'editprogramplus'])->name('editprogramplus');
+Route::put('/update-programplus/{id}', [admincontroller::class, 'updateprogramplus'])->name('updateprogramplus');
 
 //CAROUSEL-------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/setup/carousel', [admincontroller::class, 'carousel'])->name('admin.setup.carousel');
@@ -99,6 +114,22 @@ Route::get('/delete-carousel/{id}', [admincontroller::class, 'deletecarousel'])-
 Route::get('/edit-carousel/{id}', [admincontroller::class, 'editcarousel'])->name('editcarousel');
 Route::put('/update-carousel/{id}', [admincontroller::class, 'updatecarousel'])->name('updatecarousel');
 
+//RESEARCH OUTPUT CATEGORY-------------------------------------------------------------------------------------------------------------------------------------------
+Route::get('/admin/setup/output_category', [admincontroller::class, 'resoutcat'])->name('admin.setup.resoutcat');
+Route::post('/admin/setup/output_category', [admincontroller::class, 'storeout_cat'])->name('admin.setup.storeout_cat');
+Route::get('/admin/setup/output_category', [admincontroller::class, 'searchout_cat'])->name('admin.setup.resoutcat');
+Route::get('/delete-output_category/{id}', [admincontroller::class, 'deleteout_cat'])->name('deleteout_cat');
+Route::get('/edit-output_category/{id}', [admincontroller::class, 'editout_cat'])->name('editout_cat');
+Route::put('/update-output_category/{id}', [admincontroller::class, 'updateout_cat'])->name('updateout_cat');
+
+//UNDER RESEARCH OUTPUT CATEGORY-------------------------------------------------------------------------------------------------------------------------------------------
+Route::get('/admin/setup/under_output_category', [admincontroller::class, 'underresoutcat'])->name('admin.setup.under_out_cat');
+Route::post('/admin/setup/under_output_category', [admincontroller::class, 'storeunder_out_cat'])->name('admin.setup.storeunder_out_cat');
+Route::get('/admin/setup/under_output_category', [admincontroller::class, 'searchunder_out_cat'])->name('admin.setup.under_out_cat');
+Route::get('/delete-under_output_category/{id}', [admincontroller::class, 'deleteunder_out_cat'])->name('deleteunder_out_cat');
+Route::get('/edit-under_output_category/{id}', [admincontroller::class, 'editunder_out_cat'])->name('editunder_out_cat');
+Route::put('/update-under_output_category/{id}', [admincontroller::class, 'updateunder_out_cat'])->name('updateunder_out_cat');
+
 //POSITION-------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/setup/position', [admincontroller::class, 'position'])->name('admin.setup.position');
 Route::post('/admin/setup/position', [admincontroller::class, 'storeposition'])->name('admin.setup.storeposition');
@@ -106,7 +137,6 @@ Route::get('/admin/setup/position', [admincontroller::class, 'searchPosition'])-
 Route::get('/delete-position/{id}', [admincontroller::class, 'deleteposition'])->name('deleteposition');
 Route::get('/edit-position/{id}', [admincontroller::class, 'editposition'])->name('editposition');
 Route::put('/update-position/{id}', [admincontroller::class, 'updateposition'])->name('updateposition');
-
 
 //EMPLOYEE----------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/add_new_employee', [admincontroller::class, 'employee'])->name('admin.member');
@@ -116,7 +146,11 @@ Route::get('/edit-member/{id}', [admincontroller::class, 'editmember'])->name('e
 Route::put('/update-member/{id}', [admincontroller::class, 'updatemember'])->name('updatemember');
 Route::get('/admin/member', [AdminController::class, 'searchMember'])->name('admin.member');
 
-
+//ACCOUNT---------------------------------------------------------------------------------------------------------------------------------------------------
+    //USER
+Route::get('/admin/account/useraccount', [AccountController::class, 'useracc'])->name('admin.account.useraccount');
+Route::get('/admin/account/useraccount', [AccountController::class, 'searchAccount'])->name('admin.account.useraccount');
+Route::put('/update-user-account/{id}', [admincontroller::class, 'updateuseracc'])->name('updateuseracc');
 });
 
 //=================================================================================================================================================
@@ -130,7 +164,6 @@ Route::post('/pages/userlogin', [UserController::class, 'userlogin'])->name('pag
 Route::get('/pages/registeruser', [UserController::class, 'registeruser'])->name('pages.registeruser');
 Route::post('/pages/registeruser', [UserController::class, 'storeuser'])->name('pages.storeuser');
 
-
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //PUBLIC
 //--------------------------------------------------------------------------------------------------------------------------------------
@@ -138,7 +171,6 @@ Route::post('/pages/registeruser', [UserController::class, 'storeuser'])->name('
 Route::get('/pages/usersheader', [UserController::class, 'usersheader'])->name('pages.usersheader');
 
 // DASHBOARD
-
 Route::get('/pages/userdashboard', [UserController::class, 'userdashboard'])->name('pages.userdashboard');
 
 // LOGOUT USER

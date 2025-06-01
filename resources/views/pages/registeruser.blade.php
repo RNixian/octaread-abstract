@@ -13,6 +13,7 @@
     <!-- Header -->
     @include('pages.usersheader')
 
+
     <!-- Registration Section -->
     <div class="container my-5 flex-grow-1">
         <div class="row justify-content-center">
@@ -32,6 +33,33 @@
                             </div>
                         @endif
 
+<!-- Trigger Modal Button -->
+<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#roleModal">
+    Choose Registration Type
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="roleModal" tabindex="-1" aria-labelledby="roleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="roleModalLabel">Select Role</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <select id="userType" class="form-select">
+            <option value="">-- Select User Type --</option>
+            <option value="employee">Employee</option>
+            <option value="student">Student</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+
                         <form action="{{ route('pages.storeuser') }}" method="POST">
                             @csrf
 
@@ -45,14 +73,41 @@
                             </div>
 
                             <div class="row">
-                                @foreach (['schoolid' => 'School Id','course' => 'Course'] as $field => $label)
+                                @foreach (['schoolid' => 'School Id'] as $field => $label)
                                     <div class="col-md-6 mb-3">
                                         <label for="{{ $field }}" class="form-label">{{ $label }}</label>
                                         <input type="text" id="{{ $field }}" name="{{ $field }}" class="form-control" required>
                                     </div>
                                 @endforeach
+                           
+
+                      <!-- Wrap the dynamic part in divs with IDs -->
+                            <div id="employeeFields" class="mb-3 d-none">
+                                <label for="department" class="form-label">Department</label>
+                                <select name="department" class="form-select">
+                                    @foreach ($departments as $dept)
+                                        <option value="{{ $dept->department }}">{{ $dept->department }}</option>
+                                    @endforeach
+                                </select>
+
+                                <label for="programplus" class="form-label mt-3">Program Plus</label>
+                                <select name="programplus" class="form-select">
+                                    @foreach ($programpluses as $prog)
+                                        <option value="{{ $prog->programplus }}">{{ $prog->programplus }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
+                            <div id="studentFields" class="mb-3 d-none">
+                                <label for="program" class="form-label">Program</label>
+                                <select name="program" class="form-select">
+                                    @foreach ($programs as $prog)
+                                        <option value="{{ $prog->program }}">{{ $prog->program }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            </div>
                             <div class="mb-3">
                                 <label for="birthdate" class="form-label">Birthdate</label>
                                 <input type="date" id="birthdate" name="birthdate" class="form-control" required>
@@ -78,5 +133,24 @@
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userType = document.getElementById('userType');
+            const employeeFields = document.getElementById('employeeFields');
+            const studentFields = document.getElementById('studentFields');
+        
+            userType.addEventListener('change', function () {
+                employeeFields.classList.add('d-none');
+                studentFields.classList.add('d-none');
+        
+                if (this.value === 'employee') {
+                    employeeFields.classList.remove('d-none');
+                } else if (this.value === 'student') {
+                    studentFields.classList.remove('d-none');
+                }
+            });
+        });
+        </script>
 </body>
 </html>

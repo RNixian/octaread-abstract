@@ -98,7 +98,7 @@
   </div>
 
   <div class="max-w-7xl mx-auto mt-10 px-4">
-    <h3 class="mb-8 text-center text-3xl font-extrabold text-gray-900">Library Team</h3>
+    <h3 class="mb-8 text-center text-3xl font-extrabold text-gray-900">Research & Marketing Team</h3>
   
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
       @foreach($members as $member)

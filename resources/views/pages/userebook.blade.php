@@ -70,18 +70,27 @@
   @include('pages.usersheader')
 
   <div class="container py-5">
-    <h1 class="mb-4">eBooks</h1>
+    <h1 class="mb-4">Research Abstract</h1>
 
-    <!-- Search & Filter Form -->
-    <form action="{{ route('pages.ebook') }}" method="GET" class="d-flex gap-1 flex-wrap align-items-center">
-      <input 
-        type="text" 
-        name="search" 
-        class="form-control flex-grow-1" 
-        placeholder="Search book..." 
-        value="{{ request('search') }}"
-        style="min-width: 100px;"
-      >
+
+
+   <!-- Category Buttons -->
+   <form action="{{ route('pages.ebook') }}" method="GET" class="mt-3 d-flex flex-wrap gap-2">
+    @php
+      $categories = ['graduate', 'under-graduate', 'employee'];
+    @endphp
+
+    @foreach ($categories as $category)
+      <button 
+        type="submit" 
+        name="category" 
+        value="{{ $category }}" 
+        class="btn {{ request('category') == $category ? 'btn-dark' : 'btn-outline-dark' }}">
+        {{ ucfirst($category) }}
+      </button>
+    @endforeach
+  </form>
+
 
       <select name="department" class="form-select" style="min-width: 100px;">
         <option value="">All Departments</option>
@@ -98,26 +107,23 @@
         <input type="hidden" name="category" value="{{ request('category') }}">
       @endif
 
+    <!-- Search & Filter Form -->
+    <form action="{{ route('pages.ebook') }}" method="GET" class="d-flex gap-1 flex-wrap align-items-center">
+      <input 
+        type="text" 
+        name="search" 
+        class="form-control flex-grow-1" 
+        placeholder="Search book..." 
+        value="{{ request('search') }}"
+        style="min-width: 100px;"
+      >
+
+
       <button type="submit" class="btn btn-custom-red">Search</button>
       <a href="{{ url('/pages/ebook') }}" class="btn btn-custom-green">Reset</a>
     </form>
 
-    <!-- Category Buttons -->
-    <form action="{{ route('pages.ebook') }}" method="GET" class="mt-3 d-flex flex-wrap gap-2">
-      @php
-        $categories = ['graduate', 'under-graduate', 'employee'];
-      @endphp
-
-      @foreach ($categories as $category)
-        <button 
-          type="submit" 
-          name="category" 
-          value="{{ $category }}" 
-          class="btn {{ request('category') == $category ? 'btn-dark' : 'btn-outline-dark' }}">
-          {{ ucfirst($category) }}
-        </button>
-      @endforeach
-    </form>
+ 
 
 
 

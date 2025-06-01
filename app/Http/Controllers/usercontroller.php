@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\booksmodel; 
 use App\Models\carouselmodel; 
 use App\Models\contactmodel; 
-use App\Models\coursemodel; 
+use App\Models\programmodel; 
+use App\Models\programplusmodel; 
 use App\Models\departmentmodel; 
 use App\Models\membersModel; 
 use App\Models\usermodel; 
@@ -22,9 +23,12 @@ class usercontroller extends Controller
 
     public function registeruser()
     {
-        return view('pages.registeruser');
+        $departments = DepartmentModel::all();
+        $programpluses = ProgramPlusModel::all();
+        $programs = ProgramModel::all();
+    
+        return view('pages.registeruser', compact('departments', 'programpluses', 'programs'));
     }
-
     public function storeuser(Request $request)
     {
         $data = $request->validate([
@@ -48,7 +52,8 @@ class usercontroller extends Controller
     
         return redirect()->route('pages.userlogin')->with('success', 'Registration successful.');
     }
-    
+
+
     // USER LOGIN------------------------------------------------------------------------------------------------------------------------------------------------
     public function userloginview()
     {
