@@ -35,23 +35,24 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/admindashboard', [admincontroller::class, 'dashboard'])->name('admin.admindashboard');
 });
 
+
+Route::middleware(['admin.auth'])->group(function () {
+
 //ADMIN REGISTER-----------------------------------------------------------------------------------------------------------------------------------
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/register', [admincontroller::class, 'adminregister'])->name('adminregister');
     Route::post('/store', [admincontroller::class, 'storenewadmin'])->name('storenewadmin');
 });
 
-
-Route::middleware(['admin.auth'])->group(function () {
 //DASHBOARD----------------------------------------------------------------------------------------------------------------------------------------
-
 Route::get('/admin/admindashboard', [AdminController::class, 'admingraphs'])->name('admin.admindashboard');
+Route::get('/get-deptgraph/{id}', [AdminController::class, 'getDeptgraph']);
+Route::get('/get-filtered-books', [AdminController::class, 'getFilteredBooks']);
+
 
 //BOOKS-----------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/add_new_books', [admincontroller::class, 'add_new_books'])->name('admin.add_new_books');
 Route::post('/admin/add_new_books', [admincontroller::class, 'storebooks'])->name('admin.storebooks');
-//Route::get('/admin/add_new_books', [admincontroller::class, 'departmentBooks'])->name('admin.add_new_books');
-
 Route::get('/get-departments/{out_cat}', [admincontroller::class, 'getDepartments']);
 
 //GRADUATE----------------------------------------------------------------------------------------------------------------------------------------
@@ -61,50 +62,51 @@ Route::get('/delete-book/{id}', [admincontroller::class, 'deletebook'])->name('d
 Route::get('/edit-book/{id}', [admincontroller::class, 'editbook'])->name('editbook');
 Route::put('/update-book/{id}', [admincontroller::class, 'updatebook'])->name('updatebook');
 Route::get('/admin/graduate', [AdminController::class, 'graduateBooks'])->name('admin.graduate');
-
-Route::get('/get-departments/{out_cat}', [admincontroller::class, 'gettingDepartments']);
-
-//GRADUATE----------------------------------------------------------------------------------------------------------------------------------------
-Route::get('/admin/employee-table', [admincontroller::class, 'employee_table'])->name('admin.employeebook');
-Route::get('/delete-book/{id}', [admincontroller::class, 'deletebook'])->name('deletebook');
-Route::get('/edit-book/{id}', [admincontroller::class, 'editbook'])->name('editbook');
-Route::put('/update-book/{id}', [admincontroller::class, 'updatebook'])->name('updatebook');
-Route::get('/admin/employee', [AdminController::class, 'employeeBooks'])->name('admin.employeebook');
-
-
-//UNDERGRADUATE-----------------------------------------------------------------------------------------------------------------------------------
-Route::get('/admin/undergraduate-table', [admincontroller::class, 'undergraduate_table'])->name('admin.undergraduate');
-Route::get('/delete-book/{id}', [admincontroller::class, 'deletebook'])->name('deletebook');
-Route::get('/edit-book/{id}', [admincontroller::class, 'editbook'])->name('editbook');
-Route::put('/update-book/{id}', [admincontroller::class, 'updatebook'])->name('updatebook');
-Route::get('/admin/undergraduate', [AdminController::class, 'undergraduateBooks'])->name('admin.undergraduate');
+Route::get('/getting-departments/{out_cat}', [AdminController::class, 'gettingDepartments']);
 
 //SIDEBAR-------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/sidebar', [admincontroller::class, 'adminsidebar'])->name('admin.sidebar');
 
+
+//EMPLOYEE BOOK----------------------------------------------------------------------------------------------------------------------------------------
+//Route::get('/admin/employee-table', [admincontroller::class, 'employee_table'])->name('admin.employeebook');
+//Route::get('/delete-book/{id}', [admincontroller::class, 'deletebook'])->name('deletebook');
+//Route::get('/edit-book/{id}', [admincontroller::class, 'editbook'])->name('editbook');
+//Route::put('/update-book/{id}', [admincontroller::class, 'updatebook'])->name('updatebook');
+//Route::get('/admin/employee', [AdminController::class, 'employeeBooks'])->name('admin.employeebook');
+
+
+//UNDERGRADUATE-----------------------------------------------------------------------------------------------------------------------------------
+//Route::get('/admin/undergraduate-table', [admincontroller::class, 'undergraduate_table'])->name('admin.undergraduate');
+//Route::get('/delete-book/{id}', [admincontroller::class, 'deletebook'])->name('deletebook');
+//Route::get('/edit-book/{id}', [admincontroller::class, 'editbook'])->name('editbook');
+//Route::put('/update-book/{id}', [admincontroller::class, 'updatebook'])->name('updatebook');
+//Route::get('/admin/undergraduate', [AdminController::class, 'undergraduateBooks'])->name('admin.undergraduate');
+
+
 //DEPARTMENT-------------------------------------------------------------------------------------------------------------------------------------------
-Route::get('/admin/setup/department', [admincontroller::class, 'department'])->name('admin.setup.department');
-Route::post('/admin/setup/department', [admincontroller::class, 'storedepartment'])->name('admin.setup.storedepartment');
-Route::get('/admin/setup/department', [admincontroller::class, 'searchDept'])->name('admin.setup.department');
-Route::get('/delete-dept/{id}', [admincontroller::class, 'deletedept'])->name('deletedept');
-Route::get('/edit-dept/{id}', [admincontroller::class, 'editdept'])->name('editdept');
-Route::put('/update-dept/{id}', [admincontroller::class, 'updatedept'])->name('updatedept');
+//Route::get('/admin/setup/department', [admincontroller::class, 'department'])->name('admin.setup.department');
+//Route::post('/admin/setup/department', [admincontroller::class, 'storedepartment'])->name('admin.setup.storedepartment');
+//Route::get('/admin/setup/department', [admincontroller::class, 'searchDept'])->name('admin.setup.department');
+//Route::get('/delete-dept/{id}', [admincontroller::class, 'deletedept'])->name('deletedept');
+//Route::get('/edit-dept/{id}', [admincontroller::class, 'editdept'])->name('editdept');
+//Route::put('/update-dept/{id}', [admincontroller::class, 'updatedept'])->name('updatedept');
 
-//PROGRAM-------------------------------------------------------------------------------------------------------------------------------------------
-Route::get('/admin/setup/program', [admincontroller::class, 'program'])->name('admin.setup.program');
-Route::post('/admin/setup/program', [admincontroller::class, 'storeprogram'])->name('admin.setup.storeprogram');
-Route::get('/admin/setup/program', [admincontroller::class, 'searchprogram'])->name('admin.setup.program');
-Route::get('/delete-program/{id}', [admincontroller::class, 'deleteprogram'])->name('deleteprogram');
-Route::get('/edit-program/{id}', [admincontroller::class, 'editprogram'])->name('editprogram');
-Route::put('/update-program/{id}', [admincontroller::class, 'updateprogram'])->name('updateprogram');
-
-//PROGRAMPLUS-------------------------------------------------------------------------------------------------------------------------------------------
-Route::get('/admin/setup/programplus', [admincontroller::class, 'programplus'])->name('admin.setup.programplus');
-Route::post('/admin/setup/programplus', [admincontroller::class, 'storeprogramplus'])->name('admin.setup.storeprogramplus');
-Route::get('/admin/setup/programplus', [admincontroller::class, 'searchprogramplus'])->name('admin.setup.programplus');
-Route::get('/delete-programplus/{id}', [admincontroller::class, 'deleteprogramplus'])->name('deleteprogramplus');
-Route::get('/edit-programplus/{id}', [admincontroller::class, 'editprogramplus'])->name('editprogramplus');
-Route::put('/update-programplus/{id}', [admincontroller::class, 'updateprogramplus'])->name('updateprogramplus');
+//USER TYPES-------------------------------------------------------------------------------------------------------------------------------------------
+Route::get('/admin/setup/usertype', [admincontroller::class, 'usertype'])->name('admin.setup.usertype');
+Route::post('/admin/setup/usertype', [admincontroller::class, 'storeusertype'])->name('admin.setup.storeusertype');
+Route::get('/admin/setup/usertype', [admincontroller::class, 'searchusertype'])->name('admin.setup.usertype');
+Route::get('/delete-usertype/{id}', [admincontroller::class, 'deleteusertype'])->name('deleteusertype');
+Route::get('/edit-usertype/{id}', [admincontroller::class, 'editusertype'])->name('editusertype');
+Route::put('/update-usertype/{id}', [admincontroller::class, 'updateusertype'])->name('updateusertype');
+  
+//USER DEPARTMENT-------------------------------------------------------------------------------------------------------------------------------------------
+Route::get('/admin/setup/userdepartment', [admincontroller::class, 'userdept'])->name('admin.setup.userdepartment');
+Route::post('/admin/setup/userdepartment', [admincontroller::class, 'storeuserdept'])->name('admin.setup.storeuserdept');
+Route::get('/admin/setup/userdepartment', [admincontroller::class, 'searchuserdept'])->name('admin.setup.userdepartment');
+Route::get('/delete-userdepartment/{id}', [admincontroller::class, 'deleteuserdept'])->name('deleteuserdept');
+Route::get('/edit-userdepartment/{id}', [admincontroller::class, 'edituserdept'])->name('edituserdept');
+Route::put('/update-userdepartment/{id}', [admincontroller::class, 'updateuserdept'])->name('updateuserdept');
 
 //CAROUSEL-------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/setup/carousel', [admincontroller::class, 'carousel'])->name('admin.setup.carousel');
@@ -130,6 +132,8 @@ Route::get('/delete-under_output_category/{id}', [admincontroller::class, 'delet
 Route::get('/edit-under_output_category/{id}', [admincontroller::class, 'editunder_out_cat'])->name('editunder_out_cat');
 Route::put('/update-under_output_category/{id}', [admincontroller::class, 'updateunder_out_cat'])->name('updateunder_out_cat');
 
+
+
 //POSITION-------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/setup/position', [admincontroller::class, 'position'])->name('admin.setup.position');
 Route::post('/admin/setup/position', [admincontroller::class, 'storeposition'])->name('admin.setup.storeposition');
@@ -149,8 +153,22 @@ Route::get('/admin/member', [AdminController::class, 'searchMember'])->name('adm
 //ACCOUNT---------------------------------------------------------------------------------------------------------------------------------------------------
     //USER
 Route::get('/admin/account/useraccount', [AccountController::class, 'useracc'])->name('admin.account.useraccount');
-Route::get('/admin/account/useraccount', [AccountController::class, 'searchAccount'])->name('admin.account.useraccount');
-Route::put('/update-user-account/{id}', [admincontroller::class, 'updateuseracc'])->name('updateuseracc');
+Route::get('/delete-useraccount/{id}', [AccountController::class, 'deleteuseracc'])->name('deleteuseracc');
+Route::get('/edit-useraccount/{id}', [AccountController::class, 'edituseracc'])->name('edituseracc');
+Route::put('/update-useraccount/{id}', [AccountController::class, 'updateuseracc'])->name('updateuseracc');
+Route::get('/get-userdepts/{user_type}', [AccountController::class, 'getUserDept']);
+
+    //ADMIN
+Route::get('/admin/account/adminaccount', [AccountController::class, 'adminacc'])->name('admin.account.adminaccount');
+Route::get('/admin/account/adminaccount', [AccountController::class, 'searchAdminAccount'])->name('admin.account.adminaccount');
+Route::get('/delete-adminaccount/{id}', [AccountController::class, 'deleteadminacc'])->name('deleteadminacc');
+Route::get('/edit-adminaccount/{id}', [AccountController::class, 'editadminacc'])->name('editadminacc');
+Route::put('/update-adminaccount/{id}', [AccountController::class, 'updateadminacc'])->name('updateadminacc');
+    
+    //GUEST   
+Route::get('/admin/account/guestlog', [AccountController::class, 'guestlog'])->name('admin.account.guestlog');
+Route::get('/delete-guestlog/{id}', [AccountController::class, 'deleteguestlog'])->name('deleteguestlog');
+
 });
 
 //=================================================================================================================================================
@@ -159,10 +177,13 @@ Route::put('/update-user-account/{id}', [admincontroller::class, 'updateuseracc'
 // LOGIN
 Route::get('/pages/userlogin', [UserController::class, 'userloginview'])->name('pages.userlogin');
 Route::post('/pages/userlogin', [UserController::class, 'userlogin'])->name('pages.userlogin');
+Route::get('/pages/guest-login', [UserController::class, 'showGuestLogin'])->name('pages.guestlogin');
+Route::post('/pages/guest-login', [UserController::class, 'processGuestLogin'])->name('guest.login.submit');
 
 // USER REGISTRATION
 Route::get('/pages/registeruser', [UserController::class, 'registeruser'])->name('pages.registeruser');
 Route::post('/pages/registeruser', [UserController::class, 'storeuser'])->name('pages.storeuser');
+Route::get('/get-depts/{user_type}', [UserController::class, 'getDept']);
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //PUBLIC

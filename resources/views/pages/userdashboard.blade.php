@@ -7,6 +7,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  
+
+
 </head>
 
 <style>
@@ -60,10 +64,15 @@
   color: #fff;
 }
 
-
     .favorite-btn:hover {
       transform: scale(1.2);
     }
+
+.carousel-item img {
+            width: auto;
+            height: 100%;
+        }
+
 </style>
 
 
@@ -73,56 +82,88 @@
     @include('pages.usersheader')
 
 
-    <div class="container p-0" style="max-width: 100%; height: 70vh;">
-      <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="height: 100%;">
-          <div class="carousel-inner" style="height: 100%;">
-              @foreach($carouselItems as $item)
-                  <div class="carousel-item {{ $loop->first ? 'active' : '' }}" style="height: 100%;">
-                      <img src="{{ asset('storage/' . $item->carousel_imgpath) }}" 
-                           class="d-block w-100" 
-                           style="height: 100%; object-fit: cover;" 
-                           alt="Slide">
-                  </div>
-              @endforeach
-          </div>
-  
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-          </button>
+   
+<div class="container-fluid p-0" style="height: 70vh;">
+  <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="height: 100%;">
+      <div class="carousel-inner" style="height: 100%;">
+          @foreach($carouselItems as $item)
+              <div class="carousel-item {{ $loop->first ? 'active' : '' }}" style="height: 100%;">
+                  <img src="{{ asset('storage/' . $item->carousel_imgpath) }}"
+                       class="d-block w-100"
+                       alt="Slide">
+              </div>
+          @endforeach
       </div>
-  </div>
 
-  <div class="max-w-7xl mx-auto mt-10 px-4">
-    <h3 class="mb-8 text-center text-3xl font-extrabold text-gray-900">Research & Marketing Team</h3>
+      <!-- Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+      </button>
+
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+      </button>
+  </div>
+</div>
+
+  <div x-data="{ open: false, selected: {} }" class="max-w-7xl mx-auto mt-16 px-6">
+
+    <h3 class="mb-12 text-center text-4xl font-extrabold text-gray-900">Research & Marketing Team</h3>
   
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-      @foreach($members as $member)
-        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 flex flex-col h-full">
-          <img 
-            src="{{ asset('storage/' . $member->profile_imgpath) }}" 
-            alt="Profile Image of {{ $member->fullname }}" 
-            class="rounded-t-xl object-cover h-64 w-full"
-          >
-          <div class="p-6 flex flex-col flex-grow items-center justify-center text-center">
-            <h5 class="text-xl font-semibold text-gray-900 mb-1 break-words whitespace-normal">
-              {{ $member->fullname }}
-            </h5>
-            <p class="text-gray-600 text-sm break-words whitespace-normal">
-              {{ $member->position }}
-            </p>
-          </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+      @foreach($members as $position => $group)
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-300 p-8">
+          <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center uppercase tracking-wide">{{ $position }}</h4>
+          <ul class="space-y-4">
+            @foreach($group as $member)
+              <li>
+                <button 
+                  class="text-blue-700 hover:underline font-semibold text-lg text-left w-full"
+                  @click="selected = {
+                    name: '{{ $member->fullname }}',
+                    position: '{{ $member->position }}',
+                    image: '{{ asset('storage/' . $member->profile_imgpath) }}'
+                  }; open = true"
+                >
+                  {{ $member->fullname }}
+                </button>
+              </li>
+            @endforeach
+          </ul>
         </div>
       @endforeach
     </div>
+  
+    <!-- Modal -->
+    <div 
+      x-show="open" 
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      x-transition
+    >
+      <div 
+        x-show="open"
+        @click.away="open = false"
+        class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center"
+        x-transition
+      >
+        <img :src="selected.image" alt="" class="h-48 w-48 object-cover rounded-full mx-auto mb-6 border-4 border-gray-300">
+        <h3 class="text-2xl font-bold text-gray-900 mb-2" x-text="selected.name"></h3>
+        <p class="text-gray-700 text-lg mb-6" x-text="selected.position"></p>
+        <button 
+          @click="open = false" 
+          class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base font-semibold"
+        >
+          Close
+        </button>
+      </div>
+    </div>
   </div>
   
+  
 
- 
+
 <section class="py-16 px-4 text-center container mx-auto mt-10">
   <h2 class="text-4xl font-extrabold mb-6 text-gray-900">PROGRAMS AND SERVICES</h2>
   <h1 class="text-2xl font-medium mb-12 text-gray-600 max-w-3xl mx-auto">
@@ -247,7 +288,6 @@
           </p>
           <p class="text-sm text-gray-500 mb-4 break-words whitespace-normal"><small>{{ $book->department }} | {{ $book->category }}</small></p>
 
-          {{-- Example of a long description field you might have --}}
           @if(isset($book->description))
           <p class="text-gray-700 text-sm mb-4 break-words whitespace-normal max-h-24 overflow-auto">
             {{ $book->description }}
@@ -263,10 +303,9 @@
               Read
             </a>
 
-            <form action="{{ route('favorites.store') }}" method="POST" class="ml-2">
-              @php
-                $isFavorited = auth()->user() && auth()->user()->favorites->contains($book->id);
-              @endphp
+                    {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
+          @if(session()->has('userid') && session('is_guest') === false)
+          <form action="{{ route('favorites.store') }}" method="POST" class="ml-2">
               @csrf
               <input type="hidden" name="ebook_id" value="{{ $book->id }}">
               <button 
@@ -274,9 +313,10 @@
                 class="text-red-600 hover:text-red-700 focus:outline-none"
                 title="Add to Favorites"
               >
-                <i class="bi bi-heart-fill {{ $isFavorited ? 'text-red-700' : 'text-gray-300' }}"></i>
+                <i class="bi bi-heart-fill text-gray-300"></i>
               </button>
-            </form>
+          </form>
+          @endif
           </div>
         </div>
       </div>
@@ -290,13 +330,11 @@
   </div>
 </div>
 
-
-
    @include('pages.userfooter')
 
-  
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+   
+   
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

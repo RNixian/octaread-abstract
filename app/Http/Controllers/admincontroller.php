@@ -7,8 +7,8 @@ use App\Models\adminmodel;
 use App\Models\booksmodel; 
 use App\Models\carouselmodel; 
 use App\Models\contactmodel; 
-use App\Models\programmodel; 
-use App\Models\programplusmodel;
+use App\Models\usertypemodel; 
+use App\Models\userdeptmodel;
 use App\Models\departmentmodel; 
 use App\Models\rocmodel; 
 use App\Models\underrocmodel; 
@@ -104,10 +104,7 @@ class admincontroller extends Controller
         return redirect()->route('admin.adminlogin')->with('success', 'Registration successful.');
     }
     
-    //DASHBOARD-----------------------------------------------------------------------------------------------------------------
-    public function dashboard() {
-        return view('admin.admindashboard');
-    }
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 //BOOKS
@@ -118,27 +115,47 @@ public function add_new_books()
     return view('admin.add_new_books', compact('departments', 'res_out_cats'));
 }
 
-    public function storebooks(Request $request)
-    {
-        $validatedData = $request->validate([
-            'title' => 'required|string',
-            'author' => 'required|string',
-            'year' => 'required|integer',
-            'category' => 'required|string',
-            'department' => 'required|string',
-            'pdf_filepath' => 'required|file|mimes:pdf',
+public function storebooks(Request $request)
+{
+    $validatedData = $request->validate([
+        'title' => 'required|string',
+        'author' => 'required|string',
+        'year' => 'required|integer',
+        'category' => 'required|string',
+        'department' => 'required|string',
+        'pdf_filepath' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,odt,ods,odp,txt,rtf,jpg,jpeg,png,bmp,tiff,tif,gif,svg,html,htm,md,epub,xml,json',
+    ]);
 
-        ]);
-    
-        if ($request->hasFile('pdf_filepath')) {
-            $validatedData['pdf_filepath'] = $request->file('pdf_filepath')->store('octabooks', 'public');
-        }
-    
-  
-        $ebook = booksmodel::create($validatedData);
-        return redirect()->route('admin.graduate')->with('success', 'Book successfully added.');
+    $file = $request->file('pdf_filepath');
+    $originalExtension = $file->getClientOriginalExtension();
+    $filePath = $file->getPathname();
+    $convertedPdfPath = storage_path('app/public/octabooks/' . uniqid() . '.pdf');
+
+    // Convert the file to PDF using LibreOffice (headless)
+    if (in_array($originalExtension, ['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'odt', 'ods', 'odp', 'txt', 'rtf', 'html', 'htm', 'md'])) {
+        // LibreOffice must be installed on your system
+        $outputDir = storage_path('app/public/octabooks');
+        exec("libreoffice --headless --convert-to pdf --outdir " . escapeshellarg($outputDir) . " " . escapeshellarg($filePath));
+        $convertedFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.pdf';
+        $validatedData['pdf_filepath'] = 'octabooks/' . $convertedFilename;
+
+    } elseif (in_array($originalExtension, ['jpg', 'jpeg', 'png', 'bmp', 'tiff', 'tif', 'gif', 'svg'])) {
+        // Image to PDF using Imagick (ensure Imagick is installed & enabled)
+        $imagick = new \Imagick($filePath);
+        $imagick->setImageFormat('pdf');
+        $imagick->writeImages($convertedPdfPath, true);
+        $validatedData['pdf_filepath'] = 'octabooks/' . basename($convertedPdfPath);
+
+    } else {
+        // Already a PDF or unsupported type — just store it
+        $validatedData['pdf_filepath'] = $file->store('octabooks', 'public');
     }
-    
+
+    booksmodel::create($validatedData);
+
+    return redirect()->route('admin.graduate')->with('success', 'Book successfully added and converted to PDF.');
+}
+
     public function departmentBooks(Request $request)
     {
         $departments = departmentmodel::all();
@@ -218,15 +235,63 @@ public function add_new_books()
     }
     
 
-    public function gettingDepartments($category)
+    public function gettingDepartments($out_cat)
+    {
+        $departments = rocmodel::where('out_cat', $out_cat)
+                        ->distinct()
+                        ->pluck('department');
+    
+        return response()->json($departments);
+    }
+    
+    public function deletebook($id) {
+        $book = booksmodel::find($id);
+    
+        if (!$book) {
+            return redirect()->back()->with('error', 'Book not found.');
+        }
+    
+        $book->delete();
+    
+        return redirect()->back()->with('success', 'Book deleted successfully.');
+    }
+    
+    public function editbook($id)
 {
-    $departments = booksmodel::where('category', $category)
-                    ->distinct()
-                    ->pluck('department');
+    $book = booksmodel::find($id);
 
-    return response()->json($departments);
+    if (!$book) {
+        return redirect()->route('admin.graduate')->with('error', 'Book not found.');
+    }
+
+    return view('admin.graduate', compact('book'));
 }
 
+        
+    public function updatebook(Request $request, $id) {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'year' => 'required|integer',
+            'category' => 'nullable|string',
+            'department' => 'nullable|string',
+            'pdf_filepath' => 'nullable|file|mimes:pdf',  // allow updating PDF if provided
+    
+        ]);
+    
+        $book = booksmodel::find($id);
+    
+        if (!$book) {
+            return redirect()->route('admin.graduate')->with('error', 'Book not found.');
+        }
+        if ($request->hasFile('pdf_filepath')) {
+            $book->pdf_filepath = $request->file('pdf_filepath')->store('octabooks', 'public');
+        }
+        $book->update($request->only(['title', 'author', 'year', 'category', 'department']));
+
+        return redirect()->route('admin.graduate')->with('success', 'Book updated successfully.');
+        
+    }
 
 
 
@@ -267,13 +332,6 @@ public function add_new_books()
         return view('admin.undergraduate', compact('booksmodel','undercountgrads', 'departments'));
     }
     
-
-
-    public function dprtmnt()
-    {
-        return $this->belongsTo(departmentmodel::class, 'department_id', 'department');
-    }
-
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 //EMPLOYEE
@@ -311,77 +369,6 @@ public function employeeBooks(Request $request)
     return view('admin.employeebook', compact('booksmodel','employeebookcount', 'departments'));
 }
 
-
-
-public function depty()
-{
-    return $this->belongsTo(departmentmodel::class, 'department_id', 'department');
-}
-
-
-//-------------------------------------------------------------------------------------------------------------------------------------------------
-
-//GRADUATE AND UNDERGRADUATE (EDIT AND DELETE)
-
-public function deletebook(Request $request, $id) {
-    $book = booksmodel::find($id);
-
-    $categoryType = strtolower($request->input('category', 'graduate')); 
-
-    if (!$book) {
-        if ($categoryType === 'undergraduate') {
-            return redirect()->route('admin.undergraduate')->with('error', 'Book not found.');
-        } else {
-            return redirect()->route('admin.graduate')->with('error', 'Book not found.');
-        }
-    }
-
-    $book->delete();
-
-    if (strtolower($book->category) === "graduate") {
-        return redirect()->route('admin.graduate')->with('success', 'Book deleted successfully.');
-    } elseif (strtolower($book->category) === "employee"){
-        return redirect()->route('admin.employeebook')->with('success', 'Book deleted successfully.');
-    }else{
-        return redirect()->route('admin.undergraduate')->with('success', 'Book updated successfully.');
-    }
-    }
-
-    
-public function updatebook(Request $request, $id) {
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'author' => 'required|string|max:255',
-        'year' => 'required|integer',
-        'category' => 'nullable|string',
-        'department' => 'nullable|string',
-        'pdf_filepath' => 'nullable|file|mimes:pdf',  // allow updating PDF if provided
-
-    ]);
-
-    $book = booksmodel::find($id);
-
-    if (!$book) {
-        return redirect()->route('admin.graduate')->with('error', 'Book not found.');
-    }
-    if ($request->hasFile('pdf_filepath')) {
-        $book->pdf_filepath = $request->file('pdf_filepath')->store('octabooks', 'public');
-    }
-    $book->update($request->only(['title', 'author', 'year', 'category', 'department']));
-
-    if (strtolower($book->category) === "graduate") {
-        return redirect()->route('admin.graduate')->with('success', 'Book updated successfully.');
-    } elseif (strtolower($book->category) === "employee") {
-        return redirect()->route('admin.employeebook')->with('success', 'Book updated successfully.');
-    } else {
-        return redirect()->route('admin.undergraduate')->with('success', 'Book updated successfully.');
-    }
-    
-
-}
-
-
-    
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 //SIDEBAR    
 public function adminsidebar()
@@ -465,10 +452,9 @@ public function editdept($id){
 
 
 
-
+/*
 
 //PROGRAM-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 public function program()
 {
 return view ('admin.setup.program');
@@ -570,10 +556,7 @@ public function editprogramplus($id){
          $post->save();
         return redirect()->route('admin.setup.programplus');
     }
-    
- 
-
-
+  
     public function searchprogramplus(Request $request)
     {
         $programpluss = programplusmodel::all();
@@ -592,7 +575,7 @@ public function editprogramplus($id){
     
         return view('admin.setup.programplus', compact('programplusmodel', 'programpluss'));
     }
-
+*/
 //CAROUSEL-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 public function carousel()
@@ -781,6 +764,139 @@ public function editunder_out_cat($id){
         return view('admin.setup.under_out_cat', compact('underrocmodel', 'under_out_cats', 'res_out_category'));
     }
 
+ //USER ACCESS----------------------------------------------------------------------------------------------------------------------
+
+ public function usertype()
+ {
+ return view ('admin.setup.usertype');
+ }
+
+ public function userdept()
+ {
+ return view ('admin.setup.userdepartment');
+ }
+
+    //STORE-------------------------------------------------------------------------------
+
+ public function storeusertype(Request $request)
+ {
+     $data = $request->validate([
+         'user_type'  => 'required',
+ 
+     ]);
+     $newusertype = usertypemodel::create($data); 
+     return redirect(route('admin.setup.usertype'));
+ }
+ 
+ public function storeuserdept(Request $request)
+ {
+     $data = $request->validate([
+        'user_type_id' => 'required|exists:usertype,id',
+         'user_department'  => 'required',
+     ]);
+     $newuserdept = userdeptmodel::create($data); 
+     return redirect(route('admin.setup.userdepartment'));
+ }
+
+   //DELETE-------------------------------------------------------------------------------
+
+ public function deleteusertype($id)
+ {
+     $usertype = usertypemodel::findOrFail($id);
+     $usertype->delete(); 
+ 
+     return redirect()->back()->with('success', 'Position deleted successfully!');
+ }
+ 
+ public function deleteuserdept($id)
+ {
+     $userdept = userdeptmodel::findOrFail($id);
+     $userdept->delete(); 
+ 
+     return redirect()->back()->with('success', 'Position deleted successfully!');
+ }
+
+   //EDIT-------------------------------------------------------------------------------
+
+ public function editusertype($id){
+ 
+     $usertype = usertypemodel::find($id);
+     return view('admin.setup.usertype', compact('usertype'));
+     }
+
+public function edituserdept($id){
+ 
+    $userdept = userdeptmodel::find($id);
+    return view('admin.setup.userdepartment', compact('userdept'));
+    }
+
+     
+   //UPDATE-------------------------------------------------------------------------------
+
+     public function updateusertype(Request $request, $id) {
+         $request->validate([
+             'user_type' => 'required|min:1|max:255',
+         ]);
+     
+          $post = usertypemodel::find($id);
+          $post->fill($request->all());
+          $post->save();
+         return redirect()->route('admin.setup.usertype');
+     }
+
+     public function updateuserdept(Request $request, $id) {
+        $request->validate([
+            'user_type_id' => 'required|exists:usertype,id',
+            'user_department' => 'required|min:1|max:255',
+        ]);
+    
+         $post = userdeptmodel::find($id);
+         $post->fill($request->all());
+         $post->save();
+        return redirect()->route('admin.setup.userdepartment');
+    }
+ 
+   //SEARCH-------------------------------------------------------------------------------
+
+     public function searchusertype(Request $request)
+     {
+         $usertypes = usertypemodel::all();
+     
+         $query = usertypemodel::query();
+     
+         if ($request->has('search') && $request->search) {
+             $query->where(function ($q) use ($request) {
+                 $q->where('user_type', 'like', '%' . $request->search . '%')
+                   ->orWhere('created_at', 'like', '%' . $request->search . '%')
+                   ->orWhere('updated_at', 'like', '%' . $request->search . '%');
+             });
+         }
+     
+         $usertypemodel = $query->get();
+     
+         return view('admin.setup.usertype', compact('usertypemodel', 'usertypes'));
+     }
+ 
+     public function searchuserdept(Request $request)
+     {
+         $userdepts = userdeptmodel::all();
+         $usertypes = usertypemodel::all();
+
+         $query = userdeptmodel::query();
+     
+         if ($request->has('search') && $request->search) {
+             $query->where(function ($q) use ($request) {
+                 $q->where('user_department', 'like', '%' . $request->search . '%')
+                   ->orWhere('created_at', 'like', '%' . $request->search . '%')
+                   ->orWhere('updated_at', 'like', '%' . $request->search . '%');
+             });
+         }
+     
+         $userdeptmodel = $query->get();
+     
+         return view('admin.setup.userdepartment', compact('userdeptmodel', 'userdepts', 'usertypes'));
+     }
+
 
 
     //POSITION----------------------------------------------------------------------------------------------------------------------
@@ -817,7 +933,7 @@ public function editunder_out_cat($id){
         
         public function updateposition(Request $request, $id) {
             $request->validate([
-                'position' => 'required|min:1|max:255|alpha',
+                'position' => 'required|min:1|max:255',
             ]);
         
              $post = positionmodel::find($id);
@@ -928,116 +1044,141 @@ public function searchMember(Request $request)
         return view('admin.member', compact('membersmodel', 'positions'));
     }
     
-    public function mmbrs()
-    {
-        return $this->belongsTo(positionmodel::class, 'position_id', 'position');
-    }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-//PIECHART----------------------------------------------------------------------------------------------------------------
-public function admingraphs()
+public function admingraphs(Request $request)
 {
-    // by category------------------------------------------------------------------------------------
-    $graduateCount = BooksModel::where('category', 'Graduate')->count();
-    $underGraduateCount = BooksModel::where('category', 'Under-Graduate')->count();
-    $employeeCount = BooksModel::where('category', 'Employee')->count();
+    // Get filter values
+    $selectedCategory = $request->input('category');
+    $selectedDepartment = $request->input('department');
+    $fromDate = $request->input('from_date');
+    $toDate = $request->input('to_date');
+    $search = $request->input('search');
+    // Base query
+    $query = BooksModel::query();
+
+
+// Filter by search keyword on year, category, or department columns
+if ($search) {
+    $query->where(function($q) use ($search) {
+        $q->where('year', 'like', "%{$search}%")
+          ->orWhere('category', 'like', "%{$search}%")
+          ->orWhere('department', 'like', "%{$search}%");
+    });
+}
+
+    if ($selectedCategory) {
+        $query->where('category', $selectedCategory);
+    }
+
+    if ($selectedDepartment) {
+        $query->where('department', $selectedDepartment);
+    }
+
+    if ($fromDate && $toDate) {
+        $query->whereBetween('created_at', [$fromDate, $toDate]);
+    } elseif ($fromDate) {
+        $query->whereDate('created_at', '>=', $fromDate);
+    } elseif ($toDate) {
+        $query->whereDate('created_at', '<=', $toDate);
+    }
+
+    // Get data for filtered bar chart (grouped by year)
+    $filteredBooks = $query->select('year')->groupBy('year')->pluck('year');
+    $filteredCounts = $query->selectRaw('year, COUNT(*) as count')->groupBy('year')->pluck('count');
+
+    // Category Dropdown (for pie chart)
+    $categories = RocModel::pluck('out_cat')->unique()->values();
+    $departments = BooksModel::pluck('department')->unique()->values(); // Assuming this exists
+
+    // Pie Chart (overall stats per category)
+    $labels = [];
+    $values = [];
+
+    foreach ($categories as $category) {
+        $labels[] = $category;
+        $values[] = BooksModel::where('category', $category)->count();
+    }
+
     $pieData = [
-        'labels' => ['Graduate', 'Under-Graduate', 'Employee'],
-        'values' => [$graduateCount, $underGraduateCount, $employeeCount ]
+        'labels' => $labels,
+        'values' => $values,
     ];
 
-    // by department------------------------------------------------------------------------------------
-    $departments = BooksModel::select('department')
-        ->groupBy('department')
-        ->pluck('department');
-
-    $counts = BooksModel::selectRaw('department, COUNT(*) as count')
-        ->groupBy('department')
-        ->pluck('count');
-
-    $barDatabydept = [
-        'labels' => $departments,
-        'values' => $counts
-    ];
-
-        // by year-----------------------------------------------------------------------------------
-        $years = BooksModel::select('year')
-        ->groupBy('year')
-        ->pluck('year');
-
-    $counts = BooksModel::selectRaw('year, COUNT(*) as count')
-        ->groupBy('year')
-        ->pluck('count');
+    // Bar Chart (overall stats per year)
+    $years = BooksModel::select('year')->groupBy('year')->pluck('year');
+    $counts = BooksModel::selectRaw('year, COUNT(*) as count')->groupBy('year')->pluck('count');
 
     $barDatabyyr = [
         'labels' => $years,
-        'values' => $counts
+        'values' => $counts,
     ];
 
+    $totalBooks = BooksModel::count();
+    $res_out_cats = RocModel::all();
 
-     // by graddept-----------------------------------------------------------------------------------
-     $barDatabyGraduateDept = BooksModel::selectRaw('department, COUNT(*) as count')
-     ->where('category', 'graduate')
-     ->groupBy('department')
-     ->pluck('count', 'department'); // returns key-value pair like ['CS' => 5, 'IT' => 7]
- 
-     $bygradDeptChart = [
-        'labels' => $barDatabyGraduateDept->keys()->toArray(),
-        'values' => $barDatabyGraduateDept->values()->toArray()
-    ];
-    
-      // by undergraddept-----------------------------------------------------------------------------------
-      $barDatabyUnderGraduateDept = BooksModel::selectRaw('department, COUNT(*) as count')
-      ->where('category', 'Under-Graduate')
-      ->groupBy('department')
-      ->pluck('count', 'department'); // returns key-value pair like ['CS' => 5, 'IT' => 7]
-  
-      $byundergradDeptChart = [
-         'labels' => $barDatabyUnderGraduateDept->keys()->toArray(),
-         'values' => $barDatabyUnderGraduateDept->values()->toArray()
-     ];
-     
-          // by employeedept-----------------------------------------------------------------------------------
-          $barDatabyEmpDept = BooksModel::selectRaw('department, COUNT(*) as count')
-          ->where('category', 'employee')
-          ->groupBy('department')
-          ->pluck('count', 'department'); // returns key-value pair like ['CS' => 5, 'IT' => 7]
-      
-          $byempDeptChart = [
-             'labels' => $barDatabyEmpDept->keys()->toArray(),
-             'values' => $barDatabyEmpDept->values()->toArray()
-         ];
-
-// Fetch the categories (or any other column you're grouping by) for the x-axis of the bar chart
-$bookcount = BooksModel::select('category')  // Change 'category' to the column you want to group by
-    ->groupBy('category')  // Group by the column
-    ->pluck('category');
-
-// Count the number of books in each category (or group)
-$counts = BooksModel::selectRaw('COUNT(*) as count')
-    ->groupBy('category')  // Group by the same column as before
-    ->pluck('count');
-
-// Prepare the bar chart data
-$barDataofbooks = [
-    'labels' => $bookcount,  // The x-axis values (categories)
-    'values' => $counts      // The y-axis values (book counts)
-];
-
-$totalBooks = BooksModel::count();[
-    'totalBooks' => $totalBooks,
-];
-
-    
     return view('admin.admindashboard', compact(
         'pieData',
-        'barDatabydept',
         'barDatabyyr',
-        'bygradDeptChart', 'byundergradDeptChart', 'byempDeptChart', 'totalBooks',
+        'totalBooks',
+        'categories',
+        'departments',
+        'res_out_cats',
+        'filteredBooks',
+        'filteredCounts',
+        'selectedCategory',
+        'selectedDepartment',
+        'fromDate',
+        'toDate'
     ));
+}
 
-    
+
+public function getDeptgraph($out_cat)
+{
+    $category = RocModel::where('out_cat', $out_cat)->first();
+
+    if (!$category) {
+        return response()->json([]);
+    }
+
+    $departments = UnderRocModel::where('out_cat_id', $category->id)
+        ->pluck('under_roc');
+
+    return response()->json($departments);
+}
+
+
+public function getFilteredBooks(Request $request)
+{
+    $query = BooksModel::query();
+
+    if ($request->category) {
+        $category = RocModel::find($request->category);
+        if ($category) {
+            $query->where('out_cat_id', $category->id);
+        }
+    }
+
+    if ($request->department) {
+        $under = UnderRocModel::where('under_roc', $request->department)->first();
+        if ($under) {
+            $query->where('under_roc_id', $under->id);
+        }
+    }
+
+    if ($request->from_date && $request->to_date) {
+        $query->whereBetween('created_at', [$request->from_date, $request->to_date]);
+    }
+
+    $results = $query->selectRaw('year, COUNT(*) as count')
+        ->groupBy('year')
+        ->pluck('count', 'year');
+
+    return response()->json([
+        'labels' => $results->keys(),
+        'values' => $results->values(),
+    ]);
 }
 
 

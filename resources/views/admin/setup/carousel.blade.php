@@ -21,38 +21,39 @@
 
   <div class="flex min-h-screen bg-gray-100 w-full">
     @include('admin.sidebar')
-
-
-
-          <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 mx-auto">
-            <h2 class="text-2xl font-bold mb-6 text-center">Carousel</h2>
-
-        <form action="{{ route('admin.setup.storecarousel') }}" method="POST" enctype="multipart/form-data" class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
-            @csrf
-
-              <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="carousel_imgpath">Carousel</label>
-                <input class="block w-full text-sm text-gray-700 border border-gray-300 rounded py-2 px-3 focus:outline-none focus:shadow-outline" id="carousel_imgpath" type="file" name="carousel_imgpath" accept="image/jpeg,image/png,image/jpg">
-            </div>
-
-
-              <div class="mb-4">
-                <label class="block text-gray-700 font-bold mb-2" for="display_order">Display Order</label>
-                <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="display_order" name="display_order" required>
-              </div>
-
-              <div class="flex justify-center space-x-4">
-                <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300" type="submit">
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
+    <div id="mainContent" class="md:ml-64 md:flex">
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 mx-auto">
+      <h2 class="text-2xl font-bold mb-6 text-center">Carousel</h2>
+    
+      <form action="{{ route('admin.setup.storecarousel') }}" method="POST" enctype="multipart/form-data" class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        @csrf
+    
+        <div class="mb-6">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="carousel_imgpath">Carousel</label>
+          <input class="block w-full text-sm text-gray-700 border border-gray-300 rounded py-2 px-3 focus:outline-none focus:shadow-outline" id="carousel_imgpath" type="file" name="carousel_imgpath" accept="image/jpeg,image/png,image/jpg">
+        </div>
+    
+        <div class="mb-4">
+          <label class="block text-gray-700 font-bold mb-2" for="display_order">Display Order</label>
+          <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="display_order" name="display_order" required>
+        </div>
+    
+        <p class="text-sm text-gray-700 text-center mb-4 px-4 py-2 rounded" style="background-color: rgba(253, 224, 71, 0.3);">
+          <strong>Note:</strong> Recommended size of picture is <span class="font-medium">1920x1080</span>.
+        </p>
+        
+    
+        <div class="flex justify-center space-x-4">
+          <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300" type="submit">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+    
 
 
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
-
-
        <div class="overflow-x-auto">
   <table class="min-w-full table-auto border-collapse">
     <thead>
@@ -71,9 +72,10 @@
           <td class="hidden">{{ $data->id }}</td>
           <td class="px-4 py-2 border-b text-start">
             @if($data->carousel_imgpath)
-              <img src="{{ asset('storage/' . $data->carousel_imgpath) }}"
-                   alt="Carousel"
-                   class="w-4 0 h-25 object-cover rounded border" />
+            <img src="{{ asset('storage/' . $data->carousel_imgpath) }}"
+            alt="Carousel"
+            class="w-70 h-40 object-cover rounded border" />
+       
             @else
               N/A
             @endif
@@ -98,7 +100,6 @@
     </tbody>
   </table>
 </div>
-
         </div>
 
         <div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
@@ -132,6 +133,7 @@
         </div>
         </div>
       </div>
+    </div>
       <script>
         // Get modal elements
         const updateModal = document.getElementById('updateModal');

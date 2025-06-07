@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Http\Request;
 
 class Usermodel extends Authenticatable
 {
@@ -13,16 +12,31 @@ class Usermodel extends Authenticatable
     protected $table = 'users';
 
     protected $fillable = [
-        'firstname', 'middlename', 'lastname', 'schoolid', 'course', 'birthdate',
+        'firstname',
+        'middlename',
+        'lastname',
+        'schoolid',
+        'department',
+        'birthdate',
+        'user_type_id',  // foreign key
     ];
 
-    
     protected $hidden = ['birthdate'];
 
-    protected $casts = ['birthdate' => 'date'];
+    protected $casts = [
+        'birthdate' => 'date',
+    ];
 
     public function favorites()
     {
         return $this->belongsToMany(BooksModel::class, 'favorites', 'user_id', 'ebook_id')->withTimestamps();
     }
+
+    public function userType()
+    {
+        return $this->belongsTo(UserTypeModel::class, 'user_type_id');
+    }
+    
+
+
 }

@@ -16,7 +16,7 @@
     <div class="card shadow-sm border-0">
       <div class="card-body p-4">
         <h3 class="text-center mb-4">User Profile</h3>
-
+ 
 
         <form action="{{ route('pages.profile.update') }}" method="POST">
           @csrf
@@ -65,16 +65,26 @@
                 value="{{ old('schoolid', $user->schoolid ?? '') }}" 
                 required>
             </div>
+
             <div class="col-md-4">
-              <label for="course" class="form-label">Course</label>
-              <input 
-                type="text" 
-                id="course" 
-                name="course" 
-                class="form-control" 
-                value="{{ old('course', $user->course ?? '') }}" 
-                required>
-            </div>
+              <label for="department" class="form-label">Department</label>
+              <select 
+                  id="department" 
+                  name="department" 
+                  class="form-select" 
+                  required>
+                  <option value="">-- Select Department --</option>
+                  @foreach ($usertypes as $dept)
+                      <option value="{{ $dept->user_department }}" 
+                          {{ old('department', $user->department ?? '') == $dept->user_department ? 'selected' : '' }}>
+                          {{ $dept->user_department }}
+                      </option>
+                  @endforeach
+              </select>
+          </div>
+          
+          
+                  
             <div class="col-md-4">
               <label for="birthdate" class="form-label">Birthdate</label>
               <input 

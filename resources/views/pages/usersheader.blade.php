@@ -7,42 +7,50 @@
         </div>
     
         @if(session()->has('firstname'))
-            {{-- Welcome message in the center when logged in --}}
-            <div class="text-white fw-semibold">
+        <div class="text-white fw-semibold">
+            @if(str_starts_with(session('schoolid'), 'guest'))
+                Welcome Guest: {{ session('firstname') }}
+            @else
                 Welcome: {{ session('firstname') }}
-            </div>
-        @endif
+            @endif
+        </div>
+    @endif
     
-        <nav class="d-flex gap-3 align-items-center">
-            <a href="{{ url('/pages/userdashboard') }}" class="nav-link">
-                <i class="fas fa-house"></i> Home
+    
+    <nav class="d-flex gap-3 align-items-center">
+        <a href="{{ url('/pages/userdashboard') }}" class="nav-link">
+            <i class="fas fa-house"></i> Home
+        </a>
+    
+        @if(session()->has('firstname'))
+            <a href="{{ url('/pages/ebook') }}" class="nav-link">
+                <i class="fas fa-book"></i> Research
             </a>
     
-            @if(session()->has('firstname'))
-                <a href="{{ url('/pages/ebook') }}" class="nav-link">
-                    <i class="fas fa-book"></i> Research
-                </a>
+            @if(!str_starts_with(session('schoolid'), 'guest'))
                 <a href="{{ url('/pages/favorites') }}" class="nav-link">
                     <i class="fas fa-heart"></i> Favorites
                 </a>
                 <a href="{{ url('/pages/profile') }}" class="nav-link">
                     <i class="fas fa-user"></i> Profile
                 </a>
-                <form method="POST" action="{{ route('pages.logoutuser') }}" style="margin: 0;">
-                    @csrf
-                    <button type="submit" class="nav-link logout-button" aria-label="Log out">
-                        <i class="fas fa-right-from-bracket"></i> Log Out
-                    </button>
-                </form>
-            @else
-                <a href="{{ url('/pages/userlogin') }}" class="nav-link">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </a>
-                <a href="{{ url('/pages/registeruser') }}" class="nav-link">
-                    <i class="fas fa-user-plus"></i> Sign Up
-                </a>
             @endif
-        </nav>
+    
+            <form method="POST" action="{{ route('pages.logoutuser') }}" style="margin: 0;">
+                @csrf
+                <button type="submit" class="nav-link logout-button" aria-label="Log out">
+                    <i class="fas fa-right-from-bracket"></i> Log Out
+                </button>
+            </form>
+        @else
+            <a href="{{ url('/pages/userlogin') }}" class="nav-link">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+            <a href="{{ url('/pages/registeruser') }}" class="nav-link">
+                <i class="fas fa-user-plus"></i> Sign Up
+            </a>
+        @endif
+    </nav>    
     </header>
     
     <style>

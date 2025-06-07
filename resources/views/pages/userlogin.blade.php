@@ -66,12 +66,15 @@
                                 <button type="submit" class="btn btn-primary">Sign In</button>
                             </div>
                         </form>
+                        <div class="d-grid mt-3">
+                            <a href="{{ route('pages.guestlogin') }}" class="btn btn-outline-secondary">Continue as Guest</a>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
-   
     
     @include('pages.userfooter')
 

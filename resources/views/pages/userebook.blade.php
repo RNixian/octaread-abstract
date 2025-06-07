@@ -124,57 +124,59 @@
     </form>
 
  
+   <!-- Book Grid -->
+<div class="row mt-4">
+  @forelse ($ebooks as $book)
+    <div class="col-md-3 mb-4">
+      <div class="card book-card h-100 shadow-sm">
+        <img src="{{ asset('images/default_pdf_picture.jpg/' . $book->cover_photo) }}" class="card-img-top" alt="Book Cover">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ $book->title }}</h5>
+          <p class="card-text text-muted mb-1">
+            <i class="bi bi-person-fill"></i> {{ $book->author }}
+          </p>
+          <p class="card-text">
+            <small>{{ $book->department }} | {{ $book->category }}</small>
+          </p>
+          <div class="mt-auto d-flex justify-content-between align-items-center">
+            <!-- Read Button -->
+            <a href="{{ asset('storage/' . $book->pdf_filepath) }}"
+              class="btn btn-sm btn-custom-red"
+              target="_blank">
+              Read
+            </a>
 
-
-
-    <!-- Book Grid -->
-    <div class="row mt-4">
-      @forelse ($ebooks as $book)
-        <div class="col-md-3 mb-4">
-          <div class="card book-card h-100 shadow-sm">
-            <img src="{{ asset('images/default_pdf_picture.jpg/' . $book->cover_photo) }}" class="card-img-top" alt="Book Cover">
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">{{ $book->title }}</h5>
-              <p class="card-text text-muted mb-1"><i class="bi bi-person-fill"></i> {{ $book->author }}</p>
-              <p class="card-text"><small>{{ $book->department }} | {{ $book->category }}</small></p>
-              <div class="mt-auto d-flex justify-content-between align-items-center">
-                   <a href="{{ asset('storage/' . $book->pdf_filepath) }}"
-                    class="btn btn-sm btn-custom-red"
-                    target="_blank">
-                   Read
-                 </a>
-
-                   <form action="{{ route('favorites.store') }}" method="POST">
-
-                    @php
-                    $isFavorited = auth()->user() && auth()->user()->favorites->contains($book->id);
-                  @endphp
-                  
-                    @csrf
-                    <input type="hidden" name="ebook_id" value="{{ $book->id }}">
-                    <button type="submit" class="favorite-btn {{ $isFavorited ? 'favorited' : '' }}" title="Add to Favorites">
-                      <i class="bi bi-heart-fill"></i>
-                    </button>
-                  </form>
-                  
-              </div>
-            </div>
+              {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
+          @if(session()->has('userid') && session('is_guest') === false)
+          <form action="{{ route('favorites.store') }}" method="POST" class="ml-2">
+              @csrf
+              <input type="hidden" name="ebook_id" value="{{ $book->id }}">
+              <button 
+                type="submit" 
+                class="text-red-600 hover:text-red-700 focus:outline-none"
+                title="Add to Favorites"
+              >
+                <i class="bi bi-heart-fill text-gray-300"></i>
+              </button>
+          </form>
+          @endif
           </div>
         </div>
-      @empty
-        <div class="col-12">
-          <div class="alert alert-warning text-center" role="alert">
-            No books found.
-          </div>
-        </div>
-      @endforelse
+      </div>
     </div>
+  @empty
+    <div class="col-12">
+      <div class="alert alert-warning text-center" role="alert">
+        No books found.
+      </div>
+    </div>
+  @endforelse
+</div>
 
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-4">
-      {{ $ebooks->withQueryString()->links() }}
-    </div>
-  </div>
+<!-- Pagination -->
+<div class="d-flex justify-content-center mt-4">
+  {{ $ebooks->withQueryString()->links() }}
+</div>
 
  
   @include('pages.userfooter')

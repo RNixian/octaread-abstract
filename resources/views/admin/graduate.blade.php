@@ -10,53 +10,54 @@
 
   <div class="flex min-h-screen bg-gray-100 w-full">
     @include('admin.sidebar')
-
+    <div id="mainContent" class="md:ml-64 md:flex">
     <div class="flex-1 p-8">
-      <div class="max-w-6xl w-full mx-auto">
-        <!-- Header -->
-        <form id="filter-form" method="GET" action="{{ route('admin.graduate') }}" class="flex items-center space-x-4">
+      <div class="max-w-6xl w-full mx-auto space-y-4">
+        <!-- Category and Department Filter Container -->
+        <form id="filter-form" method="GET" action="{{ route('admin.graduate') }}" class="space-y-2">
           <input type="hidden" name="out_cat" id="out_cat" value="{{ request('out_cat', '') }}">
+          <!-- Category Header (Full Width) -->
+          <div class="w-full bg-gray-100 px-4 py-2 rounded flex justify-between items-center">
+            <button type="button" onclick="changeCategory(-1)" class="text-lg px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"><</button>
+            <span id="category-display" class="text-xl font-bold text-center flex-1">
+              {{ request('out_cat') ?: 'All Category' }}
+            </span>
+            <button type="button" onclick="changeCategory(1)" class="text-lg px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">></button>
+          </div>
       
-          <button type="button" onclick="changeCategory(-1)" class="text-lg px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">&lt;</button>
-      
-          <span id="category-display" class="text-md font-medium">
-              {{ request('out_cat') ?: '-- Select Category --' }}
-          </span>
-      
-          <button type="button" onclick="changeCategory(1)" class="text-lg px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">&gt;</button>
-      </form>
-      
-       <!-- Search and Filter -->
-    <form method="GET" action="{{ url('/admin/graduate') }}" class="flex flex-col md:flex-row justify-between items-center mb-4 gap-2">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Enter..." 
-        class="shadow appearance-none border rounded w-full md:w-1/2 py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"/>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="department">Department</label>
-          <select name="department" id="department" class="border px-2 py-1 rounded">
+          <!-- Department Header (Full Width) -->
+          <div class="w-full px-4 py-2 bg-gray-50 rounded">
+            <label class="block text-lg font-semibold text-gray-700 mb-1" for="department">Department</label>
+            <select name="department" id="department" class="w-full border px-2 py-1 rounded">
               <option value="">-- Select Department --</option>
-              @if(request('department'))
-                  <option selected value="{{ request('department') }}">{{ request('department') }}</option>
-              @endif
-          </select>
-      </div>
-
-    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Search</button>
-  <a href="{{ url('/admin/graduate') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Reset</a>
-</form>
-
-<!-- Display the count of results -->
-@if($countgrads > 0)
-    <p class="mt-4 text-sm text-gray-600">Count: {{ $countgrads }}</p>
-@else
-    <p class="mt-4 text-sm text-gray-600">Count: 0</p>
-@endif
-
- <!-- Link to Add Books -->
- <a href="{{ url('/admin/add_new_books') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300 inline-block">
-  Add Books
-</a>
-
+              <!-- Add dynamic options here -->
+            </select>
+          </div>
+        </form>
+      
+        <!-- Search, Add Books, and Count Container -->
+        <div class="w-full px-4 py-2 bg-white rounded shadow flex flex-col md:flex-row md:items-center md:justify-between gap-4 flex-wrap">
+          <!-- Search and Buttons -->
+          <form method="GET" action="{{ url('/admin/graduate') }}" class="flex flex-1 flex-wrap items-center gap-2">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Enter..."
+              class="flex-grow shadow border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline font-bold" />
+            
+              <!--  <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Search</button> -->
+            <a href="{{ url('/admin/graduate') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Reset</a>
+          </form>
+      
+          <!-- Add Books Button -->
+          <a href="{{ url('/admin/add_new_books') }}"
+            class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300">
+            Add Books
+          </a>
+      
+          <!-- Count -->
+          <p class="text-sm text-gray-600 font-bold">
+            Count: {{ $countgrads > 0 ? $countgrads : 0 }}
+          </p>
         </div>
+      </div>
         <!-- Table -->
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
           <div class="overflow-x-auto">
@@ -102,7 +103,11 @@
                           </a>
                           <button 
                             class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
-                            data-id="{{ $data->id }}">
+                            data-id="{{ $data->id }}"
+                            data-title="{{ $data->title }}"
+                            data-author="{{ $data->author }}"
+                            data-year="{{ $data->year }}"
+                            >
                             Edit
                           </button>
                         </div>
@@ -114,162 +119,194 @@
           </div>
         </div>
         
-        
+<!-- Update Modal -->
+<div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden z-50">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative">
+    
+    <!-- Close Button -->
+    <button id="closeModal" class="absolute top-2 right-2 text-gray-700 hover:text-gray-900 text-2xl">&times;</button>
+    
+    <h2 class="text-2xl font-bold mb-6">Update Book</h2>
 
-        <!-- Update Modal -->
-        <div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
-          <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative">
-            <!-- Close Button -->
-            <button id="closeModal" class="absolute top-2 right-2 text-gray-700 hover:text-gray-900 text-2xl">&times;</button>
-            <h2 class="text-2xl font-bold mb-6">Update Book</h2>
-            <form id="updateForm" action="{{ route('updatebook', ['id' => '__ID__']) }}" method="POST" enctype="multipart/form-data">
-              @csrf
-              @method('PUT')
-              <!-- Hidden field for book id -->
-              <input type="hidden" name="id" id="book_id" value="">
-              
-              <!-- Two Columns Grid for Text Inputs -->
-              <div class="grid grid-cols-2 gap-4">
-                <!-- Title -->
-                <div>
-                  <label class="block text-gray-700 font-bold mb-2" for="edit_title">Title</label>
-                  <input type="text" name="title" id="edit_title" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-                </div>
-                <!-- Author -->
-                <div>
-                  <label class="block text-gray-700 font-bold mb-2" for="edit_author">Author</label>
-                  <input type="text" name="author" id="edit_author" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-                </div>
-                <!-- Year -->
-                <div>
-                  <label class="block text-gray-700 font-bold mb-2" for="edit_year">Year</label>
-                  <input type="number" name="year" id="edit_year" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-                </div>
-                <!-- Category -->
-                <div>
-                  <label class="block text-gray-700 font-bold mb-2" for="edit_category">Category</label>
-                  <select class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" id="edit_category" name="category" required>
-                      <option value="">Select Category</option>
-                      <option value="Graduate">Graduate</option>
-                      <option value="Under-Graduate">Under-Graduate</option>
-                      <option value="Employee">Employee</option>
-                  </select>
-              </div>
-              <div>
-                <label class="block text-gray-700 font-bold mb-2" for="edit_department">Department</label>
-                <select class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" name="department" id="edit_department">
-                  <option value="">-- Select Department --</option>
-                    @foreach ($under_res_out_cats as $category)
-                      <option value="{{ $category->department }}" {{ request('department') == $category->department ? 'selected' : '' }}>
-                        {{ $category->department }}
-                      </option>
-                    @endforeach
-                </select>
-              </div>
-              <!-- File Uploads -->
-              <div class="mt-4">
-                <div class="mb-4">
-                  <label class="block text-gray-700 font-bold mb-2" for="edit_pdf">PDF File</label>
-                  <input type="file" name="pdf_filepath" id="edit_pdf" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" accept=".pdf">
-                </div>
-                
-              </div>
-            </div>
-              <!-- Submit Button -->
-              <div class="flex justify-end mt-4">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                  Update
-                </button>
-              </div>
-            </form>
-          </div>
+    <form id="updateForm" action="{{ route('updatebook', ['id' => '__ID__']) }}" method="POST" enctype="multipart/form-data">
+      @csrf
+      @method('PUT')
+      <input type="hidden" name="id" id="book_id">
+
+      <div class="grid grid-cols-2 gap-4">
+        
+        <!-- Title -->
+        <div>
+          <label for="edit_title" class="block text-gray-700 font-bold mb-2">Title</label>
+          <input type="text" name="title" id="edit_title" class="w-full border rounded px-3 py-2" required>
+        </div>
+
+        <!-- Author -->
+        <div>
+          <label for="edit_author" class="block text-gray-700 font-bold mb-2">Author</label>
+          <input type="text" name="author" id="edit_author" class="w-full border rounded px-3 py-2" required>
+        </div>
+
+        <!-- Year -->
+        <div>
+          <label for="edit_year" class="block text-gray-700 font-bold mb-2">Year</label>
+          <input type="number" name="year" id="edit_year" class="w-full border rounded px-3 py-2" required>
+        </div>
+
+              <!-- Category -->
+      <div>
+        <label for="edit_category" class="block text-gray-700 font-bold mb-2">Category</label>
+        <select name="category" id="edit_category" class="w-full border rounded px-3 py-2" >
+          <option value="">-- Select Category --</option>
+          @foreach ($res_out_cats as $cat)
+            <option value="{{ $cat->out_cat }}">{{ $cat->out_cat }}</option>
+          @endforeach
+        </select>
+      </div>
+
+      <!-- Department (will load dynamically) -->
+      <div>
+        <label for="edit_department" class="block text-gray-700 font-bold mb-2">Department</label>
+        <select name="department" id="edit_department" class="w-full border rounded px-3 py-2" >
+          <option value="">-- Select Department --</option>
+        </select>
+      </div>
+
+
+    <!-- File Uploads -->
+    <div class="mt-4">
+      <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2" for="edit_pdf">PDF File</label>
+        <input type="file" name="pdf_filepath" id="edit_pdf" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" accept=".pdf">
+      </div>
+     
+    </div>
+
+      <!-- Submit -->
+      <div class="mt-6 text-right">
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
         </div>
       </div>
     </div>
   </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- JavaScript to handle modal behavior -->
+    <script>
+      // Get modal elements
+      const updateModal = document.getElementById('updateModal');
+      const closeModal = document.getElementById('closeModal');
+      const updateForm = document.getElementById('updateForm');
 
-  <!-- JavaScript to handle modal behavior -->
-  <script>
-    // Get modal elements
-    const updateModal = document.getElementById('updateModal');
-    const closeModal = document.getElementById('closeModal');
-    const updateForm = document.getElementById('updateForm');
+      // When user clicks any "Edit" button
+      document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function() {
+          // Retrieve data attributes from the clicked button
+          const id = this.getAttribute('data-id');
+          const title = this.getAttribute('data-title');
+          const author = this.getAttribute('data-author');
+          const year = this.getAttribute('data-year');
+          const category = this.getAttribute('data-category');
+          const department = this.getAttribute('data-department');
 
-    // When user clicks any "Edit" button
-    document.querySelectorAll('.btn-edit').forEach(button => {
-      button.addEventListener('click', function() {
-        // Retrieve data attributes from the clicked button
-        const id = this.getAttribute('data-id');
-        const title = this.getAttribute('data-title');
-        const author = this.getAttribute('data-author');
-        const year = this.getAttribute('data-year');
-        const category = this.getAttribute('data-category');
-        const department = this.getAttribute('data-department');
+          // Update the form action with the record id
+          updateForm.action = updateForm.action.replace('__ID__', id);
+          document.getElementById('book_id').value = id;
+          // Populate form fields with current data
+          document.getElementById('edit_title').value = title;
+          document.getElementById('edit_author').value = author;
+          document.getElementById('edit_year').value = year;
+          document.getElementById('edit_category').value = category;
+          document.getElementById('edit_department').value = department;
 
-        // Update the form action with the record id
-        updateForm.action = updateForm.action.replace('__ID__', id);
-        document.getElementById('book_id').value = id;
-        // Populate form fields with current data
-        document.getElementById('edit_title').value = title;
-        document.getElementById('edit_author').value = author;
-        document.getElementById('edit_year').value = year;
-        document.getElementById('edit_category').value = category;
-        document.getElementById('edit_department').value = department;
-
-        // Show the modal
-        updateModal.classList.remove('hidden');
+          // Show the modal
+          updateModal.classList.remove('hidden');
+        });
       });
-    });
 
-    // Close the modal when close button is clicked
-    closeModal.addEventListener('click', function() {
-      updateModal.classList.add('hidden');
-      // Reset action placeholder for next use
-      updateForm.action = updateForm.action.replace(/(\d+)$/, '__ID__');
-    });
-
-    // Close modal on clicking outside the modal content
-    window.addEventListener('click', function(e) {
-      if (e.target === updateModal) {
+      // Close the modal when close button is clicked
+      closeModal.addEventListener('click', function() {
         updateModal.classList.add('hidden');
-      }
-    });
-  </script>
+        // Reset action placeholder for next use
+        updateForm.action = updateForm.action.replace(/(\d+)$/, '__ID__');
+      });
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      // Close modal on clicking outside the modal content
+      window.addEventListener('click', function(e) {
+        if (e.target === updateModal) {
+          updateModal.classList.add('hidden');
+        }
+      });
 
-<!-- Grouped Script -->
-<script>
-$(document).ready(function () {
-    // Get categories from the controller (passed as $categories)
-    const categories = @json($categories->toArray());
-    let current = $('#out_cat').val();
+      $(document).ready(function () {
+    $('#edit_category').change(function () {
+        let category = $(this).val();
 
-    function getCurrentCategoryIndex() {
-        return categories.indexOf(current);
-    }
-
-    function loadDepartments(category) {
-        $('#department').html('<option value="">-- Loading... --</option>');
+        $('#edit_department').html('<option value="">-- Loading... --</option>');
 
         if (category) {
             $.ajax({
                 url: '/get-departments/' + encodeURIComponent(category),
                 type: 'GET',
                 success: function (data) {
-                    $('#department').empty().append('<option value="">-- Select Department --</option>');
+                    $('#edit_department').empty().append('<option value="">-- Select Department --</option>');
                     $.each(data, function (key, value) {
-                        $('#department').append('<option value="' + value + '">' + value + '</option>');
+                        $('#edit_department').append('<option value="' + value + '">' + value + '</option>');
                     });
+                }
+            });
+        } else {
+            $('#edit_department').html('<option value="">-- Select Department --</option>');
+        }
+    });
+});
 
-                    // Re-select if department was already chosen
-                    const selectedDept = '{{ request('department') }}';
-                    if (selectedDept) {
-                        $('#department').val(selectedDept);
+    </script>
+
+
+<!-- Grouped Script -->
+<script>
+  $(document).ready(function () {
+    const categories = @json(array_merge(
+        ['All Category'],
+        $categories->filter(fn($c) => $c !== 'All Category')->values()->toArray()
+    ));
+
+    let current = $('#out_cat').val() || "All Category";
+
+    function getCurrentCategoryIndex() {
+        return categories.indexOf(current);
+    }
+
+    function loadDepartments(out_cat) {
+        $('#department').html('<option value="">-- Loading... --</option>');
+
+        if (out_cat && out_cat !== "All Category") {
+            $.ajax({
+                url: '/get-departments/' + encodeURIComponent(out_cat),
+                type: 'GET',
+                success: function (data) {
+                    $('#department').empty().append('<option value="">-- Select Department --</option>');
+
+                    if (Array.isArray(data)) {
+                        data.forEach(function (value) {
+                            $('#department').append('<option value="' + value + '">' + value + '</option>');
+                        });
+                    }
+
+                    let selected = @json(request('department'));
+                    if (selected) {
+                        $('#department').val(selected);
                     }
                 },
-                error: function () {
+                error: function (xhr) {
+                    console.error("AJAX error:", xhr.responseText);
                     $('#department').html('<option value="">-- Error loading departments --</option>');
                 }
             });
@@ -277,29 +314,43 @@ $(document).ready(function () {
             $('#department').html('<option value="">-- Select Department --</option>');
         }
     }
-
-    // Load departments on initial load based on current category
     loadDepartments(current);
-
-    // Global function to change category
     window.changeCategory = function (direction) {
         let index = getCurrentCategoryIndex();
         if (index === -1) index = 0;
-        else index += direction;
+        else index = (index + direction + categories.length) % categories.length;
 
-        // Bounds check
-        if (index < 0) index = 0;
-        if (index >= categories.length) index = categories.length - 1;
+        current = categories[index];
 
-        const newCategory = categories[index];
-        current = newCategory;
+        $('#out_cat').val(current === "All Category" ? "" : current);
+        $('#category-display').text(current);
 
-        $('#out_cat').val(newCategory);
-        $('#category-display').text(newCategory);
+        // Automatically submit form on category change
         $('#filter-form').submit();
     };
+
+    $('#out_cat').on('change', function () {
+        current = $(this).val() || "All Category";
+        loadDepartments(current);
+        $('#filter-form').submit();  // Submit form automatically when out_cat changes
+    });
+
+    $('#department').on('change', function () {
+        $('#filter-form').submit();  // Submit form automatically on department change
+    });
+
+    $('#search-input').on('input', function () {
+        // You can debounce this to avoid too many requests:
+        clearTimeout($.data(this, 'timer'));
+        var wait = setTimeout(() => {
+            $('#filter-form').submit();
+        }, 500);
+        $(this).data('timer', wait);
+    });
 });
 </script>
 
+
+  
 </body>
 </html>

@@ -1,20 +1,22 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use App\Models\booksmodel; 
 use App\Models\carouselmodel; 
 use App\Models\contactmodel; 
-use App\Models\programmodel; 
-use App\Models\programplusmodel; 
+use App\Models\favmodel;
+use App\Models\usertypemodel; 
+use App\Models\userdeptmodel;
 use App\Models\departmentmodel; 
 use App\Models\membersModel; 
 use App\Models\usermodel; 
 use App\Models\positionmodel; 
-use App\Models\favmodel; 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Guard;
+
 
 class usercontroller extends Controller
 {
@@ -23,35 +25,65 @@ class usercontroller extends Controller
 
     public function registeruser()
     {
-        $departments = DepartmentModel::all();
-        $programpluses = ProgramPlusModel::all();
-        $programs = ProgramModel::all();
-    
-        return view('pages.registeruser', compact('departments', 'programpluses', 'programs'));
+        $userdepts = userdeptmodel::all();
+        $usertypes = usertypemodel::all();
+     
+        return view('pages.registeruser', compact('usertypes', 'userdepts'));
     }
-    public function storeuser(Request $request)
-    {
-        $data = $request->validate([
-            'firstname'  => 'required',
-            'middlename' => 'required',
-            'lastname'   => 'required',
-            'schoolid' => 'required|unique:users,schoolid',
-            'course'     => 'required',
-            'birthdate'  => 'required|date',
-        ]);
-    
-        // Store data, no need for hashing birthdate
-        usermodel::create([
-            'firstname'  => $data['firstname'],
-            'middlename' => $data['middlename'],
-            'lastname'   => $data['lastname'],
-            'schoolid'   => $data['schoolid'],
-            'course'     => $data['course'],
-            'birthdate'  => $data['birthdate'], 
-        ]);
-    
-        return redirect()->route('pages.userlogin')->with('success', 'Registration successful.');
+ public function getDept($user_type)
+{
+    $type = usertypemodel::where('user_type', $user_type)->first();
+
+    if (!$type) {
+        return response()->json([]);
     }
+
+    $departments = userdeptmodel::where('user_type_id', $type->id)->pluck('user_department');
+
+    return response()->json($departments);
+}
+
+
+public function storeuser(Request $request)
+{
+    $request->validate([
+        'type'          => 'required|exists:usertype,user_type',
+        'firstname'     => 'required|string',
+        'middlename'    => 'nullable|string',
+        'lastname'      => 'required|string',
+        'schoolid'      => 'required|unique:users,schoolid',
+        'department'    => 'required|string',
+        'birthdate'     => 'required|date',
+    ]);
+
+    // Get user type ID
+    $userType = usertypemodel::where('user_type', $request->type)->first();
+
+    // Get department name under that user type
+    $department = userdeptmodel::where([
+        ['user_department', $request->department],
+        ['user_type_id', $userType->id]
+    ])->first();
+
+    if (!$userType || !$department) {
+        return back()->withErrors('Invalid user type or department selection.');
+    }
+
+        Usermodel::create([
+        'firstname'     => $request->firstname,
+        'middlename'    => $request->middlename,
+        'lastname'      => $request->lastname,
+        'schoolid'      => $request->schoolid,
+        'birthdate'     => $request->birthdate,
+        'status'        => 'active',
+        'department'    => $department->user_department, // just the name
+        'user_type_id'  => $userType->id,
+    ]);
+
+    return redirect()->route('pages.userlogin')->with('success', 'Registration successful.');
+}
+
+
 
 
     // USER LOGIN------------------------------------------------------------------------------------------------------------------------------------------------
@@ -69,8 +101,6 @@ class usercontroller extends Controller
             'birthdate' => 'required|date',
         ]);
     
-        
-        // Query the user based on schoolid and birthdate
         $user = Usermodel::where('schoolid', $request->schoolid)
             ->where('birthdate', $request->birthdate)
             ->first(); // Get the first matching user
@@ -85,7 +115,10 @@ class usercontroller extends Controller
             session([
                 'userid' => $user->id,
                 'firstname' => $user->firstname,
+                'schoolid' => $user->schoolid,
+                'is_guest' => false, // Regular user
             ]);
+            
         
             // Redirect to the ebook page
             return redirect()->route('pages.userdashboard');
@@ -96,8 +129,45 @@ class usercontroller extends Controller
         }
     }
     
+// GUEST LOGIN-------------------------------------------------------------------------------------------------------------------------------
 
+public function showGuestLogin()
+{
+    return view('pages.guestlogin');
+}
+
+public function processGuestLogin(Request $request)
+{
+    $request->validate([
+        'firstname' => 'required|string|max:255',
+        'lastname' => 'required|string|max:255',
+        'purpose' => 'required|string|max:255',
+    ]);
+
+    $schoolid = 'guest_' . now()->timestamp;
+
+    $guest = Usermodel::create([
+        'firstname' => $request->firstname,
+        'middlename' => '', // Optional, left empty
+        'lastname' => $request->lastname,
+        'schoolid' => $schoolid,
+        'department' => $request->purpose,
+        'birthdate' => now(),
+        'user_type_id' => 0, // Set to 0 for guest
+    ]);
+
+    session([
+        'userid' => $guest->id,
+        'firstname' => $guest->firstname,
+        'schoolid' => $guest->schoolid,
+        'is_guest' => true,
+    ]);
     
+    return redirect()->route('pages.userdashboard')->with('success', 'Welcome, guest!');
+}
+
+
+
   // USER LOGOUT------------------------------------------------------------------------------------------------------------------------------------------------
   public function logoutuser(Request $request)
   {
@@ -116,15 +186,13 @@ class usercontroller extends Controller
   
   
     // USER DASHBOARD -------------------------------------------------------------------------------------------------------------------------------------------------------
- 
     public function userdashboard()
     {
         $carouselItems = carouselmodel::orderBy('display_order')->get();
-        $members = membersmodel::all();
+        $members = membersmodel::all()->groupBy('position');
         $ebooks = booksmodel::orderBy('created_at', 'desc')->take(4)->get(); 
         return view('pages.userdashboard', compact('carouselItems', 'members', 'ebooks'));
     }
-    
     
     
 // USER DASHBOARD -------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -166,23 +234,28 @@ public function userebook(Request $request)
 }
 
 
-//PROFILE----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-public function userprofile(Request $request)
+    //PROFILE----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  
+    public function userprofile(Request $request)
     {
         $userid = $request->session()->get('userid');
         $user = usermodel::find($userid);
-
+    
         if (!$user) {
             return redirect()->route('pages.userlogin')->with('error', 'User not found. Please log in again.');
         }
-
-        $TotalFavBooks = favmodel::count();[
-            'TotalFavBooks' => $TotalFavBooks,
-        ];
-
-        return view('pages.userprofile', compact('user', 'TotalFavBooks'));
-
+    
+        // Get user_type_id of the user (assuming it's stored in the usermodel)
+        $user_type_id = $user->user_type_id;
+    
+        // Fetch departments based on user_type_id
+        $usertypes = userdeptmodel::where('user_type_id', $user_type_id)->get();
+    
+        return view('pages.userprofile', compact('user', 'usertypes'));
     }
+    
+
+
 
     public function updateprofile(Request $request)
     {
@@ -198,7 +271,7 @@ public function userprofile(Request $request)
             'middlename' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'schoolid' => 'required|string|max:50',
-            'course' => 'required|string|max:100',
+            'department' => 'required|string|max:100',
             'birthdate' => 'required|date',
         ]);
     
@@ -207,7 +280,7 @@ public function userprofile(Request $request)
         $user->middlename = $request->input('middlename');
         $user->lastname = $request->input('lastname');
         $user->schoolid = $request->input('schoolid');
-        $user->course = $request->input('course');
+        $user->department = $request->input('department');
         $user->birthdate = $request->input('birthdate');
         $user->save();
     

@@ -22,7 +22,7 @@
   <div class="flex min-h-screen bg-gray-100 w-full">
     @include('admin.sidebar')
 
-
+    <div id="mainContent" class="md:ml-64 md:flex">
 
           <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 mx-auto">
             <h2 class="text-2xl font-bold mb-6 text-center">Research Output Category</h2>
@@ -113,7 +113,7 @@
               </div>
             </form>
         </div>
-
+      </div>
         <script>
           // Get modal elements
           const updateModal = document.getElementById('updateModal');

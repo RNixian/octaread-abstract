@@ -22,7 +22,7 @@
   <div class="flex min-h-screen bg-gray-100 w-full">
     @include('admin.sidebar')
 
-
+    <div id="mainContent" class="md:ml-64 md:flex">
 
           <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 mx-auto">
             <h2 class="text-2xl font-bold mb-6 text-center">Member Entry</h2>
@@ -152,11 +152,13 @@
 
               <div class="mb-4">
                 <label class="block text-gray-700 font-bold mb-2" for="edit_position">Position</label>
-                <select class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" id="edit_position" name="position" required>
-                    <option value="">Select Position</option>
-                    <option value="ojt">OJT</option>
-                    <option value="staff">Staff</option>
-                    <option value="librarian">Librarian</option>
+                <select class=  "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" class="form-control" name="edit_pposition" id="edit_position" >
+                  <option value="">-- Select Position --</option>
+                    @foreach ($positions as $mmbr)
+                      <option value="{{ $mmbr->position }}" {{ request('position') == $mmbr->position ? 'selected' : '' }}>
+                        {{ $mmbr->position }}
+                      </option>
+                    @endforeach
                 </select>
             </div>
 
@@ -174,6 +176,7 @@
         </div>
         </div>
       </div>
+    </div>
       <script>
         // Get modal elements
         const updateModal = document.getElementById('updateModal');
