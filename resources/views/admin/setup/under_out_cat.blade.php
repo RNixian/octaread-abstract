@@ -75,8 +75,8 @@
         <th class="hidden">Id</th>
         <th class="px-4 py-2 border-b text-left">Output Category</th>
         <th class="px-4 py-2 border-b text-left">Under Output Category</th>
-        <th class="px-4 py-2 border-b text-left">Created at</th>
-        <th class="px-4 py-2 border-b text-left">Updated at</th>
+        <th class="hidden">Created at</th>
+        <th class="hidden">Updated at</th>
         <th class="px-4 py-2 border-b text-left">Actions</th>
       </tr>
     </thead>
@@ -88,8 +88,8 @@
       {{ $data->outputCategory ? $data->outputCategory->out_cat : 'N/A' }}
     </td>
     <td class="px-4 py-2 border-b text-start">{{ $data->under_roc }}</td>
-    <td class="px-4 py-2 border-b">{{ $data->created_at }}</td>
-    <td class="px-4 py-2 border-b">{{ $data->updated_at }}</td>
+    <td class="hidden">{{ $data->created_at }}</td>
+    <td class="hidden">{{ $data->updated_at }}</td>
     <td class="px-4 py-2 border-b space-x-4">
       <a href="{{ route('deleteout_cat', $data->id) }}"
          class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">

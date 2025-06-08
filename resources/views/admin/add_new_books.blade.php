@@ -22,60 +22,74 @@
     <div class="w-full max-w-lg bg-white rounded shadow-md p-8">
         <h2 class="text-2xl font-bold text-center mb-6">Add New</h2>
 
-        <form action="{{ route('admin.storebooks') }}" method="POST" enctype="multipart/form-data" class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
-            @csrf
-        
+      <form action="{{ route('admin.storebooks') }}" method="POST" enctype="multipart/form-data" class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
+    @csrf
 
-            <div class="mb-4">
-                <label class="block text-gray-700 font-bold mb-2" for="title">Title</label>
-                <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="title" name="title" required>
-            </div>
-        
+    <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2" for="title">Title</label>
+        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="title" name="title" value="{{ old('title') }}" required>
+        @error('title')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
+    </div>
 
-            <div class="mb-4">
-                <label class="block text-gray-700 font-bold mb-2" for="author">Author</label>
-                <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="author" name="author" required>
-            </div>
-        
+    <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2" for="author">Author</label>
+        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="author" name="author" value="{{ old('author') }}" required>
+        @error('author')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
+    </div>
 
-            <div class="mb-4">
-                <label class="block text-gray-700 font-bold mb-2" for="year">Year</label>
-                <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="number" id="year" name="year" required>
-            </div>
-     
-            <div class="mb-4">
-                <label class="block text-gray-700 font-bold mb-2" for="category">Category</label>
-                <select name="category" id="category" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    <option value="">-- Select Category --</option>
-                    @foreach ($res_out_cats as $category)
-                        <option value="{{ $category->out_cat }}">{{ $category->out_cat }}</option>
-                    @endforeach
-                </select>
-            </div>
- 
-            <div class="mb-4">
-                <label class="block text-gray-700 font-bold mb-2" for="department">Department</label>
-                <select name="department" id="department" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    <option value="">-- Select Department --</option>
-                </select>
-            </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2" for="year">Year</label>
+        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="number" id="year" name="year" value="{{ old('year') }}" required>
+        @error('year')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
+    </div>
 
-            <div class="mb-6">
-                <label class="block text-gray-700 font-bold mb-2" for="pdf_filepath">PDF File</label>
-                <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="file" id="pdf_filepath" name="pdf_filepath" accept=".pdf" required>
-            </div>
-        
+    <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2" for="category">Category</label>
+        <select name="category" id="category" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="">-- Select Category --</option>
+            @foreach ($res_out_cats as $category)
+                <option value="{{ $category->out_cat }}" {{ old('category') == $category->out_cat ? 'selected' : '' }}>{{ $category->out_cat }}</option>
+            @endforeach
+        </select>
+        @error('category')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
+    </div>
 
-            <div class="flex justify-end">
-                <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
-                    Submit
-                </button>
+    <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2" for="department">Department</label>
+        <select name="department" id="department" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="">-- Select Department --</option>
+        </select>
+        @error('department')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
+    </div>
 
-                <a href="{{ url('/admin/admindashboard') }}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300 inline-block">
-                    Cancel
-                </a>
-            </div>
-        </form>
+    <div class="mb-6">
+        <label class="block text-gray-700 font-bold mb-2" for="pdf_filepath">PDF File</label>
+        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="file" id="pdf_filepath" name="pdf_filepath" accept=".pdf" required>
+        @error('pdf_filepath')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="flex justify-end space-x-4">
+        <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
+            Submit
+        </button>
+        <a href="{{ url('/admin/graduate') }}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300 inline-block">
+            Cancel
+        </a>
+    </div>
+</form>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

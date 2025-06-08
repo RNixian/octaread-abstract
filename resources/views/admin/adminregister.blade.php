@@ -7,8 +7,10 @@
     <title>OctaRead Admin Registration</title>
 </head>
 <body class="bg-gray-100 min-h-screen flex">
+  @include('admin.sidebar')
 
-    @include('admin.sidebar')
+  <div id="mainContent" class="flex flex-1 items-center justify-center min-h-screen">
+
 
     <div class="flex-grow flex items-center justify-center px-4">
         <div class="max-w-md w-full">
@@ -40,8 +42,6 @@
                         <input id="middlename" name="middlename" type="text" required
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                     </div>
-    
-                    
     
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="lastname">
@@ -85,6 +85,6 @@
             </div>
         </div>
     </div>
-
+</div>
 </body>
 </html>
