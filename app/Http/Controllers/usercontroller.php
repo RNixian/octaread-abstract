@@ -7,12 +7,15 @@ use App\Models\booksmodel;
 use App\Models\carouselmodel; 
 use App\Models\contactmodel; 
 use App\Models\favmodel;
+use App\Models\viewsmodel;
 use App\Models\usertypemodel; 
 use App\Models\userdeptmodel;
 use App\Models\departmentmodel; 
 use App\Models\membersModel; 
 use App\Models\usermodel; 
-use App\Models\positionmodel; 
+use App\Models\positionmodel;
+use App\Models\rocmodel;
+use App\Models\underrocmodel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Guard;
@@ -198,8 +201,7 @@ public function processGuestLogin(Request $request)
 // USER DASHBOARD -------------------------------------------------------------------------------------------------------------------------------------------------------
 public function userebook(Request $request)
 {
-    $departments = departmentmodel::all();
-
+    $categories = RocModel::pluck('out_cat')->unique()->values();
     $query = booksmodel::query();
 
     // Apply search filters
@@ -229,9 +231,27 @@ public function userebook(Request $request)
     // Use paginate instead of get
     $ebooks = $query->paginate(10)->withQueryString(); // ✅ fixed here
 
-    return view('pages.userebook', compact('ebooks', 'departments'));
+    return view('pages.userebook', compact('ebooks',  'categories'));
     
 }
+
+
+public function getDeptres($out_cat)
+{
+    $category = rocmodel::where('out_cat', $out_cat)->first();
+
+    if (!$category) {
+        return response()->json([]);
+    }
+
+    $departments = underrocmodel::where('out_cat_id', $category->id)
+        ->pluck('under_roc');
+
+    return response()->json($departments);
+}
+
+
+
 
 
     //PROFILE----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -357,6 +377,7 @@ public function favstore(Request $request)
     return back()->with('success', 'Book added to favorites.');
 }
 
+
 public function myFavorites(Request $request)
 {
     $userId = $request->session()->get('userid');
@@ -398,6 +419,43 @@ public function showUserBookPage()
 
     return view('pages.userebook', compact('departments', 'ebooks'));
 }
+
+
+public function viewstore(Request $request)
+{
+    // Check if the user is logged in
+    if (!session()->has('userid')) {
+        return redirect()->back()->with('error', 'You must be logged in to read a book.');
+    }
+
+    $user_id = session('userid');
+    $ebook_id = $request->ebook_id;
+
+    // Always insert a new view record
+    viewsmodel::create([
+        'user_id' => $user_id,
+        'ebook_id' => $ebook_id,
+    ]);
+
+    // Redirect to view PDF
+    return redirect(asset('storage/' . $request->pdf_filepath));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

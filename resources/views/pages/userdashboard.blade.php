@@ -81,8 +81,6 @@
     <!-- Header -->
     @include('pages.usersheader')
 
-
-   
 <div class="container-fluid p-0" style="height: 70vh;">
   <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="height: 100%;">
       <div class="carousel-inner" style="height: 100%;">
@@ -295,13 +293,15 @@
           @endif
 
           <div class="mt-auto flex justify-between items-center">
-            <a 
-              href="{{ asset('storage/' . $book->pdf_filepath) }}" 
-              target="_blank"
-              class="inline-block bg-red-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-red-700 transition"
-            >
-              Read
-            </a>
+            <form action="{{ route('read.store') }}" method="POST" class="ml-2" target="_blank">
+              @csrf
+              <input type="hidden" name="ebook_id" value="{{ $book->id }}">
+              <input type="hidden" name="pdf_filepath" value="{{ $book->pdf_filepath }}">
+              <button type="submit" class="btn btn-sm btn-custom-red">
+                Read
+              </button>
+            </form>
+            
 
                     {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
           @if(session()->has('userid') && session('is_guest') === false)

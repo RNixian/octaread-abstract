@@ -50,8 +50,6 @@
                <th class="px-4 py-2 border-b text-left">Reference#</th>
                <th class="px-4 py-2 border-b text-left">Purpose</th>
                <th class="px-4 py-2 border-b text-left">Date Logged</th>
-               <th class="px-4 py-2 border-b text-left">Status</th>
-               <th class="px-4 py-2 border-b text-left">Type</th>
                <th class="px-4 py-2 border-b text-left">Actions</th>
              </tr>
            </thead>
@@ -63,17 +61,11 @@
                  <td class="px-4 py-2">{{ $data->schoolid }}</td>
                  <td class="px-4 py-2">{{ $data->department }}</td>
                  <td class="px-4 py-2 border-b">{{ \Carbon\Carbon::parse($data->birthdate)->format('d-m-Y') }}</td>
-                 <td class="px-4 py-2">{{ $data->status }}</td>
-                 <td class="px-4 py-2 border-b text-start">
-                  {{ $data->userType ? $data->userType->user_type : 'Guest' }}
-                </td>
                  <td class="px-4 py-2 space-x-2">
-   
-                   <form action="{{ route('deleteuseracc', $data->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                     @csrf
-                     @method('DELETE')
-                     <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Delete</button>
-                   </form>
+                  <a href="{{ route('deleteuseracc', $data->id) }}"
+                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
+                   Delete
+                 </a>
                  </td>
                </tr>
              @empty

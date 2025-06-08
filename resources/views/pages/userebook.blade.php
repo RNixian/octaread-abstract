@@ -72,57 +72,54 @@
   <div class="container py-5">
     <h1 class="mb-4">Research Abstract</h1>
 
-
-
-   <!-- Category Buttons -->
-   <form action="{{ route('pages.ebook') }}" method="GET" class="mt-3 d-flex flex-wrap gap-2">
-    @php
-      $categories = ['graduate', 'under-graduate', 'employee'];
-    @endphp
-
-    @foreach ($categories as $category)
-      <button 
-        type="submit" 
-        name="category" 
-        value="{{ $category }}" 
-        class="btn {{ request('category') == $category ? 'btn-dark' : 'btn-outline-dark' }}">
-        {{ ucfirst($category) }}
-      </button>
-    @endforeach
-  </form>
-
-
-      <select name="department" class="form-select" style="min-width: 100px;">
-        <option value="">All Departments</option>
-        @foreach ($departments as $department)
-          <option 
-            value="{{ $department->department }}" 
-            {{ request('department') == $department->department ? 'selected' : '' }}>
-            {{ $department->department }}
-          </option>
-        @endforeach
-      </select>
-
-      @if (request('category'))
-        <input type="hidden" name="category" value="{{ request('category') }}">
-      @endif
-
-    <!-- Search & Filter Form -->
-    <form action="{{ route('pages.ebook') }}" method="GET" class="d-flex gap-1 flex-wrap align-items-center">
-      <input 
-        type="text" 
-        name="search" 
-        class="form-control flex-grow-1" 
-        placeholder="Search book..." 
-        value="{{ request('search') }}"
-        style="min-width: 100px;"
-      >
-
-
-      <button type="submit" class="btn btn-custom-red">Search</button>
-      <a href="{{ url('/pages/ebook') }}" class="btn btn-custom-green">Reset</a>
+    <form action="{{ route('pages.ebook') }}" method="GET" class="mt-3">
+      <!-- Row 1: Category & Department -->
+      <div class="d-flex flex-wrap gap-3 mb-3 align-items-center">
+        <!-- Category: auto width, flex-grow -->
+        <div style="width: 250px;">
+          <label for="category" class="form-label fw-bold">Category</label>
+          <select name="category" id="category" class="form-select">
+            <option value="">All Categories</option>
+            @foreach($categories as $category)
+              <option value="{{ $category }}" 
+                {{ request('category') == $category ? 'selected' : '' }}>
+                {{ $category }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+    
+        <!-- Department: fixed width -->
+        <div class="flex-grow-1">
+          <label for="department" class="form-label fw-bold">Department</label>
+          <select name="department" id="department" class="form-select">
+            <option value="">-- Select Department --</option>
+            <!-- Dynamic options need to be populated via JS -->
+            <!-- We'll make sure the selected option remains -->
+            @if(request('department'))
+              <option value="{{ request('department') }}" selected>{{ request('department') }}</option>
+            @endif
+          </select>
+        </div>
+      </div>
+    
+      <!-- Row 2: Search input + buttons -->
+      <div class="d-flex align-items-center gap-2">
+        <input 
+          type="text" 
+          name="search" 
+          class="form-control flex-grow-1"
+          placeholder="Search book..." 
+          value="{{ request('search') }}"
+          style="min-width: 150px;"
+        >
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-custom-red">Search</button>
+          <a href="{{ url('/pages/ebook') }}" class="btn btn-custom-green">Reset</a>
+        </div>
+      </div>
     </form>
-
+    
  
    <!-- Book Grid -->
 <div class="row mt-4">
@@ -140,11 +137,16 @@
           </p>
           <div class="mt-auto d-flex justify-content-between align-items-center">
             <!-- Read Button -->
-            <a href="{{ asset('storage/' . $book->pdf_filepath) }}"
-              class="btn btn-sm btn-custom-red"
-              target="_blank">
-              Read
-            </a>
+            <form action="{{ route('read.store') }}" method="POST" class="ml-2" target="_blank">
+              @csrf
+              <input type="hidden" name="ebook_id" value="{{ $book->id }}">
+              <input type="hidden" name="pdf_filepath" value="{{ $book->pdf_filepath }}">
+              <button type="submit" class="btn btn-sm btn-custom-red">
+                Read
+              </button>
+            </form>
+            
+            
 
               {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
           @if(session()->has('userid') && session('is_guest') === false)
@@ -178,10 +180,31 @@
   {{ $ebooks->withQueryString()->links() }}
 </div>
 
+</div>
  
-  @include('pages.userfooter')
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.getElementById('category').addEventListener('change', function () {
+        const categoryId = this.value;
+
+        fetch(`/get-deptres/${categoryId}`)
+            .then(response => response.json())
+            .then(data => {
+                const departmentSelect = document.getElementById('department');
+                departmentSelect.innerHTML = '<option value="">-- Select Department --</option>';
+                data.forEach(dep => {
+                    const option = document.createElement('option');
+                    option.value = dep;
+                    option.textContent = dep;
+                    departmentSelect.appendChild(option);
+                });
+            });
+    });
+</script>
+<div>@include('pages.userfooter')</div>
+
 </body>
 </html>

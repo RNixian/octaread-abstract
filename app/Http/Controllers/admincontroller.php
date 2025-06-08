@@ -5,6 +5,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use App\Models\adminmodel; 
 use App\Models\booksmodel; 
+use App\Models\favmodel;
+use App\Models\viewsmodel;
 use App\Models\carouselmodel; 
 use App\Models\contactmodel; 
 use App\Models\usertypemodel; 
@@ -123,38 +125,19 @@ public function storebooks(Request $request)
         'year' => 'required|integer',
         'category' => 'required|string',
         'department' => 'required|string',
-        'pdf_filepath' => 'required|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,odt,ods,odp,txt,rtf,jpg,jpeg,png,bmp,tiff,tif,gif,svg,html,htm,md,epub,xml,json',
+        'pdf_filepath' => 'required|file|mimes:pdf',
     ]);
 
     $file = $request->file('pdf_filepath');
-    $originalExtension = $file->getClientOriginalExtension();
-    $filePath = $file->getPathname();
-    $convertedPdfPath = storage_path('app/public/octabooks/' . uniqid() . '.pdf');
-
-    // Convert the file to PDF using LibreOffice (headless)
-    if (in_array($originalExtension, ['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'odt', 'ods', 'odp', 'txt', 'rtf', 'html', 'htm', 'md'])) {
-        // LibreOffice must be installed on your system
-        $outputDir = storage_path('app/public/octabooks');
-        exec("libreoffice --headless --convert-to pdf --outdir " . escapeshellarg($outputDir) . " " . escapeshellarg($filePath));
-        $convertedFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.pdf';
-        $validatedData['pdf_filepath'] = 'octabooks/' . $convertedFilename;
-
-    } elseif (in_array($originalExtension, ['jpg', 'jpeg', 'png', 'bmp', 'tiff', 'tif', 'gif', 'svg'])) {
-        // Image to PDF using Imagick (ensure Imagick is installed & enabled)
-        $imagick = new \Imagick($filePath);
-        $imagick->setImageFormat('pdf');
-        $imagick->writeImages($convertedPdfPath, true);
-        $validatedData['pdf_filepath'] = 'octabooks/' . basename($convertedPdfPath);
-
-    } else {
-        // Already a PDF or unsupported type — just store it
-        $validatedData['pdf_filepath'] = $file->store('octabooks', 'public');
-    }
+    // Save file directly without conversion
+    $path = $file->store('octabooks', 'public');
+    $validatedData['pdf_filepath'] = $path;
 
     booksmodel::create($validatedData);
 
-    return redirect()->route('admin.graduate')->with('success', 'Book successfully added and converted to PDF.');
+    return redirect()->route('admin.graduate')->with('success', 'Book successfully added.');
 }
+
 
     public function departmentBooks(Request $request)
     {
@@ -1114,13 +1097,55 @@ if ($search) {
         'values' => $counts,
     ];
 
-    $totalBooks = BooksModel::count();
     $res_out_cats = RocModel::all();
+    $totalBooks = BooksModel::count();
+    $totalUser = usermodel::where('user_type_id', '!=', '0')->count();
+    $totalGuest = usermodel::where('user_type_id', '==', '0')->count();
+    $totalAdmin = adminmodel::count();
+    $mostFavorite = favmodel::select('ebook_id')
+    ->selectRaw('COUNT(*) as total')
+    ->groupBy('ebook_id')
+    ->orderByDesc('total')
+    ->first();
+
+        $mostFavoriteTitle = null;
+        $mostFavoriteCount = 0;
+
+        if ($mostFavorite) {
+            $book = booksmodel::where('id', $mostFavorite->ebook_id)->first();
+            $mostFavoriteTitle = $book->title ?? 'Unknown Title';
+            $mostFavoriteCount = $mostFavorite->total;
+        }
+       
+    $mostViewed = viewsmodel::select('ebook_id')
+    ->selectRaw('COUNT(*) as total')
+    ->groupBy('ebook_id')
+    ->orderByDesc('total')
+    ->first();
+    
+        $mostViewedTitle = null;
+        $mostViewedCount = 0;
+    
+        if ($mostViewed) {
+            $book = booksmodel::where('id', $mostViewed->ebook_id)->first();
+            $mostViewedTitle = $book->title ?? 'Unknown Title';
+            $mostViewedCount = $mostViewed->total;
+        }
+        
+
+    
 
     return view('admin.admindashboard', compact(
         'pieData',
         'barDatabyyr',
         'totalBooks',
+        'mostFavoriteTitle',
+        'mostFavoriteCount',
+        'mostViewedTitle',
+        'mostViewedCount',
+        'totalUser',
+        'totalAdmin',
+        'totalGuest',
         'categories',
         'departments',
         'res_out_cats',

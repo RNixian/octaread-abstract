@@ -23,7 +23,33 @@
             <h2 class="text-lg font-semibold mb-6 text-center">Total Number of Books</h2>
             <h2 class="font-bold text-center" style="font-size: 6rem;">{{ $totalBooks }}</h2>
           </div>
+
+          <div class="bg-white shadow-md rounded p-8 flex flex-col items-center justify-center" style="width: 300px; height: 400px;">
+            <h2 class="text-lg font-semibold mb-2 text-center">Most Viewed Book</h2>
+            <p class="text-center mb-4 font-medium">"{{ $mostViewedTitle }}" <br> Count: {{ $mostViewedCount }}</p>
+        </div>
+
+          <div class="bg-white shadow-md rounded p-8 flex flex-col items-center justify-center" style="width: 300px; height: 400px;">
+            <h2 class="text-lg font-semibold mb-2 text-center">Most Favorite Book</h2>
+            <p class="text-center mb-4 font-medium">"{{ $mostFavoriteTitle }}" <br> Count: {{ $mostFavoriteCount }}</p>
+        </div>
+        
+
+          <div class="bg-white shadow-md rounded p-8 flex flex-col items-center justify-center" style="width: 300px; height: 400px;">
+            <h2 class="text-lg font-semibold mb-6 text-center">Total Number of Users</h2>
+            <h2 class="font-bold text-center" style="font-size: 6rem;">{{ $totalUser }}</h2>
+          </div>
+
+          <div class="bg-white shadow-md rounded p-8 flex flex-col items-center justify-center" style="width: 300px; height: 400px;">
+            <h2 class="text-lg font-semibold mb-6 text-center">Total Guest Log</h2>
+            <h2 class="font-bold text-center" style="font-size: 6rem;">{{ $totalGuest }}</h2>
+          </div>
   
+          <div class="bg-white shadow-md rounded p-8 flex flex-col items-center justify-center" style="width: 300px; height: 400px;">
+            <h2 class="text-lg font-semibold mb-6 text-center">Total Number of Admin</h2>
+            <h2 class="font-bold text-center" style="font-size: 6rem;">{{ $totalAdmin }}</h2>
+          </div>
+
           <!-- Container 2 -->
           <div class="bg-white shadow-md rounded p-8 flex flex-col items-center" style="width: 300px; height: 400px;">
             <h2 class="text-lg font-semibold mb-6 text-center">Books Category Distribution</h2>
@@ -181,7 +207,7 @@
             responsive: true,
             plugins: {
                 legend: { display: false },
-                title: { display: true, text: 'Filtered Book Count by Year' }
+                title: { display: true, text: 'Filtered Book Count' }
             }
         }
     });

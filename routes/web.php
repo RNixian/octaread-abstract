@@ -206,11 +206,16 @@ Route::middleware(['account.auth'])->group(function () {
 
     // E-BOOK
     Route::get('/pages/ebook', [UserController::class, 'userebook'])->name('pages.ebook');
+    Route::get('/get-deptres/{out_cat}', [UserController::class, 'getDeptres']);
+
 
     // FAVORITES
     Route::get('/pages/favorites', [UserController::class, 'userfavorites'])->name('pages.favorites');
     Route::post('/toggle-favorite/{ebook}', [UserController::class, 'toggleFavorite'])->name('toggle.favorite');
     Route::post('/pages/favorites', [UserController::class, 'favstore'])->name('favorites.store')->middleware('account.auth');
+
+    //READ
+    Route::post('/read/store', [UserController::class, 'viewstore'])->name('read.store');
 
     // PROFILE
     Route::get('/pages/profile', [UserController::class, 'userprofile'])->name('pages.profile');
