@@ -1,17 +1,20 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+<!-- Font Awesome CDN (place in <head> ideally) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+  <header class="d-flex justify-content-between align-items-center p-3 custom-header-bg">
+      <div class="d-flex align-items-center">
+          <img src="{{ asset('images/RnMLogo.png') }}" alt="Logo" style="height: 60px; width: auto;">
+      </div> 
+
+      <div class="d-flex align-items-center">
+        <img src="{{ asset('images/logo2.jpg') }}" alt="Logo" style="height: 60px; width: auto; border-radius: 5%; border: 2px solid white;">
+
+    </div> 
+  </header>
+  
+  <style>
+      .custom-header-bg {
+          background-color: #001e3c;
+      }
+  </style>
+  

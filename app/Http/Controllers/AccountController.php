@@ -226,7 +226,11 @@ public function updateadminacc(Request $request, $id) {
             return redirect()->back()->with('success', 'admin Account has been deleted successfully!');
         }
 
-
+        public function index()
+        {
+            return view('index');
+        }
+        
 
 
 

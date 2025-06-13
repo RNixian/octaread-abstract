@@ -224,7 +224,7 @@ Route::middleware(['account.auth'])->group(function () {
 
 
 
-
+Route::get('/', [AccountController::class, 'index'])->name('index');
 
 
 

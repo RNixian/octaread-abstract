@@ -8,10 +8,24 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
   <style>
-    .book-card img {
-      height: 200px;
-      object-fit: cover;
-    }
+  .book-card img {
+  height: 150px;
+}
+
+.card-body h5 {
+  font-size: 1rem;
+}
+
+.card-body p {
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+}
+
+    .book-card {
+  max-width: 250px;
+  margin: 0 auto;
+}
+
 
     .favorite-btn {
       background: none;
@@ -65,36 +79,40 @@
     @else
       <div class="row">
         @foreach ($ebooks as $ebook)
-          <div class="col-md-4 mb-4">
-            <div class="card book-card h-100">
-              @if ($ebook->cover_image)
-                <img src="{{ asset('images/default_pdf_picture.jpg' . $ebook->cover_image) }}" class="card-img-top" alt="Book Cover">
-              @else
-                <img src="{{ asset('images/default_pdf_picture.jpg') }}" class="card-img-top" alt="Book Cover">
-              @endif
-
-              <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ $ebook->title }}</h5>
-                <p class="card-text text-muted">{{ $ebook->author }}</p>
-
-                <div class="mt-auto d-flex justify-content-between align-items-center">
-                  <a href="{{ asset('storage/' . $ebook->pdf_filepath) }}"
-                    class="btn btn-sm btn-custom-red"
-                    target="_blank">
-                   Read
-                 </a>
-                  <form action="{{ route('toggle.favorite', $ebook->id) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="favorite-btn" title="Unfavorite">
-                        <i class="bi bi-heart-fill"></i>
-                    </button>
-                </form>
-                
-                </div>
+        <div class="col-sm-6 col-md-3 mb-4">
+          <div class="card book-card h-100">
+            @if ($ebook->cover_image)
+              <img src="{{ asset('images/ebooks/' . $ebook->cover_image) }}" class="card-img-top" alt="Book Cover">
+            @else
+              <img src="{{ asset('images/default_pdf_picture.jpg') }}" class="card-img-top" alt="Default Cover">
+            @endif
+      
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title"><i class="bi bi-clipboard-fill"></i> {{ $ebook->title }}</h5>
+              <p class="card-text text-muted"><i class="bi bi-person-fill"></i> {{ $ebook->author }}</p>
+              <p class="card-text text-muted"><i class="bi bi-tags-fill"></i> {{ $ebook->category }}<br>
+                <i class="bi bi-building-fill"></i> {{ $ebook->department }}</p>
+              
+              <p class="card-text">{{ Str::limit($ebook->description, 80) }}</p>
+      
+              <div class="mt-auto d-flex justify-content-between align-items-center">
+                <a href="{{ asset('storage/' . $ebook->pdf_filepath) }}"
+                  class="btn btn-sm btn-custom-red"
+                  target="_blank">
+                 Read
+               </a>
+               <form action="{{ route('toggle.favorite', $ebook->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="favorite-btn" title="Unfavorite">
+                    <i class="bi bi-heart-fill"></i>
+                </button>
+            </form>
               </div>
             </div>
           </div>
-        @endforeach
+        </div>
+      @endforeach
+      
       </div>
     @endif
   </div>

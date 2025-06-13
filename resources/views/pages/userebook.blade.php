@@ -62,6 +62,7 @@
     .favorite-btn:hover {
       transform: scale(1.2);
     }
+
   </style>
 </head>
 <body class="bg-light d-flex flex-column min-vh-100">
@@ -72,108 +73,98 @@
   <div class="container py-5">
     <h1 class="mb-4">Research Abstract</h1>
 
-    <form action="{{ route('pages.ebook') }}" method="GET" class="mt-3">
-      <!-- Row 1: Category & Department -->
-      <div class="d-flex flex-wrap gap-3 mb-3 align-items-center">
-        <!-- Category: auto width, flex-grow -->
-        <div style="width: 250px;">
-          <label for="category" class="form-label fw-bold">Category</label>
-          <select name="category" id="category" class="form-select">
-            <option value="">All Categories</option>
-            @foreach($categories as $category)
-              <option value="{{ $category }}" 
-                {{ request('category') == $category ? 'selected' : '' }}>
-                {{ $category }}
-              </option>
-            @endforeach
-          </select>
-        </div>
     
-        <!-- Department: fixed width -->
-        <div class="flex-grow-1">
-          <label for="department" class="form-label fw-bold">Department</label>
-          <select name="department" id="department" class="form-select">
-            <option value="">-- Select Department --</option>
-            <!-- Dynamic options need to be populated via JS -->
-            <!-- We'll make sure the selected option remains -->
-            @if(request('department'))
-              <option value="{{ request('department') }}" selected>{{ request('department') }}</option>
-            @endif
-          </select>
-        </div>
-      </div>
-    
-      <!-- Row 2: Search input + buttons -->
-      <div class="d-flex align-items-center gap-2">
-        <input 
-          type="text" 
-          name="search" 
-          class="form-control flex-grow-1"
-          placeholder="Search book..." 
-          value="{{ request('search') }}"
-          style="min-width: 150px;"
-        >
-        <div class="d-flex gap-2">
-          <button type="submit" class="btn btn-custom-red">Search</button>
-          <a href="{{ url('/pages/ebook') }}" class="btn btn-custom-green">Reset</a>
-        </div>
-      </div>
-    </form>
-    
- 
-   <!-- Book Grid -->
-<div class="row mt-4">
-  @forelse ($ebooks as $book)
-    <div class="col-md-3 mb-4">
+<!-- 📍 Breadcrumb -->
+<div id="breadcrumb-path" class="mb-3 fw-bold text-secondary">
+  <span class="breadcrumb-item active" onclick="backToRocModels()" style="cursor:pointer">Category</span>
+</div>
+
+
+<div id="rocmodel-buttons" style="display: flex; flex-wrap: wrap; ">
+  @foreach($rocmodels as $roc)
+      <button 
+        onclick="loadUnderCategories('{{ $roc->out_cat }}', this)"
+        class="btn btn-primary"
+        style="
+          position: relative;
+          background-color: transparent;
+          width: 300px;
+          height: 300px;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-end;
+          padding: 1px;">
+          <div style="
+            background-image: url('https://cdn-icons-png.flaticon.com/512/716/716784.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 100%;
+            height: 100%;
+          "></div>
+          <span style="font-size: 12px; text-align: center; margin-top: 5px; color:black;">
+            {{ $roc->out_cat }}
+          </span>
+      </button>
+  @endforeach
+</div>
+
+
+<!-- 🔘 UnderRocModel Buttons (Initially Hidden) -->
+<div id="subcategory-buttons" class="mb-4" style="display:none;"></div>
+
+
+<!-- 📚 Ebook Cards (Initially Hidden) -->
+<div id="ebooks-container" class="row mt-4" style="display:none;">
+  @forelse ($ebooks as $ebook)
+    <div 
+      class="col-md-3 mb-4"
+      data-category="{{ $ebook->category }}"
+      data-department="{{ $ebook->department }}"
+    >
       <div class="card book-card h-100 shadow-sm">
-        <img src="{{ asset('images/default_pdf_picture.jpg/' . $book->cover_photo) }}" class="card-img-top" alt="Book Cover">
+        <img 
+          src="{{ asset($ebook->cover_photo ? 'images/' . $ebook->cover_photo : 'images/default_pdf_picture.jpg') }}" 
+          class="card-img-top" 
+          alt="Book Cover"
+        >
         <div class="card-body d-flex flex-column">
-          <h5 class="card-title">{{ $book->title }}</h5>
+          <h5 class="card-title">{{ $ebook->title }}</h5>
           <p class="card-text text-muted mb-1">
-            <i class="bi bi-person-fill"></i> {{ $book->author }}
+            <i class="bi bi-person-fill"></i> {{ $ebook->author }}
           </p>
-          <p class="card-text">
-            <small>{{ $book->department }} | {{ $book->category }}</small>
-          </p>
+
           <div class="mt-auto d-flex justify-content-between align-items-center">
             <!-- Read Button -->
-            <form action="{{ route('read.store') }}" method="POST" class="ml-2" target="_blank">
+            <form action="{{ route('read.store') }}" method="POST" target="_blank">
               @csrf
-              <input type="hidden" name="ebook_id" value="{{ $book->id }}">
-              <input type="hidden" name="pdf_filepath" value="{{ $book->pdf_filepath }}">
-              <button type="submit" class="btn btn-sm btn-custom-red">
-                Read
-              </button>
+              <input type="hidden" name="ebook_id" value="{{ $ebook->id }}">
+              <input type="hidden" name="pdf_filepath" value="{{ $ebook->pdf_filepath }}">
+              <button type="submit" class="btn btn-sm btn-custom-red">Read</button>
             </form>
-            
-            
 
-              {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
-          @if(session()->has('userid') && session('is_guest') === false)
-          <form action="{{ route('favorites.store') }}" method="POST" class="ml-2">
-              @csrf
-              <input type="hidden" name="ebook_id" value="{{ $book->id }}">
-              <button 
-                type="submit" 
-                class="text-red-600 hover:text-red-700 focus:outline-none"
-                title="Add to Favorites"
-              >
-                <i class="bi bi-heart-fill text-gray-300"></i>
-              </button>
-          </form>
-          @endif
+            <!-- Favorites Button -->
+            @if(session()->has('userid') && session('is_guest') === false)
+              <form action="{{ route('favorites.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="ebook_id" value="{{ $ebook->id }}">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                  <i class="bi bi-heart-fill"></i>
+                </button>
+              </form>
+            @endif
           </div>
         </div>
       </div>
     </div>
   @empty
-    <div class="col-12">
-      <div class="alert alert-warning text-center" role="alert">
-        No books found.
-      </div>
-    </div>
+    <p class="text-muted">No ebooks available.</p>
   @endforelse
 </div>
+
 
 <!-- Pagination -->
 <div class="d-flex justify-content-center mt-4">
@@ -181,29 +172,124 @@
 </div>
 
 </div>
- 
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
   <script>
-    document.getElementById('category').addEventListener('change', function () {
-        const categoryId = this.value;
+    let currentCategory = '';
+    let currentSubcategory = '';
 
-        fetch(`/get-deptres/${categoryId}`)
-            .then(response => response.json())
+    function backToRocModels() {
+    currentCategory = '';
+    currentSubcategory = '';
+
+    // Show RocModel buttons (force flex display)
+    document.getElementById('rocmodel-buttons').style.display = 'flex';
+    document.getElementById('subcategory-buttons').style.display = 'none';
+    document.getElementById('ebooks-container').style.display = 'none';
+
+    // Reset breadcrumb
+    document.getElementById('breadcrumb-path').innerHTML = `
+        <span class="breadcrumb-item active" onclick="backToRocModels()" style="cursor:pointer">Category</span>
+    `;
+}
+
+
+    function loadUnderCategories(outCat) {
+        currentCategory = outCat;
+        currentSubcategory = '';
+
+        // Hide RocModel buttons
+        document.getElementById('rocmodel-buttons').style.display = 'none';
+
+        // Update breadcrumb
+        document.getElementById('breadcrumb-path').innerHTML = `
+            <span class="breadcrumb-item text-primary" onclick="backToRocModels()" style="cursor:pointer">RocModels</span> 
+            > 
+            <span class="breadcrumb-item active">${outCat}</span>
+        `;
+
+        // Fetch UnderRocModels
+        fetch(`/get-deptres/${outCat}`)
+            .then(res => res.json())
             .then(data => {
-                const departmentSelect = document.getElementById('department');
-                departmentSelect.innerHTML = '<option value="">-- Select Department --</option>';
-                data.forEach(dep => {
-                    const option = document.createElement('option');
-                    option.value = dep;
-                    option.textContent = dep;
-                    departmentSelect.appendChild(option);
+                const subcatContainer = document.getElementById('subcategory-buttons');
+                subcatContainer.innerHTML = '';
+                subcatContainer.style.display = 'block';
+
+                // Style each subcategory as a folder icon
+                data.forEach(subcat => {
+                    const folderDiv = document.createElement('div');
+                    folderDiv.style.textAlign = 'center';
+                    folderDiv.style.width = '300px';
+                    folderDiv.style.display = 'inline-block';
+                    folderDiv.style.margin = '10px';
+
+                    const folderBtn = document.createElement('button');
+                    folderBtn.style.backgroundImage = "url('https://cdn-icons-png.flaticon.com/512/716/716784.png')";
+                    folderBtn.style.backgroundSize = 'contain';
+                    folderBtn.style.backgroundRepeat = 'no-repeat';
+                    folderBtn.style.backgroundPosition = 'center';
+                    folderBtn.style.backgroundColor = 'transparent';
+                    folderBtn.style.width = '300px';
+                    folderBtn.style.height = '300px';
+                    folderBtn.style.border = 'none';
+                    folderBtn.style.cursor = 'pointer';
+                    folderBtn.onclick = () => showEbooks(subcat);
+
+                    const label = document.createElement('span');
+                    label.style.display = 'block';
+                    label.style.marginTop = '8px';
+                    label.style.fontSize = '14px';
+                    label.textContent = subcat;
+
+                    folderDiv.appendChild(folderBtn);
+                    folderDiv.appendChild(label);
+                    subcatContainer.appendChild(folderDiv);
                 });
             });
-    });
+
+        // Hide ebooks initially
+        document.getElementById('ebooks-container').style.display = 'none';
+    }
+
+    function showEbooks(underCat) {
+        currentSubcategory = underCat;
+
+        // Hide subcategory buttons
+        document.getElementById('subcategory-buttons').style.display = 'none';
+
+        // Update breadcrumb
+        document.getElementById('breadcrumb-path').innerHTML = `
+            <span class="breadcrumb-item text-primary" onclick="backToRocModels()" style="cursor:pointer">RocModels</span> 
+            > 
+            <span class="breadcrumb-item text-primary" onclick="loadUnderCategories('${currentCategory}')" style="cursor:pointer">${currentCategory}</span> 
+            > 
+            <span class="breadcrumb-item active">${underCat}</span>
+        `;
+
+        const cards = document.querySelectorAll('#ebooks-container > div');
+        let anyVisible = false;
+
+        cards.forEach(card => {
+            const cat = card.getAttribute('data-category');
+            const dept = card.getAttribute('data-department');
+
+            if (cat === currentCategory && dept === underCat) {
+                card.style.display = 'block';
+                anyVisible = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        document.getElementById('ebooks-container').style.display = anyVisible ? 'flex' : 'none';
+    }
 </script>
+
+
+
+
 <div>@include('pages.userfooter')</div>
 
 </body>

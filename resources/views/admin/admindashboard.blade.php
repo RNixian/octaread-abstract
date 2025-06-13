@@ -9,7 +9,7 @@
   
 </head>
 <body class="bg-gray-100 flex items-start justify-start min-h-screen">
-
+  <div id="mainContent" class="flex flex-1 items-center justify-center min-h-screen">
   <div class="flex w-full min-h-screen">
     @include('admin.sidebar')
     <div id="mainContent" class="md:ml-64 md:flex">
@@ -17,7 +17,7 @@
       <div class="max-w-7xl w-full mx-auto">
         <h2 class="text-3xl font-bold mb-8 text-center">Dashboard</h2>
   
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-center">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 justify-center">
           <!-- Container 1 -->
           <div class="bg-white shadow-md rounded p-8 flex flex-col items-center justify-center" style="width: 300px; height: 400px;">
             <h2 class="text-lg font-semibold mb-6 text-center">Total Number of Books</h2>
@@ -62,75 +62,94 @@
             <canvas id="byYearChart" width="300" height="300"></canvas>
           </div>
         </div>
+    
  <!-- Container 4 -->
-        <div class="bg-white shadow-md rounded p-8 flex flex-col items-center w-full" style="max-width: 990px; height: 700px;">
-          <form method="GET" action="{{ route('admin.admindashboard') }}" class="w-full">
+ <div style="margin-top: 5%">
+<div class="bg-white shadow rounded p-4 flex flex-col items-center w-full" style="max-width: 990px; height: 600px;">
+  <form method="GET" action="{{ route('admin.admindashboard') }}" class="w-full text-sm">
 
-            <!-- Row 1: Search bar + Filter + Reset buttons -->
-            <div class="flex flex-wrap items-center gap-4 mb-6">
-              <div class="flex-grow min-w-[250px]">
-                <label for="search" class="block text-gray-700 font-bold mb-2">Search</label>
-                <input
-                  type="text"
-                  name="search"
-                  id="search"
-                  value="{{ request('search') }}"
-                  placeholder="Search by Year, Category, Department..."
-                  class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
+    <!-- Row 1: Search bar + Filter + Reset buttons -->
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <div class="flex-grow min-w-[200px]">
+        <label for="search" class="block text-gray-700 font-medium mb-1">Search</label>
+        <input
+          type="text"
+          name="search"
+          id="search"
+          value="{{ request('search') }}"
+          placeholder="Search by Year, Category, Department..."
+          class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-400"
+        />
+      </div>
 
-              <div class="flex space-x-2 mt-6 sm:mt-0">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Filter</button>
-                <a href="{{ route('admin.admindashboard') }}" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Reset</a>
-              </div>
-            </div>
+      <div class="flex space-x-2 mt-5 sm:mt-0">
+        <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Filter</button>
+        <a href="{{ route('admin.admindashboard') }}" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400">Reset</a>
+      </div>
+    </div>
 
-            <!-- Row 2: Category & Department side-by-side -->
-            <div class="flex flex-wrap gap-6 mb-6">
-              <div class="flex-grow min-w-[200px]">
-                <label for="category" class="block text-gray-700 font-bold mb-2">Category</label>
-                <select name="category" id="category" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                  <option value="">All Categories</option>
-                  @foreach($categories as $category)
-                    <option value="{{ $category }}">{{ $category }}</option>
-                  @endforeach
-                </select>
-              </div>
+    <!-- Row 2: Category & Department -->
+    <div class="flex flex-wrap gap-4 mb-4">
+      <div class="flex-grow min-w-[160px]">
+        <label for="category" class="block text-gray-700 font-medium mb-1">Category</label>
+        <select name="category" id="category" class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-400">
+          <option value="">All Categories</option>
+          @foreach($categories as $category)
+            <option value="{{ $category }}">{{ $category }}</option>
+          @endforeach
+        </select>
+      </div>
 
-              <div class="flex-grow min-w-[200px] bg-gray-50 rounded px-4 py-2">
-                <label for="department" class="block text-lg font-semibold text-gray-700 mb-1">Department</label>
-                <select name="department" id="department" class="w-full border border-gray-300 rounded px-2 py-1">
-                  <option value="">-- Select Department --</option>
-                  <!-- Add dynamic options here -->
-                </select>
-              </div>
-            </div>
+      <div class="flex-grow min-w-[160px]">
+        <label for="department" class="block text-gray-700 font-medium mb-1">Department</label>
+        <select name="department" id="department" class="w-full border border-gray-300 rounded px-2 py-1">
+          <option value="">-- Select Department --</option>
+          <!-- Add dynamic options here -->
+        </select>
+      </div>
+    </div>
 
-            <!-- Row 3: From Date & To Date side-by-side -->
-            <div class="flex flex-wrap gap-6 mb-4">
-              <div class="flex-grow min-w-[200px]">
-                <label for="from_date" class="block text-gray-700 font-bold mb-2">From Date</label>
-                <input type="date" id="from_date" name="from_date" value="{{ request('from_date') }}" class="border w-full rounded px-3 py-2" />
-              </div>
+    <!-- Row 3: From Date & To Date -->
+    <div class="flex flex-wrap gap-4 mb-4">
+      <div class="flex-grow min-w-[160px]">
+        <label for="from_date" class="block text-gray-700 font-medium mb-1">From Date</label>
+        <input
+          type="date"
+          name="from_date"
+          id="from_date"
+          value="{{ request('from_date') }}"
+          class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-400"
+        />
+      </div>
 
-              <div class="flex-grow min-w-[200px]">
-                <label for="to_date" class="block text-gray-700 font-bold mb-2">To Date</label>
-                <input type="date" id="to_date" name="to_date" value="{{ request('to_date') }}" class="border w-full rounded px-3 py-2" />
-              </div>
-            </div>
+      <div class="flex-grow min-w-[160px]">
+        <label for="to_date" class="block text-gray-700 font-medium mb-1">To Date</label>
+        <input
+          type="date"
+          name="to_date"
+          id="to_date"
+          value="{{ request('to_date') }}"
+          class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-400"
+        />
+      </div>
+    </div>
 
-          </form>
-
-          <canvas id="filteredChart" width="300" height="150"></canvas>
-        </div>
-
+    <!-- Optional Submit Button at the bottom -->
+    <div class="flex justify-end">
+      <button type="submit" class="bg-green-500 text-white px-4 py-1.5 rounded hover:bg-green-600">
+        Apply Filters
+      </button>
+    </div>
+  </form>
+  <canvas id="filteredChart" width="300" height="100"></canvas>
+</div>
+</div>
       </div>
 
     </div>
   </div>
 </div>
-  
+</div>
 
 <script>
   // Pie Chart
