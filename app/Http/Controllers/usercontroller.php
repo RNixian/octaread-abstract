@@ -199,43 +199,41 @@ public function processGuestLogin(Request $request)
     
     
 // USER RESEARCH -------------------------------------------------------------------------------------------------------------------------------------------------------
-        public function userebook(Request $request)
-        {
-            $categories = RocModel::pluck('out_cat')->unique()->values();
-            $rocmodels = RocModel::all();
-            $query = booksmodel::query();
+public function userebook(Request $request)
+{
+    $categories = RocModel::pluck('out_cat')->unique()->values();
+    $rocmodels = RocModel::all();
+    $query = booksmodel::query();
 
-            // Apply search filters
-            if ($request->has('search') && $request->search) {
-                $query->where(function ($q) use ($request) {
-                    $q->where('title', 'like', '%' . $request->search . '%')
-                    ->orWhere('author', 'like', '%' . $request->search . '%')
-                    ->orWhere('year', 'like', '%' . $request->search . '%')
-                    ->orWhere('department', 'like', '%' . $request->search . '%')
-                    ->orWhere('category', 'like', '%' . $request->search . '%')
-                    ->orWhere('pdf_filepath', 'like', '%' . $request->search . '%')
-                    ->orWhere('created_at', 'like', '%' . $request->search . '%')
-                    ->orWhere('updated_at', 'like', '%' . $request->search . '%');
-                });
-            }
+    // Apply search filters
+    if ($request->has('search') && $request->search) {
+        $query->where(function ($q) use ($request) {
+            $q->where('title', 'like', '%' . $request->search . '%')
+              ->orWhere('author', 'like', '%' . $request->search . '%')
+              ->orWhere('year', 'like', '%' . $request->search . '%')
+              ->orWhere('department', 'like', '%' . $request->search . '%')
+              ->orWhere('category', 'like', '%' . $request->search . '%')
+              ->orWhere('pdf_filepath', 'like', '%' . $request->search . '%')
+              ->orWhere('created_at', 'like', '%' . $request->search . '%')
+              ->orWhere('updated_at', 'like', '%' . $request->search . '%');
+        });
+    }
 
-            // Apply department filter
-            if ($request->filled('department')) {
-                $query->where('department', $request->department);
-            }
+    // Apply department filter
+    if ($request->filled('department')) {
+        $query->where('department', $request->department);
+    }
 
-            // Apply category filter
-            if ($request->filled('category')) {
-                $query->where('category', $request->category);
-            }
+    // Apply category filter
+    if ($request->filled('category')) {
+        $query->where('category', $request->category);
+    }
 
-            // Use paginate instead of get
-            $ebooks = $query->paginate(10)->withQueryString(); // ✅ fixed here
+    // ❌ Removed pagination
+    $ebooks = $query->get();
 
-            return view('pages.userebook', compact('ebooks',  'categories', 'rocmodels'));
-            
-        }
-
+    return view('pages.userebook', compact('ebooks', 'categories', 'rocmodels'));
+}
 
         public function getDeptres($out_cat)
         {

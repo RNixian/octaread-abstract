@@ -166,56 +166,59 @@ public function storebooks(Request $request)
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 
 //GRADUATE    
-    public function graduate_table()
-    {
-        return view('admin.graduate');
+public function graduate_table()
+{
+    return view('admin.graduate');
+}
+
+public function graduateBooks(Request $request)
+{
+    // Fetch filters and supporting data
+    $under_res_out_cats = underrocmodel::all();
+    $res_out_cats = rocmodel::all();
+
+    // Get distinct 'out_cat' values
+    $categories = $res_out_cats->pluck('out_cat')->unique()->values();
+
+    // Main query
+    $query = booksmodel::query();
+
+    // Apply search filters
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('title', 'like', '%' . $request->search . '%')
+              ->orWhere('author', 'like', '%' . $request->search . '%')
+              ->orWhere('year', 'like', '%' . $request->search . '%')
+              ->orWhere('department', 'like', '%' . $request->search . '%')
+              ->orWhere('pdf_filepath', 'like', '%' . $request->search . '%')
+              ->orWhere('created_at', 'like', '%' . $request->search . '%')
+              ->orWhere('updated_at', 'like', '%' . $request->search . '%');
+        });
     }
-    public function graduateBooks(Request $request)
-    {
-        $under_res_out_cats = underrocmodel::all();
-        $res_out_cats = rocmodel::all();
-    
-        // TEMP DEBUG
-        if ($res_out_cats->isEmpty()) {
-            dd('No categories found in rocmodel table');
-        }
-    
-        // Get distinct out_cat values for category selection
-        $categories = $res_out_cats->pluck('out_cat')->unique()->values();
-    
-        $query = booksmodel::query();
-    
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('author', 'like', '%' . $request->search . '%')
-                  ->orWhere('year', 'like', '%' . $request->search . '%')
-                  ->orWhere('department', 'like', '%' . $request->search . '%')
-                  ->orWhere('pdf_filepath', 'like', '%' . $request->search . '%')
-                  ->orWhere('created_at', 'like', '%' . $request->search . '%')
-                  ->orWhere('updated_at', 'like', '%' . $request->search . '%');
-            });
-        }
-    
-        if ($request->filled('department')) {
-            $query->where('department', $request->department);
-        }
-    
-        if ($request->filled('out_cat')) {
-            $query->where('category', $request->out_cat); // ✅ Filter by out_cat
-        }
-    
-        $books = $query->get();
-        $countgrads = $query->count();
-    
-        return view('admin.graduate', compact(
-            'books',
-            'countgrads',
-            'under_res_out_cats',
-            'res_out_cats',
-            'categories'
-        ));
+
+    // Apply department filter
+    if ($request->filled('department')) {
+        $query->where('department', $request->department);
     }
+
+    // Apply category filter
+    if ($request->filled('out_cat')) {
+        $query->where('category', $request->out_cat);
+    }
+
+    // Paginate results
+    $books = $query->paginate(10)->withQueryString();
+    $countgrads = $query->count(); // Count total matching
+
+    return view('admin.graduate', compact(
+        'books',
+        'countgrads',
+        'under_res_out_cats',
+        'res_out_cats',
+        'categories'
+    ));
+}
+
     
 
     public function gettingDepartments($out_cat)
@@ -788,7 +791,7 @@ public function editunder_out_cat($id){
      $usertype = usertypemodel::findOrFail($id);
      $usertype->delete(); 
  
-     return redirect()->back()->with('success', 'Position deleted successfully!');
+     return redirect()->back()->with('success', 'UserType deleted successfully!');
  }
  
  public function deleteuserdept($id)
@@ -796,7 +799,7 @@ public function editunder_out_cat($id){
      $userdept = userdeptmodel::findOrFail($id);
      $userdept->delete(); 
  
-     return redirect()->back()->with('success', 'Position deleted successfully!');
+     return redirect()->back()->with('success', 'UserType deleted successfully!');
  }
 
    //EDIT-------------------------------------------------------------------------------

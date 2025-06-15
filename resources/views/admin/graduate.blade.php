@@ -6,6 +6,20 @@
   <title>Graduate</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
 </head>
+<style>
+  .page-item.active .page-link {
+    background-color: #ffc107 !important; /* Yellow */
+    border-color: #ffc107 !important;
+    color: white !important;
+}
+.page-link:hover, .page-link:focus {
+    background-color: #e0a800;
+    border-color: #d39e00;
+    color: white;
+}
+
+</style>
+
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
   <div class="flex min-h-screen bg-gray-100 w-full">
@@ -51,11 +65,7 @@
             class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300">
             Add Books
           </a>
-      
-          <!-- Count -->
-          <p class="text-sm text-gray-600 font-bold">
-            Count: {{ $countgrads > 0 ? $countgrads : 0 }}
-          </p>
+
         </div>
       </div>
         <!-- Table -->
@@ -116,6 +126,11 @@
                 @endforeach
               </tbody>
             </table>
+            <div class="d-flex justify-content-center mt-4">
+              {{ $books->links('pagination::tailwind') }}
+
+          </div>
+               
           </div>
         </div>
         

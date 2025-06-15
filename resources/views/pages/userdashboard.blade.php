@@ -162,130 +162,141 @@
   
 
 
-<section class="py-16 px-4 text-center container mx-auto mt-10">
-  <h2 class="text-4xl font-extrabold mb-6 text-gray-900">PROGRAMS AND SERVICES</h2>
-  <h1 class="text-2xl font-medium mb-12 text-gray-600 max-w-3xl mx-auto">
-    The Research Center shall implement the following programs and attributes
-  </h1>
-
-  <div class="flex flex-wrap justify-center gap-8">
-    
-    <!-- Service Card Template -->
-    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
-      <div class="px-8 py-8">
-        <div class="text-5xl mb-6 select-none">📚</div>
-        <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Support Resources</h3>
-        <p class="text-sm text-gray-700 leading-relaxed">
-          Provides resources, workshops, and consultations for all research stages (proposal writing, methodology, data analysis, publication).
-        </p>
+  <section class="py-16 px-4 text-center container mx-auto mt-10">
+    <h2 class="text-4xl font-extrabold mb-6 text-gray-900">PROGRAMS AND SERVICES</h2>
+    <h1 class="text-2xl font-medium mb-12 text-gray-600 max-w-3xl mx-auto">
+      The Research Center shall implement the following programs and attributes
+    </h1>
+  
+    <div class="flex flex-wrap justify-center gap-6">
+      
+      <!-- Service Card Template -->
+      <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
+          <div class="text-5xl mb-6 select-none">📚</div>
+          <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Support Resources</h3>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Provides resources, workshops, and consultations for all research stages (proposal writing, methodology, data analysis, publication).
+          </p>
+        </div>
       </div>
-    </div>
-
-    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
-      <div class="px-8 py-8">
-        <div class="text-5xl mb-6 select-none">🤝</div>
-        <h3 class="text-xl font-semibold mb-3 text-gray-900">Mentorship Connections</h3>
-        <p class="text-sm text-gray-700 leading-relaxed">
-          Connects experienced faculty researchers with students for guidance and project development.
-        </p>
+  
+      <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
+          <div class="text-5xl mb-6 select-none">🤝</div>
+          <h3 class="text-xl font-semibold mb-3 text-gray-900">Mentorship Connections</h3>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Connects experienced faculty researchers with students for guidance and project development.
+          </p>
+        </div>
       </div>
-    </div>
-
-    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
-      <div class="px-8 py-8">
-        <div class="text-5xl mb-6 select-none">💰</div>
-        <h3 class="text-xl font-semibold mb-3 text-gray-900">Student Research Funding</h3>
-        <p class="text-sm text-gray-700 leading-relaxed">
-          Offers funding and support for outstanding student-led research projects.
-        </p>
+  
+      <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
+          <div class="text-5xl mb-6 select-none">💰</div>
+          <h3 class="text-xl font-semibold mb-3 text-gray-900">Student Research Funding</h3>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Offers funding and support for outstanding student-led research projects.
+          </p>
+        </div>
       </div>
-    </div>
-
-    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
-      <div class="px-8 py-8">
-        <div class="text-5xl mb-6 select-none">🌐</div>
-        <h3 class="text-xl font-semibold mb-3 text-gray-900">Interdisciplinary Research</h3>
-        <p class="text-sm text-gray-700 leading-relaxed">
-          Facilitates the creation of interdisciplinary research groups to tackle complex problems.
-        </p>
+  
+      <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
+          <div class="text-5xl mb-6 select-none">🌐</div>
+          <h3 class="text-xl font-semibold mb-3 text-gray-900">Interdisciplinary Research</h3>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Facilitates the creation of interdisciplinary research groups to tackle complex problems.
+          </p>
+        </div>
       </div>
-    </div>
-
-    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
-      <div class="px-8 py-8">
-        <div class="text-5xl mb-6 select-none">🎤</div>
-        <h3 class="text-xl font-semibold mb-3 text-gray-900">Guest Researcher Lectures</h3>
-        <p class="text-sm text-gray-700 leading-relaxed">
-          Invites renowned researchers to present their work and foster collaboration with on-campus researchers.
-        </p>
+  
+      <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
+          <div class="text-5xl mb-6 select-none">🎤</div>
+          <h3 class="text-xl font-semibold mb-3 text-gray-900">Guest Researcher Lectures</h3>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Invites renowned researchers to present their work and foster collaboration with on-campus researchers.
+          </p>
+        </div>
       </div>
-    </div>
-
-    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
-      <div class="px-8 py-8">
-        <div class="text-5xl mb-6 select-none">🖼️</div>
-        <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Showcases</h3>
-        <p class="text-sm text-gray-700 leading-relaxed">
-          Provides a platform for faculty and students to showcase their research to the wider community.
-        </p>
+  
+      <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
+          <div class="text-5xl mb-6 select-none">🖼️</div>
+          <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Showcases</h3>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Provides a platform for faculty and students to showcase their research to the wider community.
+          </p>
+        </div>
       </div>
-    </div>
-
-    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
-      <div class="px-8 py-8">
-        <div class="text-5xl mb-6 select-none">📝</div>
-        <h3 class="text-xl font-semibold mb-3 text-gray-900">Grant Application Support</h3>
-        <p class="text-sm text-gray-700 leading-relaxed">
-          Offers dedicated staff support to help researchers navigate the grant application process.
-        </p>
+  
+      <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
+          <div class="text-5xl mb-6 select-none">📝</div>
+          <h3 class="text-xl font-semibold mb-3 text-gray-900">Grant Application Support</h3>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Offers dedicated staff support to help researchers navigate the grant application process.
+          </p>
+        </div>
       </div>
-    </div>
-
-    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
-      <div class="px-8 py-8">
-        <div class="text-5xl mb-6 select-none">🧪</div>
-        <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Technology Access</h3>
-        <p class="text-sm text-gray-700 leading-relaxed">
-          Provides access to cutting-edge equipment and technologies for various research disciplines.
-        </p>
+  
+      <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
+          <div class="text-5xl mb-6 select-none">🧪</div>
+          <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Technology Access</h3>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Provides access to cutting-edge equipment and technologies for various research disciplines.
+          </p>
+        </div>
       </div>
-    </div>
-
-    <div class="w-72 bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200">
-      <div class="px-8 py-8">
-        <div class="text-5xl mb-6 select-none">📊</div>
-        <h3 class="text-xl font-semibold mb-3 text-gray-900">Data Training & Ethics</h3>
-        <p class="text-sm text-gray-700 leading-relaxed">
-          Offers training and support for researchers in data collection, storage, analysis, and ethical use.
-        </p>
+  
+      <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
+          <div class="text-5xl mb-6 select-none">📊</div>
+          <h3 class="text-xl font-semibold mb-3 text-gray-900">Data Training & Ethics</h3>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Offers training and support for researchers in data collection, storage, analysis, and ethical use.
+          </p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-</section>
-
-
+  </section>
 
 <!-- Book Grid -->
 <div class="max-w-7xl mx-auto mt-10 px-4">
   <h2 class="mb-8 text-center text-3xl font-extrabold text-gray-900">Recently Added</h2>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+  <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
     @forelse ($ebooks as $book)
       <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 flex flex-col h-full">
         <img 
-          src="{{ asset('images/default_pdf_picture.jpg/' . $book->cover_photo) }}" 
-          alt="Book Cover" 
-          class="rounded-t-xl object-cover h-48 w-full"
-        >
+  src="{{ asset('images/default_pdf_picture.jpg/' . $book->cover_photo) }}" 
+  alt="Book Cover" 
+  class="rounded-t-xl object-cover w-full h-40 sm:h-48 md:h-56"
+/>
+
         <div class="p-6 flex flex-col flex-grow">
-          <h5 class="text-lg font-semibold text-gray-900 mb-2 break-words whitespace-normal">{{ $book->title }}</h5>
-          <p class="text-sm text-gray-600 mb-1 flex items-center gap-2 break-words whitespace-normal">
+          <!-- Short title for small screens -->
+<h5 class="text-base sm:hidden font-semibold text-gray-900 mb-2 break-words whitespace-normal">
+  {{ \Illuminate\Support\Str::limit($book->title, 50, '...') }}
+</h5>
+
+<!-- Full title for medium and up -->
+<h5 class="hidden sm:block text-base sm:text-lg font-semibold text-gray-900 mb-2 break-words whitespace-normal">
+  {{ $book->title }}
+</h5>
+
+          <p class="text-xs sm:text-sm text-gray-600 mb-1 flex items-center gap-2 break-words whitespace-normal">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 16 16"><path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3z"/><path fill-rule="evenodd" d="M8 8a3 3 0 100-6 3 3 0 000 6z"/></svg>
             {{ $book->author }}
           </p>
-          <p class="text-sm text-gray-500 mb-4 break-words whitespace-normal"><small>{{ $book->department }} | {{ $book->category }}</small></p>
-
+          <p class="text-xs sm:text-sm text-gray-500 mb-4 break-words whitespace-normal">
+            <small>{{ $book->department }} | {{ $book->category }}</small>
+          </p>
+          
           @if(isset($book->description))
           <p class="text-gray-700 text-sm mb-4 break-words whitespace-normal max-h-24 overflow-auto">
             {{ $book->description }}
