@@ -137,10 +137,10 @@
 <!-- Update Modal -->
 <div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden z-50">
   <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative">
-    
+
     <!-- Close Button -->
     <button id="closeModal" class="absolute top-2 right-2 text-gray-700 hover:text-gray-900 text-2xl">&times;</button>
-    
+
     <h2 class="text-2xl font-bold mb-6">Update Book</h2>
 
     <form id="updateForm" action="{{ route('updatebook', ['id' => '__ID__']) }}" method="POST" enctype="multipart/form-data">
@@ -148,62 +148,57 @@
       @method('PUT')
       <input type="hidden" name="id" id="book_id">
 
-      <div class="grid grid-cols-2 gap-4">
-        
-        <!-- Title -->
-        <div>
-          <label for="edit_title" class="block text-gray-700 font-bold mb-2">Title</label>
-          <input type="text" name="title" id="edit_title" class="w-full border rounded px-3 py-2" required>
-        </div>
+      <!-- Title (Full Width) -->
+      <div class="mb-4">
+        <label for="edit_title" class="block text-gray-700 font-bold mb-2">Title</label>
+        <textarea name="title" id="edit_title" rows="4" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required></textarea>
+      </div>
 
-        <!-- Author -->
+      <!-- Author and Year (2 Columns) -->
+      <div class="mb-4 grid grid-cols-2 gap-4">
         <div>
           <label for="edit_author" class="block text-gray-700 font-bold mb-2">Author</label>
-          <input type="text" name="author" id="edit_author" class="w-full border rounded px-3 py-2" required>
+          <input type="text" name="author" id="edit_author" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
         </div>
-
-        <!-- Year -->
         <div>
           <label for="edit_year" class="block text-gray-700 font-bold mb-2">Year</label>
-          <input type="number" name="year" id="edit_year" class="w-full border rounded px-3 py-2" required>
+          <input type="number" name="year" id="edit_year" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
         </div>
-
-              <!-- Category -->
-      <div>
-        <label for="edit_category" class="block text-gray-700 font-bold mb-2">Category</label>
-        <select name="category" id="edit_category" class="w-full border rounded px-3 py-2" >
-          <option value="">-- Select Category --</option>
-          @foreach ($res_out_cats as $cat)
-            <option value="{{ $cat->out_cat }}">{{ $cat->out_cat }}</option>
-          @endforeach
-        </select>
       </div>
 
-      <!-- Department (will load dynamically) -->
-      <div>
-        <label for="edit_department" class="block text-gray-700 font-bold mb-2">Department</label>
-        <select name="department" id="edit_department" class="w-full border rounded px-3 py-2" >
-          <option value="">-- Select Department --</option>
-        </select>
+      <!-- Category and Department (2 Columns) -->
+      <div class="mb-4 grid grid-cols-2 gap-4">
+        <div>
+          <label for="edit_category" class="block text-gray-700 font-bold mb-2">Category</label>
+          <select name="category" id="edit_category" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="">-- Select Category --</option>
+            @foreach ($res_out_cats as $cat)
+              <option value="{{ $cat->out_cat }}">{{ $cat->out_cat }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div>
+          <label for="edit_department" class="block text-gray-700 font-bold mb-2">Department</label>
+          <select name="department" id="edit_department" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="">-- Select Department --</option>
+          </select>
+        </div>
       </div>
 
-
-    <!-- File Uploads -->
-    <div class="mt-4">
-      <div class="mb-4">
+      <!-- PDF File (Full Width) -->
+      <div class="mb-6">
         <label class="block text-gray-700 font-bold mb-2" for="edit_pdf">PDF File</label>
-        <input type="file" name="pdf_filepath" id="edit_pdf" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" accept=".pdf">
+        <input type="file" name="pdf_filepath" id="edit_pdf" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" accept=".pdf">
       </div>
-     
-    </div>
 
-      <!-- Submit -->
-      <div class="mt-6 text-right">
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update</button>
+      <!-- Submit Button -->
+      <div class="flex justify-end">
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200">Update</button>
       </div>
     </form>
   </div>
 </div>
+
 
 
 

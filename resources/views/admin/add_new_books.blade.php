@@ -22,56 +22,63 @@
     <div class="w-full max-w-lg bg-white rounded shadow-md p-8">
         <h2 class="text-2xl font-bold text-center mb-6">Add New</h2>
 
-      <form action="{{ route('admin.storebooks') }}" method="POST" enctype="multipart/form-data" class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
+    <form action="{{ route('admin.storebooks') }}" method="POST" enctype="multipart/form-data" class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
     @csrf
 
+    <!-- Title (full width) -->
     <div class="mb-4">
         <label class="block text-gray-700 font-bold mb-2" for="title">Title</label>
-        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="title" name="title" value="{{ old('title') }}" required>
+        <textarea class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  id="title" name="title" rows="4" required>{{ old('title') }}</textarea>
         @error('title')
             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
         @enderror
     </div>
 
-    <div class="mb-4">
-        <label class="block text-gray-700 font-bold mb-2" for="author">Author</label>
-        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="author" name="author" value="{{ old('author') }}" required>
-        @error('author')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-        @enderror
+    <!-- Author and Year (2 columns) -->
+    <div class="mb-4 grid grid-cols-2 gap-4">
+        <div>
+            <label class="block text-gray-700 font-bold mb-2" for="author">Author</label>
+            <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="author" name="author" value="{{ old('author') }}" required>
+            @error('author')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+        <div>
+            <label class="block text-gray-700 font-bold mb-2" for="year">Year</label>
+            <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="number" id="year" name="year" value="{{ old('year') }}" required>
+            @error('year')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
     </div>
 
-    <div class="mb-4">
-        <label class="block text-gray-700 font-bold mb-2" for="year">Year</label>
-        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="number" id="year" name="year" value="{{ old('year') }}" required>
-        @error('year')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-        @enderror
+    <!-- Category and Department (2 columns) -->
+    <div class="mb-4 grid grid-cols-2 gap-4">
+        <div>
+            <label class="block text-gray-700 font-bold mb-2" for="category">Category</label>
+            <select name="category" id="category" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option value="">-- Select Category --</option>
+                @foreach ($res_out_cats as $category)
+                    <option value="{{ $category->out_cat }}" {{ old('category') == $category->out_cat ? 'selected' : '' }}>{{ $category->out_cat }}</option>
+                @endforeach
+            </select>
+            @error('category')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+        <div>
+            <label class="block text-gray-700 font-bold mb-2" for="department">Department</label>
+            <select name="department" id="department" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option value="">-- Select Department --</option>
+            </select>
+            @error('department')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
     </div>
 
-    <div class="mb-4">
-        <label class="block text-gray-700 font-bold mb-2" for="category">Category</label>
-        <select name="category" id="category" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            <option value="">-- Select Category --</option>
-            @foreach ($res_out_cats as $category)
-                <option value="{{ $category->out_cat }}" {{ old('category') == $category->out_cat ? 'selected' : '' }}>{{ $category->out_cat }}</option>
-            @endforeach
-        </select>
-        @error('category')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-        @enderror
-    </div>
-
-    <div class="mb-4">
-        <label class="block text-gray-700 font-bold mb-2" for="department">Department</label>
-        <select name="department" id="department" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            <option value="">-- Select Department --</option>
-        </select>
-        @error('department')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-        @enderror
-    </div>
-
+    <!-- PDF File (full width) -->
     <div class="mb-6">
         <label class="block text-gray-700 font-bold mb-2" for="pdf_filepath">PDF File</label>
         <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="file" id="pdf_filepath" name="pdf_filepath" accept=".pdf" required>
@@ -80,7 +87,8 @@
         @enderror
     </div>
 
-    <div class="flex justify-end space-x-4">
+    <!-- Buttons (2-column layout) -->
+    <div class="flex justify-end gap-4">
         <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
             Submit
         </button>
@@ -89,6 +97,7 @@
         </a>
     </div>
 </form>
+
 
     </div>
 
