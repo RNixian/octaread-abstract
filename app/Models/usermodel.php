@@ -18,7 +18,7 @@ class Usermodel extends Authenticatable
         'schoolid',
         'department',
         'birthdate',
-        'user_type_id',  // foreign key
+        'user_type_id',
     ];
 
     protected $hidden = ['birthdate'];
@@ -31,6 +31,7 @@ class Usermodel extends Authenticatable
     {
         return $this->belongsToMany(BooksModel::class, 'favorites', 'user_id', 'ebook_id')->withTimestamps();
     }
+
 
     public function userType()
     {

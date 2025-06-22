@@ -12,8 +12,9 @@ class adminmodel extends Authenticatable
     protected $table = 'admins';
 
     protected $fillable = [
-        'firstname', 'middlename', 'lastname', 'schoolid', 'birthdate', 'masterkey', 
-    ];
+    'firstname', 'middlename', 'lastname', 'schoolid', 'birthdate', 'masterkey', 'role',
+];
+
 
     protected $hidden = ['masterkey', 'birthdate'];
 

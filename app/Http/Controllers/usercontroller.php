@@ -54,7 +54,7 @@ public function storeuser(Request $request)
         'firstname'     => 'required|string',
         'middlename'    => 'nullable|string',
         'lastname'      => 'required|string',
-        'schoolid'      => 'required|unique:users,schoolid',
+        'schoolid' => 'required|max:9|unique:users,schoolid',
         'department'    => 'required|string',
         'birthdate'     => 'required|date',
     ]);
@@ -85,9 +85,6 @@ public function storeuser(Request $request)
 
     return redirect()->route('pages.userlogin')->with('success', 'Registration successful.');
 }
-
-
-
 
     // USER LOGIN------------------------------------------------------------------------------------------------------------------------------------------------
     public function userloginview()
@@ -189,16 +186,28 @@ public function processGuestLogin(Request $request)
   
   
     // USER DASHBOARD -------------------------------------------------------------------------------------------------------------------------------------------------------
-    public function userdashboard()
-    {
-        $carouselItems = carouselmodel::orderBy('display_order')->get();
-        $members = membersmodel::all()->groupBy('position');
-        $ebooks = booksmodel::orderBy('created_at', 'desc')->take(4)->get(); 
-        return view('pages.userdashboard', compact('carouselItems', 'members', 'ebooks'));
+ public function userdashboard()
+{
+    $carouselItems = carouselmodel::orderBy('display_order')->get();
+    $members = membersmodel::all()->groupBy('position');
+    $ebooks = booksmodel::orderBy('created_at', 'desc')->take(4)->get();
+
+    $favoritedIds = [];
+
+    if (session()->has('userid')) {
+        $user = Usermodel::find(session('userid'));
+        if ($user) {
+            $favoritedIds = $user->favorites()->pluck('books.id')->toArray();
+        }
     }
-    
+
+    return view('pages.userdashboard', compact('carouselItems', 'members', 'ebooks', 'favoritedIds'));
+}
+
     
 // USER RESEARCH -------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 public function userebook(Request $request)
 {
     $categories = RocModel::pluck('out_cat')->unique()->values();
@@ -219,21 +228,29 @@ public function userebook(Request $request)
         });
     }
 
-    // Apply department filter
     if ($request->filled('department')) {
         $query->where('department', $request->department);
     }
 
-    // Apply category filter
     if ($request->filled('category')) {
         $query->where('category', $request->category);
     }
 
-    // ❌ Removed pagination
     $ebooks = $query->get();
 
-    return view('pages.userebook', compact('ebooks', 'categories', 'rocmodels'));
+    // Get favorite ebook IDs using session('userid')
+    $favoriteIds = collect();
+    if (session()->has('userid') && session('is_guest') === false) {
+        $user = Usermodel::find(session('userid'));
+        if ($user) {
+            $favoriteIds = $user->favorites()->pluck('books.id');
+        }
+    }
+
+    return view('pages.userebook', compact('ebooks', 'categories', 'rocmodels', 'favoriteIds'));
 }
+
+
 
         public function getDeptres($out_cat)
         {
@@ -360,12 +377,13 @@ public function favstore(Request $request)
         'ebook_id' => 'required|exists:books,id',
     ]);
 
-    $existing = FavModel::where('user_id', $userId)
+    $favorite = FavModel::where('user_id', $userId)
                         ->where('ebook_id', $request->ebook_id)
                         ->first();
 
-    if ($existing) {
-        return redirect()->back()->with('info', 'This book is already in your favorites.');
+    if ($favorite) {
+        $favorite->delete(); // Unfavorite
+        return back()->with('info', 'Book removed from favorites.');
     }
 
     FavModel::create([
@@ -375,21 +393,6 @@ public function favstore(Request $request)
 
     return back()->with('success', 'Book added to favorites.');
 }
-
-
-public function myFavorites(Request $request)
-{
-    $userId = $request->session()->get('userid');
-
-    $ebooks = booksmodel::whereIn('id', function($query) use ($userId) {
-        $query->select('ebook_id')
-              ->from('favmodels')
-              ->where('user_id', $userId);
-    })->get();
-
-    return view('pages.myfavorites', compact('ebooks'));
-}
-
 
 public function userPage($section) {
     $views = [
@@ -411,13 +414,26 @@ public function userPage($section) {
     return view($views[$section], $data);
 }
 
-public function showUserBookPage()
+public function showUserBookPage(Request $request)
 {
     $departments = departmentmodel::all();
-    $ebooks = booksmodel::all(); // or filter as needed
+    $ebooks = booksmodel::all();
 
-    return view('pages.userebook', compact('departments', 'ebooks'));
+    $favoritedIds = [];
+
+    if ($request->session()->has('userid')) {
+        $userId = $request->session()->get('userid');
+
+        $favoritedIds = FavModel::where('user_id', $userId)
+                                ->pluck('ebook_id')
+                                ->toArray();
+    }
+
+    return view('pages.userebook', compact('departments', 'ebooks', 'favoritedIds'));
 }
+
+
+
 
 
 public function viewstore(Request $request)

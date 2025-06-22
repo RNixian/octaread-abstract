@@ -6,6 +6,8 @@
     <title>OctaRead Registration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 
 <style>
@@ -21,15 +23,17 @@
     @include('pages.usersheader')
 
     <div class="bg-white rounded shadow-md w-50 mx-auto my-5 flex-grow-1 custom-padding">
-        @if($errors->any())
-        <ul>
-        @foreach ($errors->all() as $error)
-            <li>
-        {{$error}}
-            </li>
-        @endforeach
+  @if($errors->any())
+    <div class="alert" style="background-color: rgba(255, 0, 0, 0.5); border-radius: 8px;">
+        <ul class="mb-0" style="list-style: none; padding-left: 0;">
+            @foreach ($errors->all() as $error)
+                <li class="d-flex align-items-center text-white mb-1">
+                    <i class="fas fa-exclamation-circle me-2"></i> {{ $error }}
+                </li>
+            @endforeach
         </ul>
-        @endif
+    </div>
+@endif
         <form action="{{ route('pages.storeuser') }}" method="POST">
             @csrf
     

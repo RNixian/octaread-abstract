@@ -31,10 +31,11 @@
             <input id="firstname" name="firstname" type="text" required class="w-full px-3 py-2 border rounded shadow focus:outline-none focus:shadow-outline">
           </div>
 
-          <div class="mb-4">
-            <label for="middlename" class="block text-gray-700 font-bold mb-2">Middle Name</label>
-            <input id="middlename" name="middlename" type="text" required class="w-full px-3 py-2 border rounded shadow focus:outline-none focus:shadow-outline">
-          </div>
+        <div class="mb-4">
+  <label for="middlename" class="block text-gray-700 font-bold mb-2">Middle Name</label>
+  <input id="middlename" name="middlename" type="text" class="w-full px-3 py-2 border rounded shadow focus:outline-none focus:shadow-outline">
+</div>
+
 
           <div class="mb-4">
             <label for="lastname" class="block text-gray-700 font-bold mb-2">Last Name</label>

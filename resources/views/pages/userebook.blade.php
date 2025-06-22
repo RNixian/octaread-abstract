@@ -93,8 +93,8 @@
 /* Favorite Button */
 .favorite-btn {
   background: #fff;
-  border: 1px solid #dc3545;
-  color: #dc3545;
+  border: 1px solid #ccc;
+  color: #6c757d; /* gray color */
   border-radius: 50%;
   padding: 0.3rem 0.6rem;
   transition: transform 0.2s ease;
@@ -103,6 +103,7 @@
 .favorite-btn.favorited {
   background: #dc3545;
   color: #fff;
+  border-color: #dc3545;
 }
 
 .favorite-btn:hover {
@@ -241,16 +242,22 @@
               <button type="submit" class="btn btn-sm btn-custom-red">Read</button>
             </form>
 
-            <!-- Favorites Button -->
+         {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
             @if(session()->has('userid') && session('is_guest') === false)
-              <form action="{{ route('favorites.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="ebook_id" value="{{ $ebook->id }}">
-                <button type="submit" class="btn btn-sm btn-outline-secondary favorite-btn">
-                  <i class="bi bi-heart-fill"></i>
-                </button>
-              </form>
-            @endif
+    @php
+        $isFavorited = $favoriteIds->contains($ebook->id);
+    @endphp
+    <form action="{{ route('favorites.store') }}" method="POST" class="d-inline">
+        @csrf
+        <input type="hidden" name="ebook_id" value="{{ $ebook->id }}">
+        <button type="submit"
+                class="btn btn-sm favorite-btn {{ $isFavorited ? 'favorited' : '' }}"
+                title="{{ $isFavorited ? 'Remove from Favorites' : 'Add to Favorites' }}">
+            <i class="bi {{ $isFavorited ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+        </button>
+    </form>
+@endif
+
           </div>
         </div>
       </div>

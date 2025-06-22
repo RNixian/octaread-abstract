@@ -189,11 +189,11 @@ Route::get('/get-depts/{user_type}', [UserController::class, 'getDept']);
 // HEADER 
 Route::get('/pages/usersheader', [UserController::class, 'usersheader'])->name('pages.usersheader');
 
-// DASHBOARD
-Route::get('/pages/userdashboard', [UserController::class, 'userdashboard'])->name('pages.userdashboard');
-
 // LOGOUT USER
 Route::post('/pages/logoutuser', [UserController::class, 'logoutuser'])->name('pages.logoutuser');
+
+// DASHBOARD
+Route::get('/pages/userdashboard', [UserController::class, 'userdashboard'])->name('pages.userdashboard');
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //PROTECTED

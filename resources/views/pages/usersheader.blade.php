@@ -2,21 +2,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <header class="d-flex justify-content-between align-items-center p-3 custom-header-bg flex-wrap">
-        <!-- Logo -->
-        <div class="d-flex align-items-center">
-            <img src="{{ asset('images/RnMLogo.png') }}" alt="Logo" style="height: 40px; width: auto;">
-        </div>
-    
-        <!-- Welcome Text -->
-        @if(session()->has('firstname'))
-            <div class="text-white fw-semibold d-none d-md-block">
-                @if(str_starts_with(session('schoolid'), 'guest'))
-                    Welcome Guest: {{ session('firstname') }}
-                @else
-                    Welcome: {{ session('firstname') }}
-                @endif
-            </div>
+     <!-- Logo -->
+<div class="d-flex align-items-center me-3">
+    <img src="{{ asset('images/R&M.png') }}" alt="Logo" style="height: 40px; width: auto;">
+</div>
+
+<!-- Welcome Text -->
+@if(session()->has('firstname'))
+    <div class="text-white fw-semibold d-block me-auto">
+
+        @if(str_starts_with(session('schoolid'), 'guest'))
+            Welcome Guest: {{ session('firstname') }}
+        @else
+            Welcome: {{ session('firstname') }}
         @endif
+    </div>
+@endif
+
     
         <!-- Toggle Button for Small Screens -->
         <button class="navbar-toggler d-md-none text-white border-0 bg-transparent" type="button" onclick="toggleNav()">

@@ -16,4 +16,7 @@ class favmodel extends Model
     protected $fillable = [
         'user_id', 'ebook_id',
     ];
+
+
+    
 }

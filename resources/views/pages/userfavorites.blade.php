@@ -28,12 +28,25 @@
     }
 
     .favorite-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: #dc3545;
-      transition: transform 0.3s ease;
-    }
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #6c757d; /* gray color */
+  border-radius: 50%;
+  padding: 0.3rem 0.6rem;
+  transition: transform 0.2s ease;
+  font-size: 1.2rem;
+}
+
+.favorite-btn.favorited {
+  background: #dc3545;
+  color: #fff;
+  border-color: #dc3545;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.2);
+}
+
 
     .favorite-btn:hover {
       transform: scale(1.2);
@@ -120,9 +133,10 @@
                   </a>
                   <form action="{{ route('toggle.favorite', $ebook->id) }}" method="POST">
                     @csrf
-                    <button type="submit" class="favorite-btn" title="Unfavorite">
-                      <i class="bi bi-heart-fill"></i>
-                    </button>
+                   <button type="submit" class="favorite-btn favorited" title="Unfavorite">
+  <i class="bi bi-heart-fill"></i>
+</button>
+
                   </form>
                 </div>
               </div>

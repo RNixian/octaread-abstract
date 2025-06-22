@@ -74,11 +74,14 @@ class="fixed top-0 left-0 h-screen w-64 bg-blue-900 text-white p-4 shadow-md ove
     </li>
     
 
+ @if(session('role') !== 'admin')
   <li>
     <a href="{{ url('/admin/register') }}" class="flex items-center gap-2 py-2 px-4 hover:bg-yellow-200 rounded">
       <i data-lucide="user"></i> Register
     </a>
   </li>
+@endif
+
 
 </ul>
 

@@ -33,33 +33,34 @@ class admincontroller extends Controller
         return view('admin.adminlogin');
     }
 
-    public function adminlogin(Request $request)
-    {
-        $request->validate([
-            'schoolid' => 'required',
-            'birthdate' => 'required|date',
-            'masterkey' => 'required',
+   public function adminlogin(Request $request)
+{
+    $request->validate([
+        'schoolid' => 'required',
+        'birthdate' => 'required|date',
+        'masterkey' => 'required',
+    ]);
+
+    $admin = adminmodel::where('schoolid', $request->schoolid)
+        ->where('birthdate', $request->birthdate)
+        ->first();
+
+    if ($admin && Hash::check($request->masterkey, $admin->masterkey)) {
+        $admin->status = 'active';
+        $admin->save();
+
+        session([
+            'adminid' => $admin->id,
+            'firstname' => $admin->firstname,
+            'role' => $admin->role // 👈 Add this line
         ]);
-    
-        $admin = adminmodel::where('schoolid', $request->schoolid)
-            ->where('birthdate', $request->birthdate)
-            ->first();
-    
-        if ($admin && Hash::check($request->masterkey, $admin->masterkey)) {
-            $admin->status = 'active';
-            $admin->save();
-    
-            session([
-                'adminid' => $admin->id,
-                'firstname' => $admin->firstname,
-            ]);
-    
-            return redirect()->route('admin.admindashboard');
-        } else {
-            return back()->withErrors(['Invalid School ID or Birthdate or MasterKey']);
-        }
+
+        return redirect()->route('admin.admindashboard');
+    } else {
+        return back()->withErrors(['Invalid School ID or Birthdate or MasterKey']);
     }
-    
+}
+
     public function logout(Request $request) {
 
         $adminid = session('adminid');
@@ -86,13 +87,14 @@ class admincontroller extends Controller
     public function storenewadmin(Request $request)
     {
         $data = $request->validate([
-            'firstname'  => 'required',
-            'middlename' => 'required',
-            'lastname'   => 'required',
-            'schoolid'   => 'required',
-            'masterkey'  => 'required',
-            'birthdate'  => 'required',
+            'firstname'  => 'required|string',
+            'middlename' => 'nullable|string',
+            'lastname'   => 'required|string',
+            'schoolid'   => 'required|max:9|unique:admins,schoolid',
+            'masterkey' => 'required|string|max:255',
+            'birthdate'  => 'required|date',
         ]);
+    
     
         adminmodel::create([
             'firstname'  => $request->firstname,
@@ -101,6 +103,7 @@ class admincontroller extends Controller
             'schoolid'   => $request->schoolid,
             'masterkey'  => Hash::make($request->masterkey),
             'birthdate'  => $request->birthdate,
+            'role'       => 'admin',
         ]);
     
         return redirect()->route('admin.adminlogin')->with('success', 'Registration successful.');

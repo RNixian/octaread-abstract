@@ -51,27 +51,42 @@
       border: 1px solid #28a745;
     }
 
-    .favorite-btn {
+ .favorite-btn {
   background: #fff;
-  border: 1px solid #dc3545;
-  color: #dc3545;
+  border: 1px solid #ccc;
+  color: #6c757d; /* gray color */
   border-radius: 50%;
   padding: 0.3rem 0.6rem;
+  transition: transform 0.2s ease;
 }
 
 .favorite-btn.favorited {
   background: #dc3545;
   color: #fff;
+  border-color: #dc3545;
 }
 
-    .favorite-btn:hover {
-      transform: scale(1.2);
-    }
+.favorite-btn:hover {
+  transform: scale(1.2);
+}
+
+
 
 .carousel-item img {
             width: auto;
             height: 100%;
         }
+
+        .carousel-container {
+    height: 70vh;
+}
+
+@media (max-width: 768px) {
+    .carousel-container {
+        height: 40vh; /* or any percentage/px value that fits */
+    }
+}
+
 
 </style>
 
@@ -81,7 +96,8 @@
     <!-- Header -->
     @include('pages.usersheader')
 
-<div class="container-fluid p-0" style="height: 70vh;">
+<div class="container-fluid p-0 carousel-container">
+
   <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="height: 100%;">
       <div class="carousel-inner" style="height: 100%;">
           @foreach($carouselItems as $item)
@@ -314,20 +330,27 @@
             </form>
             
 
-                    {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
-          @if(session()->has('userid') && session('is_guest') === false)
-          <form action="{{ route('favorites.store') }}" method="POST" class="ml-2">
-              @csrf
-              <input type="hidden" name="ebook_id" value="{{ $book->id }}">
-              <button 
-                type="submit" 
-                class="text-red-600 hover:text-red-700 focus:outline-none"
-                title="Add to Favorites"
-              >
-                <i class="bi bi-heart-fill text-gray-300"></i>
-              </button>
-          </form>
-          @endif
+           {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
+@if(session()->has('userid') && session('is_guest') === false)
+    <form action="{{ route('favorites.store') }}" method="POST" class="ml-2">
+        @csrf
+        <input type="hidden" name="ebook_id" value="{{ $book->id }}">
+
+        @php
+            $isFavorited = isset($favoritedIds) && in_array($book->id, $favoritedIds);
+        @endphp
+        <button 
+            type="submit" 
+            class="favorite-btn {{ $isFavorited ? 'favorited' : '' }}" 
+            title="{{ $isFavorited ? 'Remove from Favorites' : 'Add to Favorites' }}"
+        >
+            <i class="bi bi-heart-fill"></i>
+        </button>
+    </form>
+@endif
+
+
+
           </div>
         </div>
       </div>
