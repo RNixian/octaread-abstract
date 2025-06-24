@@ -28,7 +28,7 @@
 
 @media (max-width: 576px) {
   .responsive-cover-img {
-    height: 80px;
+    height: 100px;
   }
 }
 
@@ -175,38 +175,53 @@
       <span class="breadcrumb-item active" onclick="backToRocModels()" style="cursor:pointer">Category</span>
     </div>
 
-    <!-- 📁 ROC Model Buttons -->
-    <div id="rocmodel-buttons" style="display: flex; flex-wrap: wrap; gap: 10px;">
-      @foreach($rocmodels as $roc)
-        <button 
-          onclick="loadUnderCategories('{{ $roc->out_cat }}', this)"
-          class="btn btn-primary"
-          style="
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 1px;
-            position: relative;
-          "
-        >
-          <div style="
-            background-image: url('https://cdn-icons-png.flaticon.com/512/716/716784.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            width: 100%;
-            height: 100%;
-          "></div>
-          <span style="font-size: 12px; text-align: center; margin-top: 5px; color:black;">
-            {{ $roc->out_cat }}
-          </span>
-        </button>
-      @endforeach
-    </div>
+   <!-- 📁 ROC Model Buttons -->
+<div id="rocmodel-buttons" style="
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  width: 100%;
+">
+  @foreach($rocmodels as $roc)
+    <button 
+      onclick="loadUnderCategories('{{ $roc->out_cat }}', this)"
+      class="btn btn-primary"
+      style="
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 10px;
+        width: 100%;
+      "
+    >
+      <div style="
+        background-image: url('https://cdn-icons-png.flaticon.com/512/716/716784.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 150px;
+        height: 150px;
+        margin-bottom: 8px;
+      "></div>
+      <span style="
+        font-size: 14px;
+        text-align: center;
+        color: black;
+        line-height: 1.2;
+        word-wrap: break-word;
+      ">
+        {{ $roc->out_cat }}
+      </span>
+    </button>
+  @endforeach
+</div>
+
+
+
 
     <!-- 🔘 UnderRocModel Buttons (Initially Hidden) -->
     <div id="subcategory-buttons" class="mb-4" style="display:none;"></div>
@@ -276,73 +291,87 @@
     let currentSubcategory = '';
     
     function backToRocModels() {
-        currentCategory = '';
-        currentSubcategory = '';
-    
-        // Show RocModel buttons (force flex display)
-        document.getElementById('rocmodel-buttons').style.display = 'flex';
-        document.getElementById('subcategory-buttons').style.display = 'none';
-        document.getElementById('ebooks-container').style.display = 'none';
-    
-        // ✅ Proper string with backticks
-        document.getElementById('breadcrumb-path').innerHTML = 
-            `<span class="breadcrumb-item active" onclick="backToRocModels()" style="cursor:pointer">Category</span>`;
-    }
+    currentCategory = '';
+    currentSubcategory = '';
+
+    const rocButtons = document.getElementById('rocmodel-buttons');
+    rocButtons.style.display = 'grid';
+    rocButtons.style.gridTemplateColumns = 'repeat(auto-fit, minmax(150px, 1fr))';
+    rocButtons.style.gap = '20px';
+    rocButtons.style.width = '100%';
+
+    document.getElementById('subcategory-buttons').style.display = 'none';
+    document.getElementById('ebooks-container').style.display = 'none';
+
+    document.getElementById('breadcrumb-path').innerHTML = 
+        `<span class="breadcrumb-item active" onclick="backToRocModels()" style="cursor:pointer">Category</span>`;
+}
+
     
     function loadUnderCategories(outCat) {
-        currentCategory = outCat;
-        currentSubcategory = '';
-    
-        // Hide RocModel buttons
-        document.getElementById('rocmodel-buttons').style.display = 'none';
-    
-        // ✅ Properly escaped string with template literals
-        document.getElementById('breadcrumb-path').innerHTML = 
-            `<span class="breadcrumb-item text-primary" onclick="backToRocModels()" style="cursor:pointer">Category</span> 
-            > 
-            <span class="breadcrumb-item active">${outCat}</span>`;
-    
-        fetch(`/get-deptres/${outCat}`)
-            .then(res => res.json())
-            .then(data => {
-                const subcatContainer = document.getElementById('subcategory-buttons');
-                subcatContainer.innerHTML = '';
-                subcatContainer.style.display = 'flex';
-                subcatContainer.style.flexWrap = 'wrap';
-                subcatContainer.style.gap = '10px';
-                subcatContainer.style.justifyContent = 'start';
-    
-                data.forEach(subcat => {
-                    const folderDiv = document.createElement('div');
-                    folderDiv.className = 'subcategory-folder';
-                    folderDiv.style.textAlign = 'center';
-    
-                    const folderBtn = document.createElement('button');
-                    folderBtn.className = 'responsive-folder-btn';
-                    folderBtn.style.backgroundImage = "url('https://cdn-icons-png.flaticon.com/512/716/716784.png')";
-                    folderBtn.style.backgroundSize = 'contain';
-                    folderBtn.style.backgroundRepeat = 'no-repeat';
-                    folderBtn.style.backgroundPosition = 'center';
-                    folderBtn.style.backgroundColor = 'transparent';
-                    folderBtn.style.border = 'none';
-                    folderBtn.style.cursor = 'pointer';
-                    folderBtn.onclick = () => showEbooks(subcat);
-    
-                    const label = document.createElement('span');
-                    label.className = 'responsive-folder-label';
-                    label.style.display = 'block';
-                    label.style.marginTop = '8px';
-                    label.textContent = subcat;
-    
-                    folderDiv.appendChild(folderBtn);
-                    folderDiv.appendChild(label);
-                    subcatContainer.appendChild(folderDiv);
-                });
+    currentCategory = outCat;
+    currentSubcategory = '';
+
+    // Hide RocModel buttons
+    document.getElementById('rocmodel-buttons').style.display = 'none';
+
+    // ✅ Properly escaped string with template literals
+    document.getElementById('breadcrumb-path').innerHTML = 
+        `<span class="breadcrumb-item text-primary" onclick="backToRocModels()" style="cursor:pointer">Category</span> 
+        > 
+        <span class="breadcrumb-item active">${outCat}</span>`;
+
+    fetch(`/get-deptres/${outCat}`)
+        .then(res => res.json())
+        .then(data => {
+            const subcatContainer = document.getElementById('subcategory-buttons');
+            subcatContainer.innerHTML = '';
+
+            // 🧱 Apply grid layout
+            subcatContainer.style.display = 'grid';
+            subcatContainer.style.gridTemplateColumns = 'repeat(auto-fit, minmax(150px, 1fr))';
+            subcatContainer.style.gap = '20px';
+            subcatContainer.style.width = '100%';
+
+            data.forEach(subcat => {
+                const folderDiv = document.createElement('div');
+                folderDiv.style.textAlign = 'center';
+                folderDiv.style.display = 'flex';
+                folderDiv.style.flexDirection = 'column';
+                folderDiv.style.alignItems = 'center';
+                folderDiv.style.justifyContent = 'flex-start';
+                folderDiv.style.padding = '10px';
+
+                const folderBtn = document.createElement('button');
+                folderBtn.style.backgroundImage = "url('https://cdn-icons-png.flaticon.com/512/716/716784.png')";
+                folderBtn.style.backgroundSize = 'contain';
+                folderBtn.style.backgroundRepeat = 'no-repeat';
+                folderBtn.style.backgroundPosition = 'center';
+                folderBtn.style.backgroundColor = 'transparent';
+                folderBtn.style.border = 'none';
+                folderBtn.style.cursor = 'pointer';
+                folderBtn.style.width = '150px';
+                folderBtn.style.height = '150px';
+                folderBtn.onclick = () => showEbooks(subcat);
+
+                const label = document.createElement('span');
+                label.style.fontSize = '14px';
+                label.style.color = 'black';
+                label.style.textAlign = 'center';
+                label.style.marginTop = '8px';
+                label.style.lineHeight = '1.2';
+                label.textContent = subcat;
+
+                folderDiv.appendChild(folderBtn);
+                folderDiv.appendChild(label);
+                subcatContainer.appendChild(folderDiv);
             });
-    
-        // Hide ebooks initially
-        document.getElementById('ebooks-container').style.display = 'none';
-    }
+        });
+
+    // Hide ebooks initially
+    document.getElementById('ebooks-container').style.display = 'none';
+}
+
     
     function showEbooks(underCat) {
         currentSubcategory = underCat;
@@ -377,8 +406,13 @@
     }
     </script>
     
+<divc lass="w-full bg-gray-800 text-white p-4 mt-10">
+  
+    @include('pages.userfooter')
+<div>
 
-<div>@include('pages.userfooter')</div>
+
+
 
 </body>
 </html>
