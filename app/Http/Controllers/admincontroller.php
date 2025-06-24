@@ -128,7 +128,8 @@ public function storebooks(Request $request)
         'year' => 'required|integer',
         'category' => 'required|string',
         'department' => 'required|string',
-        'pdf_filepath' => 'required|file|mimes:pdf',
+        'pdf_filepath' => 'required|file|mimes:pdf,doc,docx',
+
     ]);
 
     $file = $request->file('pdf_filepath');

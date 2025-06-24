@@ -80,8 +80,8 @@
 
     <!-- PDF File (full width) -->
     <div class="mb-6">
-        <label class="block text-gray-700 font-bold mb-2" for="pdf_filepath">PDF File</label>
-        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="file" id="pdf_filepath" name="pdf_filepath" accept=".pdf" required>
+        <label class="block text-gray-700 font-bold mb-2" for="pdf_filepath">File</label>
+        <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="file" id="pdf_filepath" name="pdf_filepath" accept=".pdf,.docx" required>
         @error('pdf_filepath')
             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
         @enderror

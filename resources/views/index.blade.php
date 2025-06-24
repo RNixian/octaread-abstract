@@ -82,11 +82,50 @@
         height: 200px;
       }
     }
+
+.carousel-item img {
+            width: auto;
+            height: 100%;
+        }
+        .carousel-container {
+    height: 50vh;
+}
+
+@media (max-width: 768px) {
+    .carousel-container {
+        height: 30vh; /* or any percentage/px value that fits */
+    }
+}
   </style>
 </head>
 <body class="bg-light">
 
   <div>@include('dashboard')</div>
+
+  <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="height: 70%;">
+      <div class="carousel-inner" style="height: 100%;">
+          @foreach($carouselItems as $item)
+              <div class="carousel-item {{ $loop->first ? 'active' : '' }}" style="height: 100%;">
+                  <img src="{{ asset('storage/' . $item->carousel_imgpath) }}"
+                       class="d-block w-100"
+                       alt="Slide">
+              </div>
+          @endforeach
+      </div>
+
+      <!-- Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+      </button>
+
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+      </button>
+  </div>
+</div>
+
 
   <div class="container-flex">
     <!-- LEFT GRID - LOGIN BUTTONS -->

@@ -68,6 +68,7 @@
                  class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
                 Delete
               </a>
+          
               <button 
                 class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
                 data-id="{{ $data->id }}"

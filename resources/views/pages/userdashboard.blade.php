@@ -287,11 +287,23 @@
   <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
 
     @forelse ($ebooks as $book)
-      <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 flex flex-col h-full">
-        <img 
-  src="{{ asset('images/default_pdf_picture.jpg/' . $book->cover_photo) }}" 
-  alt="Book Cover" 
-  class="rounded-t-xl object-cover w-full h-40 sm:h-48 md:h-56"
+     @php
+    $extension = strtolower(pathinfo($book->pdf_filepath, PATHINFO_EXTENSION));
+
+    if ($extension === 'pdf') {
+        $image = 'images/default_pdf_picture.jpg';
+    } elseif (in_array($extension, ['doc', 'docx'])) {
+        $image = 'images/default_docx_img.png';
+    } else {
+        $image = 'storage/pdf_uploads/' . $book->pdf_filepath; // adjust this path to your actual image storage
+    }
+@endphp
+
+<div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 flex flex-col h-full">
+    <img 
+        src="{{ asset($image) }}" 
+        alt="Book Cover" 
+        class="rounded-t-xl object-cover w-full h-40 sm:h-48 md:h-56"
 />
 
         <div class="p-6 flex flex-col flex-grow">

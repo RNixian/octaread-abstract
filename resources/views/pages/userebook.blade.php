@@ -236,6 +236,7 @@
 >
 
       <div class="card h-100 shadow-sm d-flex flex-column">
+        
         <img 
           src="{{ asset($ebook->cover_photo ? 'images/' . $ebook->cover_photo : 'images/default_pdf_picture.jpg') }}" 
           class="card-img-top responsive-cover-img" 

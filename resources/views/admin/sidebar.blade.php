@@ -14,8 +14,9 @@
 class="fixed top-0 left-0 h-screen w-64 bg-blue-900 text-white p-4 shadow-md overflow-auto z-40 transform md:translate-x-0 -translate-x-full md:block transition-transform duration-300">
   <br><br>
   <div class="d-flex align-items-center">
-    <img src="{{ asset('images/RnMLogo.png') }}" alt="Logo" style="height: 40px; width: 400px;">
+    <img src="{{ asset('images/olpccr&m.png') }}" alt="Logo" style="height: 40px; width: 400px; border: 2px solid black;">
 </div>
+
   @if(session()->has('firstname'))
   {{-- Welcome message in the center when logged in --}}
   <div class="text-white fw-semibold">
@@ -68,7 +69,9 @@ class="fixed top-0 left-0 h-screen w-64 bg-blue-900 text-white p-4 shadow-md ove
       <ul id="accountsDropdown"
         class="absolute left-0 mt-1 w-full bg-white shadow-md rounded hidden z-10 text-black">
         <li><a href="{{ url('/admin/account/useraccount') }}" class="block py-2 px-4 hover:bg-blue-200">User Accounts</a></li>
+           @if(session('role') === 'superadmin')
         <li><a href="{{ url('/admin/account/adminaccount') }}" class="block py-2 px-4 hover:bg-blue-200">Admin Accounts</a></li>
+        @endif
         <li><a href="{{ url('/admin/account/guestlog') }}" class="block py-2 px-4 hover:bg-blue-200">Guest Logs</a></li>
       </ul>
     </li>
