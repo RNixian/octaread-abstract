@@ -17,6 +17,138 @@
       <div class="max-w-7xl w-full mx-auto">
         <h2 class="text-3xl font-bold mb-8 text-center">Dashboard</h2>
 
+<!-- Filter Section -->
+       <div class="mt-10">
+<!-- Toggle Button ABOVE the entire container -->
+<div class="flex justify-end max-w-5xl mx-auto mt-4 mb-2 w-full">
+  <button 
+    onclick="toggleMainContainer()" 
+    id="mainToggleBtn"
+    class="text-xl font-bold text-white bg-gray-700 hover:bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center"
+    title="Toggle Panel"
+  >
+    −
+  </button>
+</div>
+
+<!-- Entire Content Container to be Toggled -->
+<div id="mainContainer" class="bg-white shadow rounded p-4 flex flex-col items-center w-full max-w-5xl mx-auto" style="height: auto;">
+  <form method="GET" action="{{ route('admin.admindashboard') }}" class="w-full text-sm">
+
+    <!-- Category & Department -->
+    <div class="flex flex-wrap gap-4 mb-4">
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Category</label>
+        <select name="category" class="w-full border rounded px-2 py-1">
+          <option value="">All Categories</option>
+          @foreach($categories as $category)
+            <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
+              {{ $category }}
+            </option>
+          @endforeach
+        </select>
+      </div>
+
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Department</label>
+        <select name="department" class="w-full border rounded px-2 py-1">
+          <option value="">-- Select Department --</option>
+          @foreach($departments as $department)
+            <option value="{{ $department }}" {{ request('department') == $department ? 'selected' : '' }}>
+              {{ $department }}
+            </option>
+          @endforeach
+        </select>
+      </div>
+    </div>
+
+    <!-- Date & Year Range -->
+    <div class="flex flex-wrap gap-4 mb-4">
+      <!-- Created Date Range -->
+      <div class="flex-grow w-auto">
+        <label class="block text-gray-700 mb-1">Created From</label>
+        <input type="date" name="from_date" value="{{ request('from_date') }}" class="w-full border rounded px-2 py-1" />
+      </div>
+
+     <div class="flex-grow w-auto">
+        <label class="block text-gray-700 mb-1">Created To</label>
+        <input type="date" name="to_date" value="{{ request('to_date') }}" class="w-full border rounded px-2 py-1" />
+      </div>
+    </div>
+   <!-- Toggle Year Range Button -->
+      <div class="flex-grow min-w-[160px] flex items-end">
+        <button 
+          type="button" 
+          onclick="toggleYearFields()" 
+          id="yearToggleBtn"
+          class="text-sm bg-blue-500 text-white px-3 py-1.5 rounded hover:bg-blue-600"
+        >
+          +
+        </button>
+      </div>
+    <!-- Year Range (Initially Hidden) -->
+    <div id="yearFields" class="flex flex-wrap gap-4 mb-4" style="display: none;">
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Year From</label>
+        <input type="number" name="year_from" value="{{ request('year_from') }}" class="w-full border rounded px-2 py-1" placeholder="e.g. 2020" />
+      </div>
+
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Year To</label>
+        <input type="number" name="year_to" value="{{ request('year_to') }}" class="w-full border rounded px-2 py-1" placeholder="e.g. 2024" />
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex justify-end gap-2 mb-4">
+      <a href="{{ route('admin.admindashboard') }}" class="bg-red-500 text-white px-4 py-1.5 rounded hover:bg-red-600">Reset</a>
+      <button type="submit" class="bg-green-500 text-white px-4 py-1.5 rounded hover:bg-green-600">Apply Filters</button>
+    </div>
+  </form>
+
+  <!-- Chart Section -->
+  <div class="w-full">
+    @if(!empty($filteredBooks) && !empty($filteredCounts))
+      <canvas id="filteredChart" width="400" height="150"></canvas>
+    @else
+      <p class="text-gray-500 mt-6">No data available for the selected filters.</p>
+    @endif
+  </div>
+</div>
+
+<!-- JavaScript to toggle both main container and year fields -->
+<script>
+  function toggleMainContainer() {
+    const container = document.getElementById('mainContainer');
+    const btn = document.getElementById('mainToggleBtn');
+
+    if (container.style.display === 'none') {
+      container.style.display = 'block';
+      btn.textContent = '−';
+    } else {
+      container.style.display = 'none';
+      btn.textContent = '+';
+    }
+  }
+
+  function toggleYearFields() {
+    const yearFields = document.getElementById('yearFields');
+    const toggleBtn = document.getElementById('yearToggleBtn');
+
+    if (yearFields.style.display === 'none') {
+      yearFields.style.display = 'flex';
+      toggleBtn.textContent = '−';
+    } else {
+      yearFields.style.display = 'none';
+      toggleBtn.textContent = '+';
+    }
+  }
+</script>
+
+
+
+<div class="mt-8"></div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 justify-center">
           <!-- Total Books -->
           <div class="bg-white shadow-md rounded p-8 flex flex-col items-center justify-center w-[300px] h-[400px]">
@@ -64,66 +196,6 @@
           <div class="bg-white shadow-md rounded p-8 flex flex-col items-center w-[300px] h-[400px]">
             <h2 class="text-lg font-semibold mb-6 text-center">Books Count by Year</h2>
             <canvas id="byYearChart" width="300" height="300"></canvas>
-          </div>
-        </div>
-
-        <!-- Filter Section -->
-        <div class="mt-10">
-          <div class="bg-white shadow rounded p-4 flex flex-col items-center w-full max-w-5xl mx-auto" style="height: 600px;">
-            <form method="GET" action="{{ route('admin.admindashboard') }}" class="w-full text-sm">
-              <!-- Search & Buttons -->
-              <div class="flex flex-wrap items-center gap-3 mb-4">
-                <div class="flex-grow min-w-[200px]">
-                  <label for="search" class="block text-gray-700 font-medium mb-1">Search</label>
-                  <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Search by Year, Category, Department..." class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-400" />
-                </div>
-                <div class="flex space-x-2 mt-5 sm:mt-0">
-                  <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Filter</button>
-                  <a href="{{ route('admin.admindashboard') }}" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400">Reset</a>
-                </div>
-              </div>
-
-              <!-- Category & Department -->
-              <div class="flex flex-wrap gap-4 mb-4">
-                <div class="flex-grow min-w-[160px]">
-                  <label for="category" class="block text-gray-700 font-medium mb-1">Category</label>
-                  <select name="category" id="category" class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                    <option value="">All Categories</option>
-                    @foreach($categories as $category)
-                      <option value="{{ $category }}">{{ $category }}</option>
-                    @endforeach
-                  </select>
-                </div>
-
-                <div class="flex-grow min-w-[160px]">
-                  <label for="department" class="block text-gray-700 font-medium mb-1">Department</label>
-                  <select name="department" id="department" class="w-full border border-gray-300 rounded px-2 py-1">
-                    <option value="">-- Select Department --</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Date Range -->
-              <div class="flex flex-wrap gap-4 mb-4">
-                <div class="flex-grow min-w-[160px]">
-                  <label for="from_date" class="block text-gray-700 font-medium mb-1">From Date</label>
-                  <input type="date" name="from_date" id="from_date" value="{{ request('from_date') }}" class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-400" />
-                </div>
-
-                <div class="flex-grow min-w-[160px]">
-                  <label for="to_date" class="block text-gray-700 font-medium mb-1">To Date</label>
-                  <input type="date" name="to_date" id="to_date" value="{{ request('to_date') }}" class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-400" />
-                </div>
-              </div>
-
-              <!-- Submit -->
-              <div class="flex justify-end">
-                <button type="submit" class="bg-green-500 text-white px-4 py-1.5 rounded hover:bg-green-600">Apply Filters</button>
-              </div>
-            </form>
-
-            <!-- Filtered Chart -->
-            <canvas id="filteredChart" width="300" height="100"></canvas>
           </div>
         </div>
       </div>
@@ -192,27 +264,40 @@
   </script>
 
   <!-- Filtered Chart -->
-  <script>
-    const filteredCtx = document.getElementById('filteredChart').getContext('2d');
-    new Chart(filteredCtx, {
-      type: 'bar',
-      data: {
-        labels: {!! json_encode($filteredBooks ?? []) !!},
-        datasets: [{
-          label: 'Filtered Books',
-          data: {!! json_encode($filteredCounts ?? []) !!},
-          backgroundColor: 'rgba(54, 162, 235, 0.6)'
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-          title: { display: true, text: 'Filtered Book Count' }
+  @if(!empty($filteredBooks) && !empty($filteredCounts))
+<script>
+  const filteredCtx = document.getElementById('filteredChart').getContext('2d');
+  new Chart(filteredCtx, {
+    type: 'bar',
+    data: {
+      labels: @json($filteredBooks),
+      datasets: [{
+        label: 'Filtered Books',
+        data: @json($filteredCounts),
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0
+          }
         }
+      },
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: 'Filtered Book Count' }
       }
-    });
-  </script>
+    }
+  });
+</script>
+@endif
+
 
   <!-- Category to Department Dynamic Fetch -->
   <script>

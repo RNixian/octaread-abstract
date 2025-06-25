@@ -1,5 +1,6 @@
 //USER===========================================
 done??
+SEARCH IN RESEARCH
 
 
 //ADMIN==========================================
@@ -9,8 +10,229 @@ dashboard- filter being reset when applying filter
 
 
 
+dashboard filter:
 
+OPTION 1:✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
 
+revert from the first one
+
+OPTION 2:✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+
+<!-- Toggle Button ABOVE the entire container -->
+<div class="flex justify-end max-w-5xl mx-auto mt-4 mb-2 w-full">
+  <button 
+    onclick="toggleMainContainer()" 
+    id="mainToggleBtn"
+    class="text-xl font-bold text-white bg-gray-700 hover:bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center"
+    title="Toggle Panel"
+  >
+    −
+  </button>
+</div>
+
+<!-- Entire Content Container to be Toggled -->
+<div id="mainContainer" class="bg-white shadow rounded p-4 flex flex-col items-center w-full max-w-5xl mx-auto" style="height: auto;">
+  <form method="GET" action="{{ route('admin.admindashboard') }}" class="w-full text-sm">
+
+    <!-- Category & Department -->
+    <div class="flex flex-wrap gap-4 mb-4">
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Category</label>
+        <select name="category" class="w-full border rounded px-2 py-1">
+          <option value="">All Categories</option>
+          @foreach($categories as $category)
+            <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
+              {{ $category }}
+            </option>
+          @endforeach
+        </select>
+      </div>
+
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Department</label>
+        <select name="department" class="w-full border rounded px-2 py-1">
+          <option value="">-- Select Department --</option>
+          @foreach($departments as $department)
+            <option value="{{ $department }}" {{ request('department') == $department ? 'selected' : '' }}>
+              {{ $department }}
+            </option>
+          @endforeach
+        </select>
+      </div>
+    </div>
+
+    <!-- Date & Year Range -->
+    <div class="flex flex-wrap gap-4 mb-4">
+      <!-- Created Date Range -->
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Created From</label>
+        <input type="date" name="from_date" value="{{ request('from_date') }}" class="w-full border rounded px-2 py-1" />
+      </div>
+
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Created To</label>
+        <input type="date" name="to_date" value="{{ request('to_date') }}" class="w-full border rounded px-2 py-1" />
+      </div>
+
+      <!-- Year Range -->
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Year From</label>
+        <input type="number" name="year_from" value="{{ request('year_from') }}" class="w-full border rounded px-2 py-1" placeholder="e.g. 2020" />
+      </div>
+
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Year To</label>
+        <input type="number" name="year_to" value="{{ request('year_to') }}" class="w-full border rounded px-2 py-1" placeholder="e.g. 2024" />
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex justify-end gap-2 mb-4">
+      <a href="{{ route('admin.admindashboard') }}" class="bg-red-500 text-white px-4 py-1.5 rounded hover:bg-red-600">Reset</a>
+      <button type="submit" class="bg-green-500 text-white px-4 py-1.5 rounded hover:bg-green-600">Apply Filters</button>
+    </div>
+  </form>
+
+  <!-- Chart Section -->
+  <div class="w-full">
+    @if(!empty($filteredBooks) && !empty($filteredCounts))
+      <canvas id="filteredChart" width="400" height="150"></canvas>
+    @else
+      <p class="text-gray-500 mt-6">No data available for the selected filters.</p>
+    @endif
+  </div>
+</div>
+
+<!-- JavaScript to toggle the whole container -->
+<script>
+  function toggleMainContainer() {
+    const container = document.getElementById('mainContainer');
+    const btn = document.getElementById('mainToggleBtn');
+
+    if (container.style.display === 'none') {
+      container.style.display = 'block';
+      btn.textContent = '−';
+    } else {
+      container.style.display = 'none';
+      btn.textContent = '+';
+    }
+  }
+</script>
+
+OPTION 3:✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
+<!-- Entire Content Container to be Toggled -->
+<div id="mainContainer" class="bg-white shadow rounded p-4 flex flex-col items-center w-full max-w-5xl mx-auto" style="height: auto;">
+  <form method="GET" action="{{ route('admin.admindashboard') }}" class="w-full text-sm">
+
+    <!-- Category & Department -->
+    <div class="flex flex-wrap gap-4 mb-4">
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Category</label>
+        <select name="category" class="w-full border rounded px-2 py-1">
+          <option value="">All Categories</option>
+          @foreach($categories as $category)
+            <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
+              {{ $category }}
+            </option>
+          @endforeach
+        </select>
+      </div>
+
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Department</label>
+        <select name="department" class="w-full border rounded px-2 py-1">
+          <option value="">-- Select Department --</option>
+          @foreach($departments as $department)
+            <option value="{{ $department }}" {{ request('department') == $department ? 'selected' : '' }}>
+              {{ $department }}
+            </option>
+          @endforeach
+        </select>
+      </div>
+    </div>
+
+    <!-- Date & Year Range -->
+    <div class="flex flex-wrap gap-4 mb-4">
+      <!-- Created Date Range -->
+      <div class="flex-grow w-auto">
+        <label class="block text-gray-700 mb-1">Created From</label>
+        <input type="date" name="from_date" value="{{ request('from_date') }}" class="w-full border rounded px-2 py-1" />
+      </div>
+
+     <div class="flex-grow w-auto">
+        <label class="block text-gray-700 mb-1">Created To</label>
+        <input type="date" name="to_date" value="{{ request('to_date') }}" class="w-full border rounded px-2 py-1" />
+      </div>
+    </div>
+   <!-- Toggle Year Range Button -->
+      <div class="flex-grow min-w-[160px] flex items-end">
+        <button 
+          type="button" 
+          onclick="toggleYearFields()" 
+          id="yearToggleBtn"
+          class="text-sm bg-blue-500 text-white px-3 py-1.5 rounded hover:bg-blue-600"
+        >
+          +
+        </button>
+      </div>
+    <!-- Year Range (Initially Hidden) -->
+    <div id="yearFields" class="flex flex-wrap gap-4 mb-4" style="display: none;">
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Year From</label>
+        <input type="number" name="year_from" value="{{ request('year_from') }}" class="w-full border rounded px-2 py-1" placeholder="e.g. 2020" />
+      </div>
+
+      <div class="flex-grow min-w-[160px]">
+        <label class="block text-gray-700 mb-1">Year To</label>
+        <input type="number" name="year_to" value="{{ request('year_to') }}" class="w-full border rounded px-2 py-1" placeholder="e.g. 2024" />
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex justify-end gap-2 mb-4">
+      <a href="{{ route('admin.admindashboard') }}" class="bg-red-500 text-white px-4 py-1.5 rounded hover:bg-red-600">Reset</a>
+      <button type="submit" class="bg-green-500 text-white px-4 py-1.5 rounded hover:bg-green-600">Apply Filters</button>
+    </div>
+  </form>
+
+  <!-- Chart Section -->
+  <div class="w-full">
+    @if(!empty($filteredBooks) && !empty($filteredCounts))
+      <canvas id="filteredChart" width="400" height="150"></canvas>
+    @else
+      <p class="text-gray-500 mt-6">No data available for the selected filters.</p>
+    @endif
+  </div>
+</div>
+
+<!-- JavaScript to toggle both main container and year fields -->
+<script>
+  function toggleMainContainer() {
+    const container = document.getElementById('mainContainer');
+    const btn = document.getElementById('mainToggleBtn');
+
+    if (container.style.display === 'none') {
+      container.style.display = 'block';
+      btn.textContent = '−';
+    } else {
+      container.style.display = 'none';
+      btn.textContent = '+';
+    }
+  }
+
+  function toggleYearFields() {
+    const yearFields = document.getElementById('yearFields');
+    const toggleBtn = document.getElementById('yearToggleBtn');
+
+    if (yearFields.style.display === 'none') {
+      yearFields.style.display = 'flex';
+      toggleBtn.textContent = '−';
+    } else {
+      yearFields.style.display = 'none';
+      toggleBtn.textContent = '+';
+    }
+  }
+</script>
 
 
 

@@ -894,11 +894,6 @@ public function edituserdept($id){
 }
 
 
-
-
-     
-
-
     //POSITION----------------------------------------------------------------------------------------------------------------------
 
     public function position()
@@ -1053,28 +1048,24 @@ public function admingraphs(Request $request)
     $selectedDepartment = $request->input('department');
     $fromDate = $request->input('from_date');
     $toDate = $request->input('to_date');
-    $search = $request->input('search');
+    $yearFrom = $request->input('year_from');
+$yearTo = $request->input('year_to');
+
+
     // Base query
     $query = BooksModel::query();
 
-
-// Filter by search keyword on year, category, or department columns
-if ($search) {
-    $query->where(function($q) use ($search) {
-        $q->where('year', 'like', "%{$search}%")
-          ->orWhere('category', 'like', "%{$search}%")
-          ->orWhere('department', 'like', "%{$search}%");
-    });
-}
-
+    // Category Filter
     if ($selectedCategory) {
         $query->where('category', $selectedCategory);
     }
 
+    // Department Filter
     if ($selectedDepartment) {
         $query->where('department', $selectedDepartment);
     }
 
+    // Created_at Date Range Filter
     if ($fromDate && $toDate) {
         $query->whereBetween('created_at', [$fromDate, $toDate]);
     } elseif ($fromDate) {
@@ -1083,22 +1074,37 @@ if ($search) {
         $query->whereDate('created_at', '<=', $toDate);
     }
 
-    // Get data for filtered bar chart (grouped by year)
-    $filteredBooks = $query->select('year')->groupBy('year')->pluck('year');
-    $filteredCounts = $query->selectRaw('year, COUNT(*) as count')->groupBy('year')->pluck('count');
+     // year_from&to Range Filter
+if ($yearFrom && $yearTo) {
+    $query->whereBetween('year', [$yearFrom, $yearTo]);
+} elseif ($yearFrom) {
+    $query->where('year', '>=', $yearFrom);
+} elseif ($yearTo) {
+    $query->where('year', '<=', $yearTo);
+}
+
+
+
+    // Get filtered data for bar chart (grouped by year)
+    $filteredData = $query->selectRaw('year, COUNT(*) as count')
+        ->groupBy('year')
+        ->orderBy('year')
+        ->pluck('count', 'year');
+
+    $filteredBooks = $filteredData->keys();   // years
+    $filteredCounts = $filteredData->values(); // counts
 
     // Category Dropdown (for pie chart)
     $categories = RocModel::pluck('out_cat')->unique()->values();
-    $departments = BooksModel::pluck('department')->unique()->values(); // Assuming this exists
+    $departments = BooksModel::pluck('department')->unique()->values(); // assuming exists
 
-    // Pie Chart (overall stats per category)
-    $labels = [];
-    $values = [];
+    // Pie Chart (grouped category counts)
+    $pieGrouped = BooksModel::selectRaw('category, COUNT(*) as total')
+        ->groupBy('category')
+        ->pluck('total', 'category');
 
-    foreach ($categories as $category) {
-        $labels[] = $category;
-        $values[] = BooksModel::where('category', $category)->count();
-    }
+    $labels = $pieGrouped->keys();
+    $values = $pieGrouped->values();
 
     $pieData = [
         'labels' => $labels,
@@ -1106,51 +1112,54 @@ if ($search) {
     ];
 
     // Bar Chart (overall stats per year)
-    $years = BooksModel::select('year')->groupBy('year')->pluck('year');
-    $counts = BooksModel::selectRaw('year, COUNT(*) as count')->groupBy('year')->pluck('count');
+    $barGrouped = BooksModel::selectRaw('year, COUNT(*) as count')
+        ->groupBy('year')
+        ->orderBy('year')
+        ->pluck('count', 'year');
 
     $barDatabyyr = [
-        'labels' => $years,
-        'values' => $counts,
+        'labels' => $barGrouped->keys(),
+        'values' => $barGrouped->values(),
     ];
 
+    // Other dashboard stats
     $res_out_cats = RocModel::all();
     $totalBooks = BooksModel::count();
-    $totalUser = usermodel::where('user_type_id', '!=', '0')->count();
-    $totalGuest = usermodel::where('user_type_id', '==', '0')->count();
+    $totalUser = usermodel::where('user_type_id', '!=', 0)->count();
+    $totalGuest = usermodel::where('user_type_id', 0)->count();
     $totalAdmin = adminmodel::count();
+
+    // Most Favorited Book
     $mostFavorite = favmodel::select('ebook_id')
-    ->selectRaw('COUNT(*) as total')
-    ->groupBy('ebook_id')
-    ->orderByDesc('total')
-    ->first();
+        ->selectRaw('COUNT(*) as total')
+        ->groupBy('ebook_id')
+        ->orderByDesc('total')
+        ->first();
 
-        $mostFavoriteTitle = null;
-        $mostFavoriteCount = 0;
+    $mostFavoriteTitle = null;
+    $mostFavoriteCount = 0;
 
-        if ($mostFavorite) {
-            $book = booksmodel::where('id', $mostFavorite->ebook_id)->first();
-            $mostFavoriteTitle = $book->title ?? 'Unknown Title';
-            $mostFavoriteCount = $mostFavorite->total;
-        }
-       
+    if ($mostFavorite) {
+        $book = booksmodel::where('id', $mostFavorite->ebook_id)->first();
+        $mostFavoriteTitle = $book->title ?? 'Unknown Title';
+        $mostFavoriteCount = $mostFavorite->total;
+    }
+
+    // Most Viewed Book
     $mostViewed = viewsmodel::select('ebook_id')
-    ->selectRaw('COUNT(*) as total')
-    ->groupBy('ebook_id')
-    ->orderByDesc('total')
-    ->first();
-    
-        $mostViewedTitle = null;
-        $mostViewedCount = 0;
-    
-        if ($mostViewed) {
-            $book = booksmodel::where('id', $mostViewed->ebook_id)->first();
-            $mostViewedTitle = $book->title ?? 'Unknown Title';
-            $mostViewedCount = $mostViewed->total;
-        }
-        
+        ->selectRaw('COUNT(*) as total')
+        ->groupBy('ebook_id')
+        ->orderByDesc('total')
+        ->first();
 
-    
+    $mostViewedTitle = null;
+    $mostViewedCount = 0;
+
+    if ($mostViewed) {
+        $book = booksmodel::where('id', $mostViewed->ebook_id)->first();
+        $mostViewedTitle = $book->title ?? 'Unknown Title';
+        $mostViewedCount = $mostViewed->total;
+    }
 
     return view('admin.admindashboard', compact(
         'pieData',
@@ -1171,9 +1180,13 @@ if ($search) {
         'selectedCategory',
         'selectedDepartment',
         'fromDate',
-        'toDate'
+        'toDate',
+        'yearFrom',
+        'yearTo'
+
     ));
 }
+
 
 
 public function getDeptgraph($out_cat)
