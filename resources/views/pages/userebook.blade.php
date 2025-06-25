@@ -169,6 +169,11 @@
     <div class="container py-5">
       <h1 class="mb-4">Research Abstract</h1>
   
+      <!-- 🔍 Search Bar -->
+<div id="search-bar" class="my-3" style="display: none;">
+  <input type="text" id="ebookSearchInput" class="form-control" placeholder="Search..." oninput="filterEbooksBySearch()">
+</div>
+
     
     <!-- 📍 Breadcrumb -->
     <div id="breadcrumb-path" class="mb-3 fw-bold text-secondary">
@@ -219,9 +224,6 @@
     </button>
   @endforeach
 </div>
-
-
-
 
     <!-- 🔘 UnderRocModel Buttons (Initially Hidden) -->
     <div id="subcategory-buttons" class="mb-4" style="display:none;"></div>
@@ -318,6 +320,9 @@
 
     document.getElementById('subcategory-buttons').style.display = 'none';
     document.getElementById('ebooks-container').style.display = 'none';
+    document.getElementById('search-bar').style.display = 'none';
+document.getElementById('ebookSearchInput').value = '';
+
 
     document.getElementById('breadcrumb-path').innerHTML = 
         `<span class="breadcrumb-item active" onclick="backToRocModels()" style="cursor:pointer">Category</span>`;
@@ -419,7 +424,36 @@
         });
     
         document.getElementById('ebooks-container').style.display = anyVisible ? 'flex' : 'none';
+        document.getElementById('search-bar').style.display = 'block';
+
     }
+
+    function filterEbooksBySearch() {
+  const input = document.getElementById('ebookSearchInput').value.toLowerCase();
+  const cards = document.querySelectorAll('#ebooks-container > div');
+
+  let anyVisible = false;
+
+  cards.forEach(card => {
+    const cat = card.getAttribute('data-category');
+    const dept = card.getAttribute('data-department');
+    const content = card.textContent.toLowerCase();
+
+    if (
+      cat === currentCategory &&
+      dept === currentSubcategory &&
+      content.includes(input)
+    ) {
+      card.style.display = 'block';
+      anyVisible = true;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  document.getElementById('ebooks-container').style.display = anyVisible ? 'flex' : 'none';
+}
+
     </script>
     
 <divc lass="w-full bg-gray-800 text-white p-4 mt-10">
