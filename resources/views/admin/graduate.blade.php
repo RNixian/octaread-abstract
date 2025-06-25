@@ -128,7 +128,6 @@
             </table>
             <div class="d-flex justify-content-center mt-4">
               {{ $books->links('pagination::tailwind') }}
-
           </div>
                
           </div>

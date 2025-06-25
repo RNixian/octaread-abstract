@@ -22,12 +22,13 @@
   <div class="flex min-h-screen bg-gray-100 w-full">
     @include('admin.sidebar')
 
-    <div id="mainContent" class="md:ml-64 md:flex">
+  
+  <div id="mainContent" class="md:ml-64 flex flex-col lg:flex-row items-start justify-center gap-8 w-full p-6">
 
-          <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 mx-auto">
-            <h2 class="text-2xl font-bold mb-6 text-center">Research Output Category</h2>
+   <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 w-full max-w-6xl mx-auto">
+ <h2 class="text-2xl font-bold mb-6 text-center">Research Output Category</h2>
 
-        <form action="{{ route('admin.setup.storeout_cat') }}" method="POST" enctype="multipart/form-data" class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <form action="{{ route('admin.setup.storeout_cat') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
               <div class="mb-4">
                 <label class="block text-gray-700 font-bold mb-2" for="out_cat">Output Category</label>
@@ -39,17 +40,32 @@
                 </button>
               </div>
             </form>
-          </div>
 
+<div class="mt-8"></div>
 
-        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
+    <!-- Search and Filter -->
+ <form method="GET" action="{{ url('/admin/setup/output_category') }}" id="searchForm" class="w-full mb-6 flex flex-col md:flex-row items-center gap-2">
+  <input 
+    type="text" 
+    name="search" 
+    value="{{ request('search') }}" 
+    placeholder="Enter..." 
+    class="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline" 
+  />
 
+  <button 
+    type="submit" 
+    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+  >
+    Search
+  </button>
 
-   <!-- Search and Filter -->
- <form method="GET" action="{{ url('/admin/setup/output_category') }}" class="flex flex-col md:flex-row justify-between items-center mb-4 gap-2">
-  <input type="text" name="search" value="{{ request('search') }}" placeholder="Enter..." 
-  class="w-full shadow appearance-none border rounded  md:w-1/2 py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"/>
-<button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Search</button>
+  <a 
+    href="{{ url('/admin/setup/output_category') }}" 
+    class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-center"
+  >
+    Clear
+  </a>
 </form>
 
           <div class="overflow-x-auto">
@@ -86,6 +102,9 @@
       @endforeach
     </tbody>
   </table>
+    <div class="d-flex justify-content-center mt-4">
+              {{ $rocmodel->links('pagination::tailwind') }}
+          </div>
 </div>
 
         </div>

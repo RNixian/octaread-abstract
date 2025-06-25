@@ -31,50 +31,63 @@
      <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full">
        <h2 class="text-2xl font-bold mb-6 text-center">Guest Log</h2>
  
-       <!-- Search Form -->
-       <form method="GET" action="{{ route('admin.account.guestlog') }}" class="flex flex-col md:flex-row justify-between items-center mb-4 gap-2">
-         <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..."
-           class="w-full shadow border rounded md:w-1/2 py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-         <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-           Search
-         </button>
-       </form>
+<!-- Search and Filter -->
+<form method="GET" action="{{ url('/admin/account/guestlog') }}" class="flex flex-col md:flex-row items-center mb-4 gap-2 w-full">
+  
+  <input type="text" name="search" value="{{ request('search') }}" placeholder="Enter..." 
+    class="flex-1 shadow appearance-none border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline w-full"/>
+
+  <div class="flex gap-2">
+    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+      Search
+    </button>
+    
+    <a href="{{ url('/admin/account/guestlog') }}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+      Clear
+    </a>
+  </div>
+
+</form>
  
        <!-- Table -->
        <div class="overflow-x-auto">
-         <table class="min-w-full table-auto border-collapse">
-           <thead>
-             <tr class="bg-blue-900 text-white">
-               <th class="px-4 py-2 border-b text-left">First Name</th>
-               <th class="px-4 py-2 border-b text-left">Last Name</th>
-               <th class="px-4 py-2 border-b text-left">Reference#</th>
-               <th class="px-4 py-2 border-b text-left">Purpose</th>
-               <th class="px-4 py-2 border-b text-left">Date Logged</th>
-               <th class="px-4 py-2 border-b text-left">Actions</th>
-             </tr>
-           </thead>
-           <tbody>
-            @forelse($users as $data)
-               <tr class="bg-white border-b hover:bg-gray-100">
-                 <td class="px-4 py-2">{{ $data->firstname }}</td>
-                 <td class="px-4 py-2">{{ $data->lastname }}</td>
-                 <td class="px-4 py-2">{{ $data->schoolid }}</td>
-                 <td class="px-4 py-2">{{ $data->department }}</td>
-                 <td class="px-4 py-2 border-b">{{ \Carbon\Carbon::parse($data->birthdate)->format('d-m-Y') }}</td>
-                 <td class="px-4 py-2 space-x-2">
-                  <a href="{{ route('deleteuseracc', $data->id) }}"
-                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
-                   Delete
-                 </a>
-                 </td>
-               </tr>
-             @empty
-               <tr>
-                 <td colspan="9" class="text-center py-4 text-gray-500">No users found.</td>
-               </tr>
-             @endforelse
-           </tbody>
-         </table>
+         <table class="min-w-full table-auto border-collapse text-sm">
+  <thead>
+    <tr class="bg-blue-900 text-white">
+      <th class="px-2 py-1 border-b text-left">First Name</th>
+      <th class="px-2 py-1 border-b text-left">Last Name</th>
+      <th class="px-2 py-1 border-b text-left">Reference#</th>
+      <th class="px-2 py-1 border-b text-left">Purpose</th>
+      <th class="px-2 py-1 border-b text-left">Date Logged</th>
+      <th class="px-2 py-1 border-b text-left">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @forelse($users as $data)
+      <tr class="bg-white border-b hover:bg-gray-100">
+        <td class="px-2 py-1">{{ $data->firstname }}</td>
+        <td class="px-2 py-1">{{ $data->lastname }}</td>
+        <td class="px-2 py-1">{{ $data->schoolid }}</td>
+        <td class="px-2 py-1">{{ $data->department }}</td>
+        <td class="px-2 py-1">{{ \Carbon\Carbon::parse($data->birthdate)->format('d-m-Y') }}</td>
+        <td class="px-2 py-1">
+          <a href="{{ route('deleteuseracc', $data->id) }}"
+             class="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-1 px-2 rounded">
+            Delete
+          </a>
+        </td>
+      </tr>
+    @empty
+      <tr>
+        <td colspan="6" class="text-center py-3 text-gray-500 text-sm">No users found.</td>
+      </tr>
+    @endforelse
+  </tbody>
+</table>
+
+          <div class="d-flex justify-content-center mt-4">
+              {{ $users->links('pagination::tailwind') }}
+          </div>
        </div>
      </div>
 

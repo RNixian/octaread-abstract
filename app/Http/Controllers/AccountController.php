@@ -45,7 +45,7 @@ class AccountController extends Controller
             $query->where('department', $request->department);
         }
     
-        $usermodel = $query->get();
+        $usermodel = $query->paginate(15)->withQueryString();
     
         return view('admin.account.useraccount', compact('usermodel', 'users', 'usertypes', 'userdepts'));
     }
@@ -140,7 +140,7 @@ public function searchAdminAccount(Request $request)
             $query->where('department', $request->department);
         }
     
-        $adminmodel = $query->get();
+        $adminmodel = $query->paginate(15)->withQueryString();
     
         return view('admin.account.adminaccount', compact('adminmodel', 'dept', 'adminacc'));
     }
@@ -210,9 +210,9 @@ public function updateadminacc(Request $request, $id) {
         }
     
         // Execute final query
-        $usermodel = $query->get();
+        $usersmodel = $query->paginate(15)->withQueryString();
     
-        return view('admin.account.guestlog', ['users' => $usermodel]);
+        return view('admin.account.guestlog', ['users' => $usersmodel]);
 
     }
     

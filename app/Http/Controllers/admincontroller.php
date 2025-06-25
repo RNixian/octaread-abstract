@@ -575,8 +575,9 @@ return view ('admin.setup.carousel');
 
 public function showcarousel()
 {
-    $carouselmodel = carouselmodel::all();
-    return view('admin.setup.carousel')->with('carouselmodel', $carouselmodel);
+    $carouselmodel = carouselmodel::paginate(3)->withQueryString();
+    return view('admin.setup.carousel', compact('carouselmodel'));
+
 
 }
 
@@ -683,7 +684,7 @@ public function editout_cat($id){
             });
         }
     
-        $rocmodel = $query->get();
+        $rocmodel = $query->paginate(5)->withQueryString();
     
         return view('admin.setup.resoutcat', compact('rocmodel', 'out_cats'));
     }
@@ -734,25 +735,28 @@ public function editunder_out_cat($id){
     }
 
 
-    public function searchunder_out_cat(Request $request)
-    {
-        $under_out_cats = underrocmodel::all();
-        $res_out_category = rocmodel::all();
-        $query = underrocmodel::query();
-    
-        if ($request->has('search') && $request->search) {
-            $query->where(function ($q) use ($request) {
-                $q->where('out_cat_id', 'like', '%' . $request->search . '%')
-                ->orWhere('under_roc', 'like', '%' . $request->search . '%')
-                  ->orWhere('created_at', 'like', '%' . $request->search . '%')
-                  ->orWhere('updated_at', 'like', '%' . $request->search . '%');
-            });
-        }
-    
-        $underrocmodel = $query->get();
-    
-        return view('admin.setup.under_out_cat', compact('underrocmodel', 'under_out_cats', 'res_out_category'));
+public function searchunder_out_cat(Request $request)
+{
+    $under_out_cats = underrocmodel::all();
+    $res_out_category = rocmodel::all();
+
+    $query = underrocmodel::with('outputCategory'); // eager load relationship
+
+    if ($request->has('search') && $request->search) {
+        $query->where(function ($q) use ($request) {
+            $q->where('under_roc', 'like', '%' . $request->search . '%')
+              ->orWhere('created_at', 'like', '%' . $request->search . '%')
+              ->orWhere('updated_at', 'like', '%' . $request->search . '%');
+        })->orWhereHas('outputCategory', function ($q) use ($request) {
+            $q->where('out_cat', 'like', '%' . $request->search . '%');
+        });
     }
+
+    $underrocmodel = $query->paginate(5)->withQueryString();
+
+    return view('admin.setup.under_out_cat', compact('underrocmodel', 'under_out_cats', 'res_out_category'));
+}
+
 
  //USER ACCESS----------------------------------------------------------------------------------------------------------------------
 
@@ -862,31 +866,37 @@ public function edituserdept($id){
              });
          }
      
-         $usertypemodel = $query->get();
-     
+         $usertypemodel = $query->paginate(5)->withQueryString();
          return view('admin.setup.usertype', compact('usertypemodel', 'usertypes'));
      }
  
-     public function searchuserdept(Request $request)
-     {
-         $userdepts = userdeptmodel::all();
-         $usertypes = usertypemodel::all();
+ public function searchuserdept(Request $request)
+{
+    $userdepts = userdeptmodel::all();
+    $usertypes = usertypemodel::all();
 
-         $query = userdeptmodel::query();
-     
-         if ($request->has('search') && $request->search) {
-             $query->where(function ($q) use ($request) {
-                 $q->where('user_department', 'like', '%' . $request->search . '%')
-                   ->orWhere('created_at', 'like', '%' . $request->search . '%')
-                   ->orWhere('updated_at', 'like', '%' . $request->search . '%');
-             });
-         }
-     
-         $userdeptmodel = $query->get();
-     
-         return view('admin.setup.userdepartment', compact('userdeptmodel', 'userdepts', 'usertypes'));
-     }
+    // Eager load relationship
+    $query = userdeptmodel::with('userTypes'); // replace 'usertype' with actual relationship method name
 
+    if ($request->has('search') && $request->search) {
+        $query->where(function ($q) use ($request) {
+            $q->where('user_department', 'like', '%' . $request->search . '%')
+              ->orWhere('created_at', 'like', '%' . $request->search . '%')
+              ->orWhere('updated_at', 'like', '%' . $request->search . '%');
+        })->orWhereHas('userTypes', function ($q) use ($request) {
+            $q->where('user_type', 'like', '%' . $request->search . '%'); // adjust column name as needed
+        });
+    }
+
+    $userdeptmodel = $query->paginate(5)->withQueryString();
+
+    return view('admin.setup.userdepartment', compact('userdeptmodel', 'userdepts', 'usertypes'));
+}
+
+
+
+
+     
 
 
     //POSITION----------------------------------------------------------------------------------------------------------------------
@@ -946,7 +956,7 @@ public function edituserdept($id){
                 });
             }
         
-            $positionmodel = $query->get();
+            $positionmodel = $query->paginate(5)->withQueryString();
         
             return view('admin.setup.position', compact('positionmodel', 'positions'));
         }

@@ -21,39 +21,49 @@
 
   <div class="flex min-h-screen bg-gray-100 w-full">
     @include('admin.sidebar')
-    <div id="mainContent" class="md:ml-64 md:flex">
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 mx-auto">
-      <h2 class="text-2xl font-bold mb-6 text-center">Carousel</h2>
+      <div id="mainContent" class="md:ml-64 flex flex-col lg:flex-row items-start justify-center gap-8 w-full p-6">
+<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 w-full max-w-6xl mx-auto">
+
+ <h2 class="text-2xl font-bold mb-6 text-center">Carousel</h2>
     
-      <form action="{{ route('admin.setup.storecarousel') }}" method="POST" enctype="multipart/form-data" class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
-        @csrf
-    
-        <div class="mb-6">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="carousel_imgpath">Carousel</label>
-          <input class="block w-full text-sm text-gray-700 border border-gray-300 rounded py-2 px-3 focus:outline-none focus:shadow-outline" id="carousel_imgpath" type="file" name="carousel_imgpath" accept="image/jpeg,image/png,image/jpg">
+    <form action="{{ route('admin.setup.storecarousel') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+    @csrf
+
+    <div class="flex flex-col lg:flex-row lg:items-start lg:space-x-6 mb-6">
+        <!-- Carousel File Input -->
+        <div class="w-full lg:w-1/3 mb-4 lg:mb-0">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="carousel_imgpath">Carousel</label>
+            <input class="block w-full text-sm text-gray-700 border border-gray-300 rounded py-2 px-3 focus:outline-none focus:shadow-outline" 
+                   id="carousel_imgpath" type="file" name="carousel_imgpath" accept="image/jpeg,image/png,image/jpg">
         </div>
-    
-        <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="display_order">Display Order</label>
-          <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="display_order" name="display_order" required>
+
+        <!-- Display Order -->
+        <div class="w-full lg:w-1/3 mb-4 lg:mb-0">
+            <label class="block text-gray-700 font-bold mb-2" for="display_order">Display Order</label>
+            <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                   type="text" id="display_order" name="display_order" required>
         </div>
-    
-        <p class="text-sm text-gray-700 text-center mb-4 px-4 py-2 rounded" style="background-color: rgba(253, 224, 71, 0.3);">
-          <strong>Note:</strong> Recommended size of picture is <span class="font-medium">1920x1080</span>.
-        </p>
-        
-    
-        <div class="flex justify-center space-x-4">
-          <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300" type="submit">
-            Submit
-          </button>
+
+        <!-- Note -->
+        <div class="w-full lg:w-1/3">
+            <p class="text-sm text-gray-700 px-4 py-2 rounded bg-yellow-100">
+                <strong>Note:</strong> Recommended size of picture:<br>
+                <span class="font-medium">Desktop view: 1920 x 600 px</span><br>
+                <span class="font-medium">Mobile view: 768 x 400 px</span>
+              </p>
         </div>
-      </form>
     </div>
-    
+
+    <!-- Submit Button -->
+    <div class="flex justify-center space-x-4">
+        <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300" type="submit">
+            Submit
+        </button>
+    </div>
+</form>
+<div class="mt-8"></div>
 
 
-        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
        <div class="overflow-x-auto">
   <table class="min-w-full table-auto border-collapse">
     <thead>
@@ -74,7 +84,7 @@
             @if($data->carousel_imgpath)
             <img src="{{ asset('storage/' . $data->carousel_imgpath) }}"
             alt="Carousel"
-            class="w-70 h-40 object-cover rounded border" />
+            class="w-50 h-20 object-cover rounded border" />
        
             @else
               N/A
@@ -99,6 +109,9 @@
       @endforeach
     </tbody>
   </table>
+<div class="d-flex justify-content-center mt-4">
+      {{ $carouselmodel->links('pagination::tailwind') }}
+</div>
 </div>
         </div>
 

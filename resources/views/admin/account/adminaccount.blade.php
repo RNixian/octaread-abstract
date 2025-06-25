@@ -22,69 +22,85 @@
 
   <div class="flex min-h-screen w-full">
     @include('admin.sidebar')
-    <div id="mainContent" class="md:ml-64 md:flex w-full">
-
-      <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 flex-1 w-full">
+   <div id="mainContent" class="md:ml-64 flex flex-col w-full p-6">
+   <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full">
     
         <div class="overflow-x-auto">
             <h2 class="text-2xl font-bold mb-6 text-center">Admin Accounts</h2>
- <!-- Search and Filter -->
- <form method="GET" action="{{ url('/admin/account/adminaccount') }}" class="flex flex-col md:flex-row justify-between items-center mb-4 gap-2">
+<!-- Search and Filter -->
+<form method="GET" action="{{ url('/admin/account/adminaccount') }}" class="flex flex-col md:flex-row items-center mb-4 gap-2 w-full">
+  
   <input type="text" name="search" value="{{ request('search') }}" placeholder="Enter..." 
-  class="w-full shadow appearance-none border rounded  md:w-1/2 py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"/>
-<button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Search</button>
+    class="flex-1 shadow appearance-none border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline w-full"/>
+
+  <div class="flex gap-2">
+    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+      Search
+    </button>
+    
+    <a href="{{ url('/admin/account/adminaccount') }}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+      Clear
+    </a>
+  </div>
+
 </form>
 
 
+
+
 <div class="overflow-x-auto ">
-    <table class="min-w-full table-auto border-collapse">
-      <thead>
-        <tr class="bg-blue-900 text-white">
-          <th class="hidden">ID</th>
-          <th class="px-4 py-2 border-b text-left">First Name</th>
-          <th class="px-4 py-2 border-b text-left">Middle Name</th>
-          <th class="px-4 py-2 border-b text-left">Last Name</th>
-          <th class="px-4 py-2 border-b text-left">School ID</th>
-          <th class="px-4 py-2 border-b text-left">Birthdate</th>
-          <th class="px-4 py-2 border-b text-left">Status</th>
-          <th class="hidden">Created At</th>
-          <th class="hidden">Updated At</th>
-          <th class="px-4 py-2 border-b text-left">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach($adminmodel as $data)
-          <tr class="bg-white odd:bg-gray-100 hover:bg-gray-200">
-            <td class="hidden">{{ $data->id }}</td>
-            <td class="px-4 py-2 border-b">{{ $data->firstname }}</td>
-            <td class="px-4 py-2 border-b">{{ $data->middlename }}</td>
-            <td class="px-4 py-2 border-b">{{ $data->lastname }}</td>
-            <td class="px-4 py-2 border-b">{{ $data->schoolid }}</td>
-            <td class="px-4 py-2 border-b">{{ \Carbon\Carbon::parse($data->birthdate)->format('d-m-Y') }}</td>
-            <td class="px-4 py-2 border-b">{{ $data->status }}</td>
-            <td class="hidden">{{ $data->created_at }}</td>
-            <td class="hidden">{{ $data->updated_at }}</td>
-            <td class="px-4 py-2 border-b space-x-4">
-              <a href="{{ route('deleteadminacc', $data->id) }}"
-                 class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
-                Delete
-              </a>
-          
-              <button 
-                class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
-                data-id="{{ $data->id }}"
-                data-firstname="{{ $data->firstname }}"
-                data-middlename="{{ $data->middlename }}"
-                data-lastname="{{ $data->lastname }}"
-                data-schoolid="{{ $data->schoolid }}"
-                data-birthdate="{{ $data->birthdate }}">
-                Edit
-              </button>
-            </td>
-          </tr>
-        @endforeach
-      </tbody>
-    </table>
+  <table class="min-w-full table-auto border-collapse text-sm">
+  <thead>
+    <tr class="bg-blue-900 text-white">
+      <th class="hidden">ID</th>
+      <th class="px-2 py-1 border-b text-left">First Name</th>
+      <th class="px-2 py-1 border-b text-left">Middle Name</th>
+      <th class="px-2 py-1 border-b text-left">Last Name</th>
+      <th class="px-2 py-1 border-b text-left">School ID</th>
+      <th class="px-2 py-1 border-b text-left">Birthdate</th>
+      <th class="px-2 py-1 border-b text-left">Status</th>
+      <th class="hidden">Created At</th>
+      <th class="hidden">Updated At</th>
+      <th class="px-2 py-1 border-b text-left">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @forelse($adminmodel as $data)
+      <tr class="bg-white odd:bg-gray-100 hover:bg-gray-200">
+        <td class="hidden">{{ $data->id }}</td>
+        <td class="px-2 py-1 border-b">{{ $data->firstname }}</td>
+        <td class="px-2 py-1 border-b">{{ $data->middlename }}</td>
+        <td class="px-2 py-1 border-b">{{ $data->lastname }}</td>
+        <td class="px-2 py-1 border-b">{{ $data->schoolid }}</td>
+        <td class="px-2 py-1 border-b">{{ \Carbon\Carbon::parse($data->birthdate)->format('d-m-Y') }}</td>
+        <td class="px-2 py-1 border-b">{{ $data->status }}</td>
+        <td class="hidden">{{ $data->created_at }}</td>
+        <td class="hidden">{{ $data->updated_at }}</td>
+        <td class="px-2 py-1 border-b space-x-1">
+          <a href="{{ route('deleteadminacc', $data->id) }}"
+             class="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-1 px-2 rounded">
+            Delete
+          </a>
+          <button 
+            class="btn-edit bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold py-1 px-2 rounded"
+            data-id="{{ $data->id }}"
+            data-firstname="{{ $data->firstname }}"
+            data-middlename="{{ $data->middlename }}"
+            data-lastname="{{ $data->lastname }}"
+            data-schoolid="{{ $data->schoolid }}"
+            data-birthdate="{{ $data->birthdate }}">
+            Edit
+          </button>
+        </td>
+      </tr>
+    @empty
+      <tr>
+        <td colspan="9" class="text-center py-3 text-gray-500 text-sm">No admins found.</td>
+      </tr>
+    @endforelse
+  </tbody>
+</table>
+
   </div>
         </div>
 

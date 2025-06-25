@@ -22,50 +22,72 @@
   <div class="flex min-h-screen bg-gray-100 w-full">
     @include('admin.sidebar')
 
- <div id="mainContent" class="md:ml-64 md:flex">
+ <div id="mainContent" class="md:ml-64 flex flex-col lg:flex-row items-start justify-center gap-8 w-full p-6">
 
-          <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 mx-auto">
-            <h2 class="text-2xl font-bold mb-6 text-center">Research Output Category - Under</h2>
+   <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 w-full max-w-6xl mx-auto">
 
-            <form action="{{ route('admin.setup.storeunder_out_cat') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                @csrf
-        
-                <div>
-                  <label class="block text-gray-700 font-bold mb-2" for="out_cat_id">Category</label>
-                  <select name="out_cat_id" id="out_cat_id" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    <option value="">-- Select Output Category --</option>
-                    @foreach ($res_out_category as $category)
-                      <option value="{{ $category->id }}" {{ old('out_cat_id') == $category->id ? 'selected' : '' }}>
+           <h2 class="text-2xl font-bold mb-6 text-center">Research Output Category - Under</h2>
+
+<form action="{{ route('admin.setup.storeunder_out_cat') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+    @csrf
+
+    <div class="flex flex-col lg:flex-row gap-4">
+        <!-- Category Dropdown -->
+        <div class="w-full lg:w-1/2">
+            <label class="block text-gray-700 font-bold mb-2" for="out_cat_id">Category</label>
+            <select name="out_cat_id" id="out_cat_id"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option value="">-- Select Output Category --</option>
+                @foreach ($res_out_category as $category)
+                    <option value="{{ $category->id }}" {{ old('out_cat_id') == $category->id ? 'selected' : '' }}>
                         {{ $category->out_cat }}
-                      </option>                    
-                    @endforeach
-                  </select>
-                </div>
-        
-                <div>
-                  <label class="block text-gray-700 font-bold mb-2" for="under_roc">Under Output Category</label>
-                  <input type="text" id="under_roc" name="under_roc" value="{{ old('under_roc') }}"
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-                </div>
-        
-                <div class="flex justify-center">
-                  <button type="submit"
-                    class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300">
-                    Submit
-                  </button>
-                </div>
-              </form>
-          </div>
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
+        <!-- Under Output Category Input -->
+        <div class="w-full lg:w-1/2">
+            <label class="block text-gray-700 font-bold mb-2" for="under_roc">Under Output Category</label>
+            <input type="text" id="under_roc" name="under_roc" value="{{ old('under_roc') }}"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+        </div>
+    </div>
 
-        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
+    <!-- Submit Button -->
+    <div class="flex justify-center">
+        <button type="submit"
+            class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300">
+            Submit
+        </button>
+    </div>
+</form>
 
+<div class="mt-8"></div>
 
-   <!-- Search and Filter -->
- <form method="GET" action="{{ url('/admin/setup/output_category') }}" class="flex flex-col md:flex-row justify-between items-center mb-4 gap-2">
-  <input type="text" name="search" value="{{ request('search') }}" placeholder="Enter..." 
-  class="w-full shadow appearance-none border rounded  md:w-1/2 py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"/>
-<button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Search</button>
+  <!-- Search and Filter -->
+ <form method="GET" action="{{ url('/admin/setup/under_output_category') }}" id="searchForm" class="w-full mb-6 flex flex-col md:flex-row items-center gap-2">
+  <input 
+    type="text" 
+    name="search" 
+    value="{{ request('search') }}" 
+    placeholder="Enter..." 
+    class="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline" 
+  />
+
+  <button 
+    type="submit" 
+    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+  >
+    Search
+  </button>
+
+  <a 
+    href="{{ url('/admin/setup/under_output_category') }}" 
+    class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-center"
+  >
+    Clear
+  </a>
 </form>
 
           <div class="overflow-x-auto">
@@ -108,6 +130,9 @@
 
     </tbody>
   </table>
+   <div class="d-flex justify-content-center mt-4">
+              {{ $underrocmodel->links('pagination::tailwind') }}
+          </div>
 </div>
 
         </div>
