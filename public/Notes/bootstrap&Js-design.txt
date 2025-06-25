@@ -1,0 +1,233 @@
+ userebook folder photo/icon= https://cdn-icons-png.flaticon.com/512/716/716784.png
+ 
+ <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+       <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+          <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+           <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+           <script src="https://unpkg.com/lucide@latest"></script>
+               <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+===================================================================================================================================================
+
+<!-- Tailwind CSS -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Tailwind via CDN (optional utility injection) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Alpine.js -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+
+======================================================================================================================================================================
+
+1. ✅ Tailwind CSS (v2.2.19)
+Download: tailwind.min.css (v2.2.19)
+
+Save As: css/tailwind.min.css
+
+Use:
+<link href="css/tailwind.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{{ asset('css/tailwind.min.css') }}">
+
+2. ✅ Bootstrap CSS (v5.3.2)
+Download: bootstrap.min.css
+
+Save As: css/bootstrap.min.css
+
+Use:
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+
+3. ✅ Bootstrap Icons
+Download CSS: bootstrap-icons.css
+
+Also Download the fonts/ folder it references:
+
+You’ll need all the .woff and .woff2 font files used inside the CSS
+
+Or download the full package: https://github.com/twbs/icons/releases
+
+Save As:
+
+Use bash!!!
+css/bootstrap-icons.css
+fonts/bootstrap-icons.woff
+fonts/bootstrap-icons.woff2
+
+Use:
+<link href="css/bootstrap-icons.css" rel="stylesheet" />
+<link rel="stylesheet" href="{{ asset('css/bootstrap-icons.css') }}">
+
+4. ✅ Font Awesome (v6.5.0)
+Full Package: https://fontawesome.com/download
+
+Or download the specific CDN file:
+
+all.min.css
+
+Also get the required webfonts/ folder (referenced inside the CSS)
+
+Save As:
+css/all.min.css
+
+webfonts/ (folder with fonts)
+Use:
+<link rel="stylesheet" href="css/all.min.css" />
+<link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
+
+5. ✅ jQuery (v3.6.0)
+Download: jquery-3.6.0.min.js
+
+Save As: js/jquery-3.6.0.min.js
+
+Use:
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+
+6. ✅ Chart.js
+Download: chart.umd.js
+
+Save As: js/chart.min.js
+
+Use:
+<script src="js/chart.min.js"></script>
+<script src="{{ asset('js/chart.min.js') }}"></script>
+
+7. ✅ Lucide Icons
+Download: lucide.js
+
+Or get from their GitHub: https://github.com/lucide-icons/lucide
+
+Save As: js/lucide.min.js
+
+Use:
+<script src="js/lucide.min.js"></script>
+<script src="{{ asset('js/lucide.min.js') }}"></script>
+
+8. ✅ Tailwind via CDN (tailwindcss.com) — optional script loader
+You don’t need this if you already downloaded the main CSS file above.
+
+But if you want:
+
+Download: cdn.tailwindcss.com
+
+Save As: js/tailwind-loader.js
+
+Use:
+<script src="js/tailwind-loader.js"></script>
+<script src="{{ asset('js/tailwind-loader.js') }}"></script>
+
+9. ✅ Alpine.js
+Download: alpinejs (latest)
+
+Save As: js/alpine.min.js
+
+Use:
+<script src="js/alpine.min.js" defer></script>
+<script src="{{ asset('js/alpine.min.js') }}"></script>
+
+10. ✅ Bootstrap.Bundle.js
+Download: bootstrap.bundle.min.js (latest)
+
+Save As: js/bootstrap.bundle.min.js
+
+Use:
+<script src="js/bootstrap.bundle.min.js" defer></script>
+<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+
+
+
+
+
+📁 Folder Structure Suggestion
+project/
+├── css/
+│   ├── bootstrap.min.css
+│   ├── tailwind.min.css
+│   ├── all.min.css
+│   └── bootstrap-icons.css
+├── js/
+│   ├── jquery-3.6.0.min.js
+│   ├── chart.min.js
+│   ├── lucide.min.js
+│   └── alpine.min.js
+├── webfonts/
+│   └── (Font Awesome / Bootstrap Icons fonts)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

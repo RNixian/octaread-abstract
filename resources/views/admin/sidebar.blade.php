@@ -1,5 +1,5 @@
 <!-- Load Lucide Icons -->
-<script src="https://unpkg.com/lucide@latest"></script>
+<script src="{{ asset('js/lucide.min.js') }}"></script>
 
 <!-- Toggle Button -->
 <button id="toggleSidebar"

@@ -2,5 +2,45 @@ cloning octaread:
 
 composer install
 php artisan storage:link
-php artisan vendor:publish --tag=laravel-pagination
+
+
+
+1. follow path: C:\xampp\apache\conf\extra
+    in httpd-vhosts
+
+    a.replace bottom section to This:
+
+        <VirtualHost *:80>
+            ServerAdmin webmaster@localhost
+            DocumentRoot "C:/Users/lexpi/octaread/public"
+            ServerName octaread.test
+            <Directory "C:/Users/lexpi/octaread/public">
+                Options Indexes FollowSymLinks
+                AllowOverride All
+                Require all granted
+            </Directory>
+        </VirtualHost>
+
+    NOTE: copy the path of the laravel project then add "/public"
+
+2. follow this path: C:\Windows\System32\drivers\etc
+        in hosts
+            at the buttom part look for the line:
+
+            "120.0.0.1       localhost"
+
+        a.replace the localhost the same as the servername in the previous path
+
+3. C:\xampp\apache\conf
+
+be sure to remove the comment of "#"
+
+    # Include conf/extra/httpd-vhosts.conf
+
+4. open your CMD on your PC then run: ipconfig
+    a. find the IPv4 address 
+
+
+5. running it on other divice you must type this "http://(IPv4address)"
+
 

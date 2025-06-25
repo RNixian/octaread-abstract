@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>OctaRead EBook</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
+<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/bootstrap-icons.css') }}">
+<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
   <style>
    /* === Ebook Card Styling === */
 .book-card {
@@ -237,11 +237,26 @@
 
       <div class="card h-100 shadow-sm d-flex flex-column">
         
-        <img 
-          src="{{ asset($ebook->cover_photo ? 'images/' . $ebook->cover_photo : 'images/default_pdf_picture.jpg') }}" 
-          class="card-img-top responsive-cover-img" 
-          alt="Book Cover"
-        />
+        @php
+    $extension = strtolower(pathinfo($ebook->pdf_filepath, PATHINFO_EXTENSION));
+
+    if ($extension === 'pdf') {
+        $defaultImage = 'images/default_pdf_picture.jpg';
+    } elseif (in_array($extension, ['doc', 'docx'])) {
+        $defaultImage = 'images/default_docx_img.png';
+    } else {
+        $defaultImage = 'storage/pdf_uploads/' . $ebook->pdf_filepath;
+    }
+
+    $image = $ebook->cover_photo ? 'images/' . $ebook->cover_photo : $defaultImage;
+@endphp
+
+<img 
+    src="{{ asset($image) }}" 
+    class="card-img-top responsive-cover-img" 
+    alt="Book Cover"
+/>
+
         <div class="card-body d-flex flex-column">
           <h5 class="card-title responsive-book-title">
             {{ $ebook->title }}
@@ -286,7 +301,7 @@
 
     </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+ 
   <script>
     let currentCategory = '';
     let currentSubcategory = '';
