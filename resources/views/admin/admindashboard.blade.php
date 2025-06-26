@@ -18,7 +18,7 @@
         <h2 class="text-3xl font-bold mb-8 text-center">Dashboard</h2>
 
 <!-- Filter Section -->
-       <div class="mt-10">
+    
 <!-- Toggle Button ABOVE the entire container -->
 <div class="flex justify-end max-w-5xl mx-auto mt-4 mb-2 w-full">
   <button 
@@ -65,29 +65,17 @@
     <!-- Date & Year Range -->
     <div class="flex flex-wrap gap-4 mb-4">
       <!-- Created Date Range -->
-      <div class="flex-grow w-auto">
+      <div class="flex-grow min-w-[160px]">
         <label class="block text-gray-700 mb-1">Created From</label>
         <input type="date" name="from_date" value="{{ request('from_date') }}" class="w-full border rounded px-2 py-1" />
       </div>
 
-     <div class="flex-grow w-auto">
+      <div class="flex-grow min-w-[160px]">
         <label class="block text-gray-700 mb-1">Created To</label>
         <input type="date" name="to_date" value="{{ request('to_date') }}" class="w-full border rounded px-2 py-1" />
       </div>
-    </div>
-   <!-- Toggle Year Range Button -->
-      <div class="flex-grow min-w-[160px] flex items-end">
-        <button 
-          type="button" 
-          onclick="toggleYearFields()" 
-          id="yearToggleBtn"
-          class="text-sm bg-blue-500 text-white px-3 py-1.5 rounded hover:bg-blue-600"
-        >
-          +
-        </button>
-      </div>
-    <!-- Year Range (Initially Hidden) -->
-    <div id="yearFields" class="flex flex-wrap gap-4 mb-4" style="display: none;">
+
+      <!-- Year Range 
       <div class="flex-grow min-w-[160px]">
         <label class="block text-gray-700 mb-1">Year From</label>
         <input type="number" name="year_from" value="{{ request('year_from') }}" class="w-full border rounded px-2 py-1" placeholder="e.g. 2020" />
@@ -96,7 +84,7 @@
       <div class="flex-grow min-w-[160px]">
         <label class="block text-gray-700 mb-1">Year To</label>
         <input type="number" name="year_to" value="{{ request('year_to') }}" class="w-full border rounded px-2 py-1" placeholder="e.g. 2024" />
-      </div>
+      </div>-->
     </div>
 
     <!-- Buttons -->
@@ -116,7 +104,7 @@
   </div>
 </div>
 
-<!-- JavaScript to toggle both main container and year fields -->
+<!-- JavaScript to toggle the whole container -->
 <script>
   function toggleMainContainer() {
     const container = document.getElementById('mainContainer');
@@ -128,19 +116,6 @@
     } else {
       container.style.display = 'none';
       btn.textContent = '+';
-    }
-  }
-
-  function toggleYearFields() {
-    const yearFields = document.getElementById('yearFields');
-    const toggleBtn = document.getElementById('yearToggleBtn');
-
-    if (yearFields.style.display === 'none') {
-      yearFields.style.display = 'flex';
-      toggleBtn.textContent = '−';
-    } else {
-      yearFields.style.display = 'none';
-      toggleBtn.textContent = '+';
     }
   }
 </script>

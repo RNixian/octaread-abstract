@@ -1,13 +1,10 @@
 //USER===========================================
 done??
-SEARCH IN RESEARCH
+
 
 
 //ADMIN==========================================
 dashboard- filter being reset when applying filter
-    -remove search bar
-    -put reset button beside apply filter
-
 
 
 dashboard filter:
@@ -18,17 +15,6 @@ revert from the first one
 
 OPTION 2:✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
 
-<!-- Toggle Button ABOVE the entire container -->
-<div class="flex justify-end max-w-5xl mx-auto mt-4 mb-2 w-full">
-  <button 
-    onclick="toggleMainContainer()" 
-    id="mainToggleBtn"
-    class="text-xl font-bold text-white bg-gray-700 hover:bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center"
-    title="Toggle Panel"
-  >
-    −
-  </button>
-</div>
 
 <!-- Entire Content Container to be Toggled -->
 <div id="mainContainer" class="bg-white shadow rounded p-4 flex flex-col items-center w-full max-w-5xl mx-auto" style="height: auto;">
@@ -63,7 +49,7 @@ OPTION 2:✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅
 
     <!-- Date & Year Range -->
     <div class="flex flex-wrap gap-4 mb-4">
-      <!-- Created Date Range -->
+      <!-- Created Date Range 
       <div class="flex-grow min-w-[160px]">
         <label class="block text-gray-700 mb-1">Created From</label>
         <input type="date" name="from_date" value="{{ request('from_date') }}" class="w-full border rounded px-2 py-1" />
@@ -72,7 +58,7 @@ OPTION 2:✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅
       <div class="flex-grow min-w-[160px]">
         <label class="block text-gray-700 mb-1">Created To</label>
         <input type="date" name="to_date" value="{{ request('to_date') }}" class="w-full border rounded px-2 py-1" />
-      </div>
+      </div>-->
 
       <!-- Year Range -->
       <div class="flex-grow min-w-[160px]">
@@ -118,6 +104,7 @@ OPTION 2:✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅
     }
   }
 </script>
+
 
 OPTION 3:✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ ✅ 
 <!-- Entire Content Container to be Toggled -->

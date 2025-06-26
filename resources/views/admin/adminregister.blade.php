@@ -7,7 +7,14 @@
    <link rel="stylesheet" href="{{ asset('css/tailwind.min.css') }}">
 </head>
 <body class="bg-gray-100 min-h-screen flex">
-  @include('admin.sidebar')
+  @php
+      $adminCount = \App\Models\adminmodel::count();
+  @endphp
+
+  {{-- ✅ Only show sidebar if at least 1 admin exists --}}
+  @if ($adminCount > 0)
+      @include('admin.sidebar')
+  @endif
 
   <div id="mainContent" class="md:ml-64 flex items-center justify-center w-full min-h-screen px-4">
     <div class="w-full max-w-md">

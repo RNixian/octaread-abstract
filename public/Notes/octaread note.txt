@@ -2,8 +2,18 @@ cloning octaread:
 
 composer install
 php artisan storage:link
+vendor/laravel/framework/src/illuminate/foundation/http/kernel.php{
+ 
+ locate "protected $routeMiddleware"
+
+  protected $routeMiddleware = [
+'admin.auth' => \App\Http\Middleware\AdminAuth::class,
+'account.auth' => \App\Http\Middleware\accountauth::class,
+'noadmins.auth' => \App\Http\Middleware\adminemptyauth::class,
+    ];
 
 
+}
 
 1. follow path: C:\xampp\apache\conf\extra
     in httpd-vhosts

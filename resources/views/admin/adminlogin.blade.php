@@ -9,7 +9,9 @@
 <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 </head>
 <body class="bg-light d-flex justify-content-center align-items-center vh-100">
-
+@php
+    $adminCount = \App\Models\adminmodel::count();
+@endphp
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5">
@@ -74,10 +76,13 @@
 
     <div class="d-grid">
         <button type="submit" class="btn btn-primary">Sign In</button>
-    </div>
+   </div>
 </form>
-
-
+ <div class="d-grid mt-8">
+@if ($adminCount === 0)
+    <a href="{{ route('admin.adminregister') }}" class="btn btn-success">Register Admin</a>
+@endif
+ </div>
                     </div>
                 </div>
             </div>

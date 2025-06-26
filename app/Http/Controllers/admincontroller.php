@@ -20,6 +20,7 @@ use App\Models\positionmodel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Guard;
+use Carbon\Carbon;
 
 
 class admincontroller extends Controller
@@ -84,30 +85,32 @@ class admincontroller extends Controller
         return view('admin.adminregister');
     }
 
-    public function storenewadmin(Request $request)
-    {
-        $data = $request->validate([
-            'firstname'  => 'required|string',
-            'middlename' => 'nullable|string',
-            'lastname'   => 'required|string',
-            'schoolid'   => 'required|max:9|unique:admins,schoolid',
-            'masterkey' => 'required|string|max:255',
-            'birthdate'  => 'required|date',
-        ]);
-    
-    
-        adminmodel::create([
-            'firstname'  => $request->firstname,
-            'middlename' => $request->middlename,
-            'lastname'   => $request->lastname,
-            'schoolid'   => $request->schoolid,
-            'masterkey'  => Hash::make($request->masterkey),
-            'birthdate'  => $request->birthdate,
-            'role'       => 'admin',
-        ]);
-    
-        return redirect()->route('admin.adminlogin')->with('success', 'Registration successful.');
-    }
+   public function storenewadmin(Request $request)
+{
+    $data = $request->validate([
+        'firstname'  => 'required|string',
+        'middlename' => 'nullable|string',
+        'lastname'   => 'required|string',
+        'schoolid'   => 'required|max:9|unique:admins,schoolid',
+        'masterkey'  => 'required|string|max:255',
+        'birthdate'  => 'required|date',
+    ]);
+
+    // Determine the role based on existing admin count
+    $role = adminmodel::count() === 0 ? 'superadmin' : 'admin';
+
+    adminmodel::create([
+        'firstname'  => $request->firstname,
+        'middlename' => $request->middlename,
+        'lastname'   => $request->lastname,
+        'schoolid'   => $request->schoolid,
+        'masterkey'  => Hash::make($request->masterkey),
+        'birthdate'  => $request->birthdate,
+        'role'       => $role,
+    ]);
+
+    return redirect()->route('admin.adminlogin')->with('success', 'Registration successful.');
+}
     
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1046,8 +1049,10 @@ public function admingraphs(Request $request)
     // Get filter values
     $selectedCategory = $request->input('category');
     $selectedDepartment = $request->input('department');
-    $fromDate = $request->input('from_date');
-    $toDate = $request->input('to_date');
+  $fromDate = $request->input('from_date');
+$toDate = $request->input('to_date');
+$start = $fromDate ? Carbon::parse($fromDate)->startOfDay() : null;
+$end = $toDate ? Carbon::parse($toDate)->endOfDay() : null;
     $yearFrom = $request->input('year_from');
 $yearTo = $request->input('year_to');
 
@@ -1066,13 +1071,13 @@ $yearTo = $request->input('year_to');
     }
 
     // Created_at Date Range Filter
-    if ($fromDate && $toDate) {
-        $query->whereBetween('created_at', [$fromDate, $toDate]);
-    } elseif ($fromDate) {
-        $query->whereDate('created_at', '>=', $fromDate);
-    } elseif ($toDate) {
-        $query->whereDate('created_at', '<=', $toDate);
-    }
+   if ($start && $end) {
+    $query->whereBetween('created_at', [$start, $end]);
+} elseif ($start) {
+    $query->where('created_at', '>=', $start);
+} elseif ($end) {
+    $query->where('created_at', '<=', $end);
+}
 
      // year_from&to Range Filter
 if ($yearFrom && $yearTo) {
@@ -1222,8 +1227,11 @@ public function getFilteredBooks(Request $request)
         }
     }
 
+    // ✅ Fix date range filter
     if ($request->from_date && $request->to_date) {
-        $query->whereBetween('created_at', [$request->from_date, $request->to_date]);
+        $from = Carbon::parse($request->from_date)->startOfDay();
+        $to = Carbon::parse($request->to_date)->endOfDay();
+        $query->whereBetween('created_at', [$from, $to]);
     }
 
     $results = $query->selectRaw('year, COUNT(*) as count')
@@ -1235,7 +1243,6 @@ public function getFilteredBooks(Request $request)
         'values' => $results->values(),
     ]);
 }
-
 
 }
 

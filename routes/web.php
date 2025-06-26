@@ -33,14 +33,16 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/admindashboard', [admincontroller::class, 'dashboard'])->name('admin.admindashboard');
 });
 
+//ADMIN REGISTER-----------------------------------------------------------------------------------------------------------------------------------
+Route::middleware(['noadmins'])->group(function () {
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/register', [admincontroller::class, 'adminregister'])->name('adminregister');
+        Route::post('/store', [admincontroller::class, 'storenewadmin'])->name('storenewadmin');
+    });
+});
+
 
 Route::middleware(['admin.auth'])->group(function () {
-
-//ADMIN REGISTER-----------------------------------------------------------------------------------------------------------------------------------
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/register', [admincontroller::class, 'adminregister'])->name('adminregister');
-    Route::post('/store', [admincontroller::class, 'storenewadmin'])->name('storenewadmin');
-});
 
 //DASHBOARD----------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/admindashboard', [AdminController::class, 'admingraphs'])->name('admin.admindashboard');
