@@ -34,7 +34,7 @@ Route::middleware(['auth:admin'])->group(function () {
 });
 
 //ADMIN REGISTER-----------------------------------------------------------------------------------------------------------------------------------
-Route::middleware(['noadmins'])->group(function () {
+Route::middleware(['noadmins.auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/register', [admincontroller::class, 'adminregister'])->name('adminregister');
         Route::post('/store', [admincontroller::class, 'storenewadmin'])->name('storenewadmin');

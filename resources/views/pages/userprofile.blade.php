@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>OctaReader's profile</title>
-<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-<link rel="stylesheet" href="{{ asset('css/bootstrap-icons.css') }}">
+<link rel="stylesheet" href="{{ url('css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url('css/bootstrap-icons.css') }}">
 </head>
 <body class="bg-light d-flex flex-column min-vh-100">
 

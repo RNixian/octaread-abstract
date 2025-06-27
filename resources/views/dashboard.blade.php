@@ -1,6 +1,5 @@
 <!-- Font Awesome CDN (place in <head> ideally) -->
-  <link rel="stylesheet" href="{{ asset('css/all.min.css') }}">
-
+  <link rel="stylesheet" href="{{ url('css/all.min.css') }}">
     <!-- Responsive Header -->
     <header class="d-flex justify-content-between align-items-center p-3 custom-header-bg flex-wrap">
         <!-- Left Logo -->

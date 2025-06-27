@@ -11,8 +11,6 @@ vendor/laravel/framework/src/illuminate/foundation/http/kernel.php{
 'account.auth' => \App\Http\Middleware\accountauth::class,
 'noadmins.auth' => \App\Http\Middleware\adminemptyauth::class,
     ];
-
-
 }
 
 1. follow path: C:\xampp\apache\conf\extra
@@ -22,9 +20,9 @@ vendor/laravel/framework/src/illuminate/foundation/http/kernel.php{
 
         <VirtualHost *:80>
             ServerAdmin webmaster@localhost
-            DocumentRoot "C:/Users/lexpi/octaread/public"
+            DocumentRoot "C:/Users/Admin/octaread/public"
             ServerName octaread.test
-            <Directory "C:/Users/lexpi/octaread/public">
+            <Directory "C:/Users/Admin/octaread/public">
                 Options Indexes FollowSymLinks
                 AllowOverride All
                 Require all granted

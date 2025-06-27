@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="{{ url('css/all.min.css') }}">
 <footer class="text-white custom-footer-bg py-4 mt-5">
     <div class="container">
         <div class="row">

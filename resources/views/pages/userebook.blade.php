@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>OctaRead EBook</title>
-<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-<link rel="stylesheet" href="{{ asset('css/bootstrap-icons.css') }}">
-<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+  <link rel="stylesheet" href="{{ url('css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url('css/bootstrap-icons.css') }}">
+  <script src="{{ url('js/bootstrap.bundle.min.js') }}"></script>
   <style>
    /* === Ebook Card Styling === */
 .book-card {
