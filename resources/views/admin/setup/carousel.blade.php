@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SetUp-Carousel</title>
- <link rel="stylesheet" href="{{ asset('css/tailwind.min.css') }}">
+ <link rel="stylesheet" href="{{ url('css/tailwind.min.css') }}">
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
@@ -82,7 +82,7 @@
           <td class="hidden">{{ $data->id }}</td>
           <td class="px-4 py-2 border-b text-start">
             @if($data->carousel_imgpath)
-            <img src="{{ asset('storage/' . $data->carousel_imgpath) }}"
+            <img src="{{ url('storage/' . $data->carousel_imgpath) }}"
             alt="Carousel"
             class="w-50 h-20 object-cover rounded border" />
        

@@ -608,9 +608,8 @@ public function deletecarousel($id)
 
 public function updatecarousel(Request $request, $id) {
     $request->validate([
-        'carousel_imgpath' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
+        'carousel_imgpath' => 'nullable|image|mimes:jpeg,png,jpg',
         'display_order' => 'required|int|max:255',
- 
     ]);
 
     $carousel = carouselmodel::find($id);

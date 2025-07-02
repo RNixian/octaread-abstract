@@ -300,7 +300,7 @@
 
 <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 flex flex-col h-full">
     <img 
-        src="{{ asset($image) }}" 
+        src="{{ url($image) }}" 
         alt="Book Cover" 
         class="rounded-t-xl object-cover w-full h-40 sm:h-48 md:h-56"
 />

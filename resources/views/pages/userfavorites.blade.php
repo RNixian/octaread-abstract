@@ -123,7 +123,7 @@
             @endphp
 
             <img 
-                src="{{ asset($image) }}" 
+                src="{{ url($image) }}" 
                 class="card-img-top responsive-cover-img" 
                 alt="Book Cover"
             />
@@ -142,7 +142,7 @@
                 <p class="card-text">{{ Str::limit($ebook->description, 80) }}</p>
 
                 <div class="mt-auto d-flex justify-content-between align-items-center">
-                  <a href="{{ asset('storage/' . $ebook->pdf_filepath) }}"
+                  <a href="{{ url('storage/' . $ebook->pdf_filepath) }}"
                     class="btn btn-sm btn-custom-red"
                     target="_blank">
                     Read

@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard</title>
-  <link rel="stylesheet" href="{{ asset('css/tailwind.min.css') }}">
+  <link rel="stylesheet" href="{{ url('css/tailwind.min.css') }}">
 
-  <script src="{{ asset('js/chart.min.js') }}"></script>
+  <script src="{{ url('js/chart.min.js') }}"></script>
 </head>
 
 <body class="bg-gray-100 flex items-start justify-start min-h-screen">

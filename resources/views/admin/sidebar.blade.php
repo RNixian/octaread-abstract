@@ -1,5 +1,5 @@
 <!-- Load Lucide Icons -->
-<script src="{{ asset('js/lucide.min.js') }}"></script>
+<script src="{{ url('js/lucide.min.js') }}"></script>
 
 <!-- Toggle Button -->
 <button id="toggleSidebar"
@@ -14,7 +14,7 @@
 class="fixed top-0 left-0 h-screen w-64 bg-blue-900 text-white p-4 shadow-md overflow-auto z-40 transform md:translate-x-0 -translate-x-full md:block transition-transform duration-300">
   <br><br>
   <div class="d-flex align-items-center">
-    <img src="{{ asset('images/load.png') }}" alt="Logo" style="height: 150px; width: 150px; margin-left:15%;">
+    <img src="{{ url('images/load.png') }}" alt="Logo" style="height: 150px; width: 150px; margin-left:15%;">
 </div>
 
   @if(session()->has('firstname'))

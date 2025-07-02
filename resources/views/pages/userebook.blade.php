@@ -254,7 +254,7 @@
 @endphp
 
 <img 
-    src="{{ asset($image) }}" 
+    src="{{ url($image) }}" 
     class="card-img-top responsive-cover-img" 
     alt="Book Cover"
 />

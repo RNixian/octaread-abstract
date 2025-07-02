@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Graduate</title>
-  <link rel="stylesheet" href="{{ asset('css/tailwind.min.css') }}">
+  <link rel="stylesheet" href="{{ url('css/tailwind.min.css') }}">
 </head>
 <style>
   .page-item.active .page-link {

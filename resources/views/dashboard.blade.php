@@ -4,12 +4,12 @@
     <header class="d-flex justify-content-between align-items-center p-3 custom-header-bg flex-wrap">
         <!-- Left Logo -->
         <div class="d-flex align-items-center mb-2 mb-md-0">
-            <img src="{{ asset('images/olpccr&m.png') }}" alt="Logo" style="height: 60px; width: auto; border: 2px solid black;">
+            <img src="{{ url('images/olpccr&m.png') }}" alt="Logo" style="height: 60px; width: auto; border: 2px solid black;">
         </div> 
     
         <!-- Right Logo -->
         <div class="d-flex align-items-center mb-2 mb-md-0">
-            <img src="{{ asset('images/logo2.jpg') }}" alt="Logo" 
+            <img src="{{ url('images/logo2.jpg') }}" alt="Logo" 
                  style="height: 60px; width: auto; border-radius: 5%; border: 2px solid white;">
         </div> 
     </header>

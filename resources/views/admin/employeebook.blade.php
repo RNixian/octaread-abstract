@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Employee</title>
-  <link rel="stylesheet" href="{{ asset('css/tailwind.min.css') }}">
+  <link rel="stylesheet" href="{{ url('css/tailwind.min.css') }}">
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
@@ -76,7 +76,7 @@
                       <td class="text-start border-b px-4 py-2">{{ $data->category }}</td>
                       <td class="text-start border-b px-4 py-2">{{ $data->department }}</td>
                       <td class="text-start border-b px-4 py-2">
-                        <a href="{{ asset('storage/' . $data->pdf_filepath) }}"
+                        <a href="{{ url('storage/' . $data->pdf_filepath) }}"
                            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
                            target="_blank">
                           View
