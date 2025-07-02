@@ -101,7 +101,7 @@
       <div class="carousel-inner" style="height: 100%;">
           @foreach($carouselItems as $item)
               <div class="carousel-item {{ $loop->first ? 'active' : '' }}" style="height: 100%;">
-                  <img src="{{ asset('storage/' . $item->carousel_imgpath) }}"
+                 <img src="{{ request()->getSchemeAndHttpHost() . '/storage/' . $item->carousel_imgpath }}" alt="carousel image"
                        class="d-block w-100"
                        alt="Slide">
               </div>

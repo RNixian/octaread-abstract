@@ -20,9 +20,6 @@
   @include('admin.sidebar')
 
 <div id="mainContent" class="md:ml-64 flex flex-col lg:flex-row items-start justify-center gap-8 w-full p-6">
-
-  
-
     <!-- Member Entry Form -->
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-8">
       <h2 class="text-2xl font-bold mb-6 text-center">Member Entry</h2>

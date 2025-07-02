@@ -4,7 +4,7 @@
     <header class="d-flex justify-content-between align-items-center p-3 custom-header-bg flex-wrap">
      <!-- Logo -->
 <div class="d-flex align-items-center me-3">
-    <img src="{{ asset('images/olpccr&m.png') }}" alt="Logo" style="height: 50px; width: auto; border: 2px solid black;">
+    <img src="{{ asset('images/load.png') }}" alt="Logo" style="height: 50px; width: auto;">
 </div>
 
 <!-- Welcome Text -->

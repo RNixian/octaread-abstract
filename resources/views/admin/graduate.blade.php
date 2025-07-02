@@ -24,8 +24,10 @@
 
   <div class="flex min-h-screen bg-gray-100 w-full">
     @include('admin.sidebar')
-    <div id="mainContent" class="md:ml-64 md:flex">
-    <div class="flex-1 p-8">
+   <div id="mainContent" class="md:ml-64 flex flex-col lg:flex-row items-start justify-center gap-8 w-full p-6">
+
+   <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 w-full max-w-6xl mx-auto">
+      
       <div class="max-w-6xl w-full mx-auto space-y-4">
         <!-- Category and Department Filter Container -->
         <form id="filter-form" method="GET" action="{{ route('admin.graduate') }}" class="space-y-2">
@@ -71,61 +73,59 @@
         <!-- Table -->
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
           <div class="overflow-x-auto">
-            <table class="min-w-full table-auto border-collapse">
-              <thead>
-                <tr class="bg-blue-900 text-white">
-                  <th class="hidden">Id</th>
-                  <th class="px-4 py-2 border-b text-left w-[200px]">Title</th>
-                  <th class="px-4 py-2 border-b text-left">Author</th>
-                  <th class="px-4 py-2 border-b text-left">Year</th>
-                  <th class="px-4 py-2 border-b text-left">Category</th>
-                  <th class="px-4 py-2 border-b text-left">Department</th>
-                  <th class="px-4 py-2 border-b text-left">PDF File</th>
-                  <th class="hidden">Created at</th>
-                  <th class="hidden">Updated at</th>
-                  <th class="px-4 py-2 border-b text-left" colspan="2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($books as $data)
-               
-                    <tr class="bg-white odd:bg-gray-100 hover:bg-gray-200">
-                      <td class="hidden border-b">{{ $data->id }}</td>
-                      <td class="text-start border-b px-4 py-2 w-[200px]">{{ $data->title }}</td>
-                      <td class="text-start border-b px-4 py-2">{{ $data->author }}</td>
-                      <td class="text-start border-b px-4 py-2">{{ $data->year }}</td>
-                      <td class="text-start border-b px-4 py-2">{{ $data->category }}</td>
-                      <td class="text-start border-b px-4 py-2">{{ $data->department }}</td>
-                      <td class="text-start border-b px-4 py-2">
-                        <a href="{{ asset('storage/' . $data->pdf_filepath) }}"
-                           class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
-                           target="_blank">
-                          View
-                        </a>
-                      </td>
-                      <td class="hidden border-b">{{ $data->created_at }}</td>
-                      <td class="hidden border-b">{{ $data->updated_at }}</td>
-                      <td colspan="2" class="border-b px-4 py-2">
-                        <div class="flex flex-col space-y-2">
-                          <a href="{{ route('deletebook', $data->id) }}"
-                             class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-center">
-                            Delete
-                          </a>
-                          <button 
-                            class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded"
-                            data-id="{{ $data->id }}"
-                            data-title="{{ $data->title }}"
-                            data-author="{{ $data->author }}"
-                            data-year="{{ $data->year }}"
-                            >
-                            Edit
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                @endforeach
-              </tbody>
-            </table>
+            <table class="min-w-full table-auto border-collapse text-xs">
+  <thead>
+    <tr class="bg-blue-900 text-white">
+      <th class="hidden">Id</th>
+      <th class="px-1 py-0.5 border-b text-left w-[200px]">Title</th>
+      <th class="px-1 py-0.5 border-b text-left">Author</th>
+      <th class="px-1 py-0.5 border-b text-left">Year</th>
+      <th class="px-1 py-0.5 border-b text-left">Category</th>
+      <th class="px-1 py-0.5 border-b text-left">Department</th>
+      <th class="px-1 py-0.5 border-b text-left">PDF File</th>
+      <th class="hidden">Created at</th>
+      <th class="hidden">Updated at</th>
+      <th class="px-1 py-0.5 border-b text-left" colspan="2">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($books as $data)
+    <tr class="bg-white odd:bg-gray-100 hover:bg-gray-200">
+      <td class="hidden border-b">{{ $data->id }}</td>
+      <td class="text-start border-b px-1 py-0.5 w-[200px]">{{ $data->title }}</td>
+      <td class="text-start border-b px-1 py-0.5">{{ $data->author }}</td>
+      <td class="text-start border-b px-1 py-0.5">{{ $data->year }}</td>
+      <td class="text-start border-b px-1 py-0.5">{{ $data->category }}</td>
+      <td class="text-start border-b px-1 py-0.5">{{ $data->department }}</td>
+      <td class="text-start border-b px-1 py-0.5">
+        <a href="{{ asset('storage/' . $data->pdf_filepath) }}"
+           class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-0.5 px-1 rounded text-xs"
+           target="_blank">
+          View
+        </a>
+      </td>
+      <td class="hidden border-b">{{ $data->created_at }}</td>
+      <td class="hidden border-b">{{ $data->updated_at }}</td>
+      <td colspan="2" class="border-b px-1 py-0.5">
+        <div class="flex flex-col space-y-1">
+          <a href="{{ route('deletebook', $data->id) }}"
+             class="bg-red-500 hover:bg-red-600 text-white font-semibold py-0.5 px-1 rounded text-center text-xs">
+            Delete
+          </a>
+          <button 
+            class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-semibold py-0.5 px-1 rounded text-xs"
+            data-id="{{ $data->id }}"
+            data-title="{{ $data->title }}"
+            data-author="{{ $data->author }}"
+            data-year="{{ $data->year }}">
+            Edit
+          </button>
+        </div>
+      </td>
+    </tr>
+    @endforeach
+  </tbody>
+</table>
             <div class="d-flex justify-content-center mt-4">
               {{ $books->links('pagination::tailwind') }}
           </div>

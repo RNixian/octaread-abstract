@@ -132,7 +132,7 @@
     <div class="left-panel">
       <a href="/pages/userlogin" title="User Login">
         <button>
-          <img src="{{ asset('images/qcuser.png') }}" alt="User Logo">
+          <img src="{{ asset('images/qrnm.png') }}" alt="User Logo">
         </button>
       </a>
       <span>Scan to enter</span>
