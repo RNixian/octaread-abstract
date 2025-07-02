@@ -19,7 +19,7 @@
 </ul>
 @endif
 
-    <div class="w-full max-w-lg bg-white rounded shadow-md p-8">
+     <div class="w-1/2 bg-white rounded shadow-md p-8">
         <h2 class="text-2xl font-bold text-center mb-6">Add New</h2>
 
     <form action="{{ route('admin.storebooks') }}" method="POST" enctype="multipart/form-data" class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -36,22 +36,24 @@
     </div>
 
     <!-- Author and Year (2 columns) -->
-    <div class="mb-4 grid grid-cols-2 gap-4">
-        <div>
+    <div class="mb-4">
+        <div class="mb-4">
             <label class="block text-gray-700 font-bold mb-2" for="author">Author</label>
-            <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="author" name="author" value="{{ old('author') }}" required>
-            @error('author')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-            @enderror
+            <textarea class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  id="author" name="author" rows="4" required>{{ old('author') }}</textarea>
+        @error('author')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
         </div>
-        <div>
+
+        <div class="mb-4">
             <label class="block text-gray-700 font-bold mb-2" for="year">Year</label>
             <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="number" id="year" name="year" value="{{ old('year') }}" required>
             @error('year')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
-    </div>
+ 
 
     <!-- Category and Department (2 columns) -->
     <div class="mb-4 grid grid-cols-2 gap-4">

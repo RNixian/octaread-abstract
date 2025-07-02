@@ -169,7 +169,7 @@
           
                 <!-- Text Input -->
                 <div class="mb-4">
-                  <label class="block text-gray-700 font-bold mb-2" for="edit_user_department">user Department </label>
+                  <label class="block text-gray-700 font-bold mb-2" for="edit_user_department">User Department </label>
                   <input type="text" name="user_department" id="edit_user_department" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
                 </div>
           

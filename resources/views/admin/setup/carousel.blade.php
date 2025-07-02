@@ -8,15 +8,7 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-  @if($errors->any())
-  <ul>
-  @foreach ($errors->all() as $error)
-      <li>
-  {{$error}}
-      </li>
-  @endforeach
-  </ul>
-  @endif
+  
 
 
   <div class="flex min-h-screen bg-gray-100 w-full">
@@ -25,7 +17,15 @@
 <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 w-full max-w-6xl mx-auto">
 
  <h2 class="text-2xl font-bold mb-6 text-center">Carousel</h2>
-    
+    @if($errors->any())
+  <ul>
+  @foreach ($errors->all() as $error)
+      <li>
+  {{$error}}
+      </li>
+  @endforeach
+  </ul>
+  @endif
     <form action="{{ route('admin.setup.storecarousel') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
     @csrf
 

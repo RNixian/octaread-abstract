@@ -8,15 +8,6 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-  @if($errors->any())
-  <ul>
-  @foreach ($errors->all() as $error)
-      <li>
-  {{$error}}
-      </li>
-  @endforeach
-  </ul>
-  @endif
 
   <div class="flex min-h-screen bg-gray-100 w-full">
   @include('admin.sidebar')
@@ -28,11 +19,20 @@
 
       <h2 class="text-2xl font-bold mb-6 text-center text-blue-900">User Type</h2>
 
+  @if($errors->any())
+  <ul>
+  @foreach ($errors->all() as $error)
+      <li>
+  {{$error}}
+      </li>
+  @endforeach
+  </ul>
+  @endif
       <!-- Add User Type Form -->
       <form action="{{ route('admin.setup.storeusertype') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
         @csrf
         <div class="mb-4">
-          <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="out_cat" name="out_cat" required>
+          <input class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" id="user_type" name="user_type" required>
         </div>
        <div class="flex justify-center space-x-4">
                 <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300" type="submit">
@@ -67,10 +67,6 @@
     Clear
   </a>
 </form>
-
-
-
-
       <!-- User Type Table -->
       <div class="overflow-x-auto">
         <table class="min-w-full table-auto border-collapse">

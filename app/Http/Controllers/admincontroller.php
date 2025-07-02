@@ -38,12 +38,10 @@ class admincontroller extends Controller
 {
     $request->validate([
         'schoolid' => 'required',
-        'birthdate' => 'required|date',
         'masterkey' => 'required',
     ]);
 
     $admin = adminmodel::where('schoolid', $request->schoolid)
-        ->where('birthdate', $request->birthdate)
         ->first();
 
     if ($admin && Hash::check($request->masterkey, $admin->masterkey)) {
@@ -587,7 +585,7 @@ public function showcarousel()
 public function storecarousel(Request $request)
 {
     $validatedData = $request->validate([
-        'carousel_imgpath' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
+        'carousel_imgpath' => 'nullable|image|mimes:jpeg,png,jpg',
         'display_order' => 'required|int',
 
     ]);

@@ -2,6 +2,7 @@ cloning octaread:
 
 composer install
 php artisan storage:link
+
 vendor/laravel/framework/src/illuminate/foundation/http/kernel.php{
  
  locate "protected $routeMiddleware"
@@ -41,7 +42,7 @@ vendor/laravel/framework/src/illuminate/foundation/http/kernel.php{
 
 3. C:\xampp\apache\conf
 
-be sure to remove the comment of "#"
+in "httpd.conf" be sure to remove the comment of "#"
 
     # Include conf/extra/httpd-vhosts.conf
 

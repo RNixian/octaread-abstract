@@ -104,73 +104,62 @@
               {{ $positionmodel->links('pagination::tailwind') }}
           </div>
 </div>
-
         </div>
 
-        <div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
-          <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative">
-            <!-- Close Button -->
-            <button id="closeModal" class="absolute top-2 right-2 text-gray-700 hover:text-gray-900 text-2xl">&times;</button>
-            <h2 class="text-2xl font-bold mb-6">Update Position</h2>
-            <form id="updateForm" action="{{ route('updateposition', ['id' => '__ID__']) }}" method="POST" enctype="multipart/form-data">
-              @csrf
-              @method('PUT')
-
-              <input type="hidden" name="id" id="position_id" value="">
-             
-                <div>
-                  <label class="block text-gray-700 font-bold mb-2" for="edit_position">Position</label>
-                  <input type="text" name="position" id="edit_position" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-                </div>
-      
-              <div class="flex justify-end mt-4">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                  Update
-                </button>
-              </div>
-            </form>
-        </div>
+       <!-- Place this just before </body> -->
+<div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative">
+    <!-- Close Button -->
+    <button id="closeModal" class="absolute top-2 right-2 text-gray-700 hover:text-gray-900 text-2xl">&times;</button>
+    <h2 class="text-2xl font-bold mb-6">Update Position</h2>
+    <form id="updateForm" data-action-template="{{ route('updateposition', ['id' => '__ID__']) }}" method="POST">
+      @csrf
+      @method('PUT')
+      <input type="hidden" name="id" id="position_id" value="">
+      <div>
+        <label class="block text-gray-700 font-bold mb-2" for="edit_position">Position</label>
+        <input type="text" name="position" id="edit_position" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
       </div>
-
-        <script>
-          // Get modal elements
-          const updateModal = document.getElementById('updateModal');
-          const closeModal = document.getElementById('closeModal');
-          const updateForm = document.getElementById('updateForm');
-
-          // When user clicks any "Edit" button
-          document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', function() {
-              // Retrieve data attributes from the clicked button
-              const id = this.getAttribute('data-id');
-              const position = this.getAttribute('data-position');
-
-              // Update the form action with the record id
-              updateForm.action = updateForm.action.replace('__ID__', id);
-              document.getElementById('position_id').value = id;
-              // Populate form fields with current data
-              document.getElementById('edit_position').value = position;
-
-              // Show the modal
-              updateModal.classList.remove('hidden');
-            });
-          });
-
-          // Close the modal when close button is clicked
-          closeModal.addEventListener('click', function() {
-            updateModal.classList.add('hidden');
-            // Reset action placeholder for next use
-            updateForm.action = updateForm.action.replace(/(\d+)$/, '__ID__');
-          });
-
-          // Close modal on clicking outside the modal content
-          window.addEventListener('click', function(e) {
-            if (e.target === updateModal) {
-              updateModal.classList.add('hidden');
-            }
-          });
-    
+      <div class="flex justify-end mt-4">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+          Update
+        </button>
+      </div>
+    </form>
   </div>
+</div>
 
+
+       <script>
+  const updateModal = document.getElementById('updateModal');
+  const closeModal = document.getElementById('closeModal');
+  const updateForm = document.getElementById('updateForm');
+
+  document.querySelectorAll('.btn-edit').forEach(button => {
+    button.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      const position = this.getAttribute('data-position');
+
+      // Use fresh template for action
+      const actionTemplate = updateForm.dataset.actionTemplate;
+      updateForm.action = actionTemplate.replace('__ID__', id);
+
+      document.getElementById('position_id').value = id;
+      document.getElementById('edit_position').value = position;
+
+      updateModal.classList.remove('hidden');
+    });
+  });
+
+  closeModal.addEventListener('click', function() {
+    updateModal.classList.add('hidden');
+  });
+
+  window.addEventListener('click', function(e) {
+    if (e.target === updateModal) {
+      updateModal.classList.add('hidden');
+    }
+  });
+</script>
 </body>
 </html>

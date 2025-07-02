@@ -52,16 +52,8 @@
         @enderror
     </div>
 
-    <!-- Birthdate -->
-    <div class="mb-3">
-        <label for="birthdate" class="form-label">Birthdate</label>
-        <input type="date" class="form-control @error('birthdate') is-invalid @enderror" id="birthdate" name="birthdate" value="{{ old('birthdate') }}" required>
-        @error('birthdate')
-            <div class="invalid-feedback">
-                {{ $message }}
-            </div>
-        @enderror
-    </div>
+
+
 
     <!-- Master Key -->
     <div class="mb-4">
