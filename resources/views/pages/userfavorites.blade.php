@@ -147,6 +147,7 @@
                     target="_blank">
                     Read
                   </a>
+                  
                   <form action="{{ route('toggle.favorite', $ebook->id) }}" method="POST">
                     @csrf
                    <button type="submit" class="favorite-btn favorited" title="Unfavorite">

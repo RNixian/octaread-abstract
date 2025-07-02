@@ -137,7 +137,7 @@
           <img src="{{ url('images/qrcode.png') }}" alt="User Logo">
         </button>
       </a>
-      <span>Scan to enter</span>
+      <span>Scan or click QR to enter</span>
     </div>
 
     <!-- RIGHT GRID - FEATURES -->

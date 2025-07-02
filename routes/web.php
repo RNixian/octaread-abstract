@@ -216,6 +216,7 @@ Route::middleware(['account.auth'])->group(function () {
 
     //READ
     Route::post('/read/store', [UserController::class, 'viewstore'])->name('read.store');
+    
 
     // PROFILE
     Route::get('/pages/profile', [UserController::class, 'userprofile'])->name('pages.profile');

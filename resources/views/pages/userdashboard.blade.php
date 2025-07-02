@@ -137,7 +137,7 @@
                   @click="selected = {
                     name: '{{ $member->fullname }}',
                     position: '{{ $member->position }}',
-                    image: '{{ asset('storage/' . $member->profile_imgpath) }}'
+                    image: '{{ url('storage/' . $member->profile_imgpath) }}'
                   }; open = true"
                 >
                   {{ $member->fullname }}
@@ -331,14 +331,27 @@
           @endif
 
           <div class="mt-auto flex justify-between items-center">
-            <form action="{{ route('read.store') }}" method="POST" class="ml-2" target="_blank">
-              @csrf
-              <input type="hidden" name="ebook_id" value="{{ $book->id }}">
-              <input type="hidden" name="pdf_filepath" value="{{ $book->pdf_filepath }}">
-              <button type="submit" class="btn btn-sm btn-custom-red">
-                Read
-              </button>
-            </form>
+            <button 
+  onclick="logAndOpen({{ $book->id }}, '{{ asset('storage/' . $book->pdf_filepath) }}')" 
+  class="btn btn-sm btn-custom-red">
+  Read
+</button>
+
+<script>
+  function logAndOpen(ebook_id, pdfUrl) {
+    fetch('{{ route('read.store') }}', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ebook_id: ebook_id }),
+    }).then(() => {
+      window.open(pdfUrl, '_blank');
+    });
+  }
+</script>
+
             
 
            {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
@@ -359,10 +372,8 @@
         </button>
     </form>
 @endif
+</div>
 
-
-
-          </div>
         </div>
       </div>
     @empty
