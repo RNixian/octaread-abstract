@@ -97,7 +97,10 @@
                 <td class="hidden">{{ $data->updated_at }}</td>
                 <td class="px-4 py-2 border-b space-x-2">
                   <a href="{{ route('deletemember', $data->id) }}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">Delete</a>
-                  <button class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded" data-id="{{ $data->id }}" data-fullname="{{ $data->fullname }}" data-position="{{ $data->position }}">Edit</button>
+                  <button class="btn-edit bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded" 
+                  data-id="{{ $data->id }}" 
+                  data-fullname="{{ $data->fullname }}" 
+                  data-position="{{ $data->position }}">Edit</button>
                 </td>
               </tr>
             @endforeach
@@ -110,10 +113,10 @@
       <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative">
         <button id="closeModal" class="absolute top-2 right-2 text-gray-700 hover:text-gray-900 text-2xl">&times;</button>
         <h2 class="text-2xl font-bold mb-6">Update Member</h2>
-        <form id="updateForm" action="{{ route('updatemember', ['id' => '__ID__']) }}" method="POST" enctype="multipart/form-data">
+      <form id="updateForm" data-action-template="{{ route('updatemember', ['id' => '__ID__']) }}" method="POST" enctype="multipart/form-data">
           @csrf
           @method('PUT')
-          <input type="hidden" name="id" id="carousel_id" value="">
+          <input type="hidden" name="id" id="member_id" value="">
 
           <div>
             <label for="edit_fullname" class="block text-gray-700 font-bold mb-2">Full Name</label>
@@ -122,7 +125,7 @@
 
           <div class="mb-4">
             <label for="edit_position" class="block text-gray-700 font-bold mb-2">Position</label>
-            <select name="edit_pposition" id="edit_position" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <select name="position" id="edit_position" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
               <option value="">-- Select Position --</option>
               @foreach ($positions as $mmbr)
                 <option value="{{ $mmbr->position }}">{{ $mmbr->position }}</option>
@@ -151,24 +154,26 @@
   const closeModal = document.getElementById('closeModal');
   const updateForm = document.getElementById('updateForm');
 
-  document.querySelectorAll('.btn-edit').forEach(button => {
-    button.addEventListener('click', function () {
-      const id = this.getAttribute('data-id');
-      const fullname = this.getAttribute('data-fullname');
-      const position = this.getAttribute('data-position');
+ document.querySelectorAll('.btn-edit').forEach(button => {
+  button.addEventListener('click', function () {
+    const id = this.getAttribute('data-id');
+    const fullname = this.getAttribute('data-fullname');
+    const position = this.getAttribute('data-position');
 
-      updateForm.action = updateForm.action.replace('__ID__', id);
-      document.getElementById('carousel_id').value = id;
-      document.getElementById('edit_fullname').value = fullname;
-      document.getElementById('edit_position').value = position;
-      updateModal.classList.remove('hidden');
-    });
-  });
+    const actionTemplate = updateForm.getAttribute('data-action-template');
+    updateForm.action = actionTemplate.replace('__ID__', id);
 
-  closeModal.addEventListener('click', function () {
-    updateModal.classList.add('hidden');
-    updateForm.action = updateForm.action.replace(/(\d+)$/, '__ID__');
+    document.getElementById('member_id').value = id;
+    document.getElementById('edit_fullname').value = fullname;
+    document.getElementById('edit_position').value = position;
+    updateModal.classList.remove('hidden');
   });
+});
+
+closeModal.addEventListener('click', function () {
+  updateModal.classList.add('hidden');
+  updateForm.action = updateForm.getAttribute('data-action-template');
+});
 
   window.addEventListener('click', function (e) {
     if (e.target === updateModal) {

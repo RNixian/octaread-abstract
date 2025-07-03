@@ -69,8 +69,6 @@
   transform: scale(1.2);
 }
 
-
-
 .carousel-item img {
             width: auto;
             height: 100%;
@@ -85,13 +83,8 @@
         height: 40vh; /* or any percentage/px value that fits */
     }
 }
-
-
 </style>
-
-
 <body class="bg-light d-flex flex-column min-vh-100">
-
     <!-- Header -->
     @include('pages.usersheader')
 
@@ -321,7 +314,8 @@
             {{ $book->author }}
           </p>
           <p class="text-xs sm:text-sm text-gray-500 mb-4 break-words whitespace-normal">
-            <small>{{ $book->department }} | {{ $book->category }}</small>
+                  <i class="bi bi-tags-fill"></i> {{ $book->category }}<br>
+                  <i class="bi bi-building-fill"></i> {{ $book->department }}
           </p>
           
           @if(isset($book->description))
@@ -331,30 +325,33 @@
           @endif
 
           <div class="mt-auto flex justify-between items-center">
-            <button 
-  onclick="logAndOpen({{ $book->id }}, '{{ asset('storage/' . $book->pdf_filepath) }}')" 
-  class="btn btn-sm btn-custom-red">
+   <button 
+  onclick="logAndOpen({{ $book->id }}, '{{ route('pdf.view', ['filename' => basename($book->pdf_filepath)]) }}')"
+  class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm px-3 py-2 sm:px-3 sm:py-2 rounded w-full sm:w-auto">
   Read
 </button>
 
-<script>
-  function logAndOpen(ebook_id, pdfUrl) {
-    fetch('{{ route('read.store') }}', {
-      method: 'POST',
-      headers: {
-        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ebook_id: ebook_id }),
-    }).then(() => {
-      window.open(pdfUrl, '_blank');
-    });
-  }
-</script>
+        <script>
+          function logAndOpen(ebook_id, pdfUrl) {
+            fetch('{{ route('read.store') }}', {
+              method: 'POST',
+              headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ ebook_id: ebook_id }),
+            })
+            .then(response => {
+              if (response.ok) {
+                window.open(pdfUrl, '_blank');
+              } else {
+                alert('Failed to log view.');
+              }
+            });
+          }
+        </script>
 
-            
-
-           {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
+     {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
 @if(session()->has('userid') && session('is_guest') === false)
     <form action="{{ route('favorites.store') }}" method="POST" class="ml-2">
         @csrf
@@ -362,16 +359,20 @@
 
         @php
             $isFavorited = isset($favoritedIds) && in_array($book->id, $favoritedIds);
+            $buttonTitle = $isFavorited ? 'Remove from Favorites' : 'Add to Favorites';
+            $buttonClass = $isFavorited ? 'favorited text-red-500' : 'text-gray-400';
         @endphp
+
         <button 
             type="submit" 
-            class="favorite-btn {{ $isFavorited ? 'favorited' : '' }}" 
-            title="{{ $isFavorited ? 'Remove from Favorites' : 'Add to Favorites' }}"
+            class="favorite-btn {{ $buttonClass }}" 
+            title="{{ $buttonTitle }}"
         >
             <i class="bi bi-heart-fill"></i>
         </button>
     </form>
 @endif
+
 </div>
 
         </div>

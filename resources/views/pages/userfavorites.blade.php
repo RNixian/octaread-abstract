@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="{{ url('css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ url('css/bootstrap-icons.css') }}">
   <script src="{{ url('js/bootstrap.bundle.min.js') }}"></script>
+   <script src="{{ url('js/tailwind-loader.js') }}"></script>
+  <script src="{{ url('js/alpine.min.js') }}"></script>
 
   <style>
     .book-card img {
@@ -141,12 +143,32 @@
                 </p>
                 <p class="card-text">{{ Str::limit($ebook->description, 80) }}</p>
 
-                <div class="mt-auto d-flex justify-content-between align-items-center">
-                  <a href="{{ url('storage/' . $ebook->pdf_filepath) }}"
-                    class="btn btn-sm btn-custom-red"
-                    target="_blank">
-                    Read
-                  </a>
+                 <div class="mt-auto flex justify-between items-center gap-4">
+                  <button 
+  onclick="logAndOpen({{ $ebook->id }}, '{{ route('pdf.view', ['filename' => basename($ebook->pdf_filepath)]) }}')"
+  class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm px-3 py-2 sm:px-4 sm:py-2 rounded w-full sm:w-auto">
+  Read
+</button>
+
+        <script>
+          function logAndOpen(ebook_id, pdfUrl) {
+            fetch('{{ route('read.store') }}', {
+              method: 'POST',
+              headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ ebook_id: ebook_id }),
+            })
+            .then(response => {
+              if (response.ok) {
+                window.open(pdfUrl, '_blank');
+              } else {
+                alert('Failed to log view.');
+              }
+            });
+          }
+        </script>
                   
                   <form action="{{ route('toggle.favorite', $ebook->id) }}" method="POST">
                     @csrf

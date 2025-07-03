@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use App\Models\adminmodel; 
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Guard;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 
 class admincontroller extends Controller
@@ -34,47 +36,41 @@ class admincontroller extends Controller
         return view('admin.adminlogin');
     }
 
-   public function adminlogin(Request $request)
+  public function adminlogin(Request $request)
 {
     $request->validate([
         'schoolid' => 'required',
         'masterkey' => 'required',
     ]);
 
-    $admin = adminmodel::where('schoolid', $request->schoolid)
-        ->first();
+    $admin = adminmodel::where('schoolid', $request->schoolid)->first();
 
     if ($admin && Hash::check($request->masterkey, $admin->masterkey)) {
         $admin->status = 'active';
         $admin->save();
 
-        session([
-            'adminid' => $admin->id,
-            'firstname' => $admin->firstname,
-            'role' => $admin->role // 👈 Add this line
-        ]);
+        Auth::guard('admin')->login($admin); // ✅ Use admin guard
 
         return redirect()->route('admin.admindashboard');
     } else {
-        return back()->withErrors(['Invalid School ID or Birthdate or MasterKey']);
+        return back()->withErrors(['Invalid School ID or MasterKey']);
     }
 }
+  public function logout(Request $request)
+{
+    $admin = Auth::guard('admin')->user(); // Get currently authenticated admin
 
-    public function logout(Request $request) {
-
-        $adminid = session('adminid');
-        if ($adminid) {
-            $admin = adminmodel::find($adminid);
-            if ($admin) {
-                $admin->status = 'inactive';
-                $admin->save();
-            }
-        }
-    
-        session()->flush(); // Clear all session data
-        return redirect()->route('admin.adminlogin')->with('success', 'You have been logged out.');
-
+    if ($admin) {
+        $admin->status = 'inactive';
+        $admin->save();
     }
+
+    Auth::guard('admin')->logout();        // Logout from admin guard
+    $request->session()->invalidate();     // Invalidate session
+    $request->session()->regenerateToken();
+
+    return redirect()->route('admin.adminlogin')->with('success', 'You have been logged out.');
+}
 
 
     //ACCOUNT REGISTER---------------------------------------------------------------------------------------------------------------------
@@ -973,7 +969,7 @@ public function storemember(Request $request)
     $validatedData = $request->validate([
         'fullname' => 'required|string',
         'position' => 'required|string',
-        'profile_imgpath' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
+        'profile_imgpath' => 'nullable|image|mimes:jpeg,png,jpg',
     ]);
 
     if ($request->hasFile('profile_imgpath')) {
@@ -992,28 +988,44 @@ public function deletemember($id)
     return redirect()->back()->with('success', 'Member deleted successfully!');
 }
 
-public function updatemember(Request $request, $id) {
-    $request->validate([
-        'fullname' => 'required|string',
-        'position' => 'required|string',
-        'profile_imgpath' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
- 
-    ]);
 
-    $member = membersmodel::find($id);
-
-    if (!$member) {
-        return redirect()->route('admin.member')->with('error', 'Member not found.');
+  public function editmember($id)
+    {
+        $member = membersmodel::find($id);
+        return view('admin.member', compact('member'));
     }
 
-    if ($request->hasFile('profile_imgpath')) {
-        $member->profile_imgpath = $request->file('profile_imgpath')->store('octamember', 'public');
-    }
+    // Update an existing member
+    public function updatemember(Request $request, $id)
+    {
+        $request->validate([
+            'fullname' => 'required|string',
+            'position' => 'required|string',
+            'profile_imgpath' => 'nullable|image|mimes:jpeg,png,jp',
+        ]);
 
-    $member->update($request->only(['fullname', 'position']));
+        $member = membersmodel::find($id);
+
+        if (!$member) {
+            return redirect()->route('admin.member')->with('error', 'Member not found.');
+        }
+
+        // Handle new profile image
+        if ($request->hasFile('profile_imgpath')) {
+            // Delete old image if exists
+            if ($member->profile_imgpath && Storage::disk('public')->exists($member->profile_imgpath)) {
+                Storage::disk('public')->delete($member->profile_imgpath);
+            }
+
+            $member->profile_imgpath = $request->file('profile_imgpath')->store('octamember', 'public');
+        }
+
+        $member->fullname = $request->fullname;
+        $member->position = $request->position;
+        $member->save();
+
         return redirect()->route('admin.member')->with('success', 'Member updated successfully.');
-   
-}
+    }
 
 public function searchMember(Request $request)
     {

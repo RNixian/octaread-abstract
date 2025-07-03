@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Models\adminmodel; 
 use App\Models\usermodel; 
+use Illuminate\Support\Facades\File;
 
 /**Route::get('/', function () {
     return view('welcome');
@@ -24,11 +25,10 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';**/
 
-
 //ADMIN LOGIN----------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/adminlogin', [admincontroller::class, 'adminloginview'])->name('admin.adminlogin');
 Route::post('/admin/adminlogin', [admincontroller::class, 'adminlogin'])->name('admin.adminlogin');
-Route::post('/logout', [admincontroller::class, 'logout'])->name('logout');
+Route::post('/logout', [admincontroller::class, 'logout'])->name('admin.logout');
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/admindashboard', [admincontroller::class, 'dashboard'])->name('admin.admindashboard');
 });
@@ -142,7 +142,7 @@ Route::get('/delete-position/{id}', [admincontroller::class, 'deleteposition'])-
 Route::get('/edit-position/{id}', [admincontroller::class, 'editposition'])->name('editposition');
 Route::put('/update-position/{id}', [admincontroller::class, 'updateposition'])->name('updateposition');
 
-//EMPLOYEE----------------------------------------------------------------------------------------------------------------------------------------
+//MEMBER----------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/add_new_employee', [admincontroller::class, 'employee'])->name('admin.member');
 Route::post('/admin/memberregister', [admincontroller::class, 'storemember'])->name('admin.storemember');
 Route::get('/delete-member/{id}', [admincontroller::class, 'deletemember'])->name('deletemember');
@@ -170,6 +170,8 @@ Route::get('/admin/account/guestlog', [AccountController::class, 'guestlog'])->n
 Route::get('/delete-guestlog/{id}', [AccountController::class, 'deleteguestlog'])->name('deleteguestlog');
 
 });
+
+
 
 //=================================================================================================================================================
 
@@ -203,6 +205,17 @@ Route::get('/pages/userdashboard', [UserController::class, 'userdashboard'])->na
 
 // USERSLINK
 Route::middleware(['account.auth'])->group(function () {
+
+    Route::get('/storage/octabooks/{filename}', function ($filename) {
+    $path = storage_path('app/public/' . $filename);
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    return response()->file($path);
+})->name('pdf.view');
+
 
     // E-BOOK
     Route::get('/pages/ebook', [UserController::class, 'userebook'])->name('pages.ebook');

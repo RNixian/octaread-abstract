@@ -91,43 +91,34 @@ public function storeuser(Request $request)
     {
         return view('pages.userlogin');
     }
-    
-    // Example LoginController
     public function userlogin(Request $request)
-    {
-        // Validate inputs
-        $request->validate([
-            'schoolid' => 'required',
-            'birthdate' => 'required|date',
-        ]);
-    
-        $user = Usermodel::where('schoolid', $request->schoolid)
-            ->where('birthdate', $request->birthdate)
-            ->first(); // Get the first matching user
-    
-        // Check if a user was found
-        if ($user) {
-            // Update status to active
-            $user->status = 'active';
-            $user->save();
-        
-            // Store user data in the session
-            session([
-                'userid' => $user->id,
-                'firstname' => $user->firstname,
-                'schoolid' => $user->schoolid,
-                'is_guest' => false, // Regular user
-            ]);
-            
-        
-            // Redirect to the ebook page
-            return redirect()->route('pages.userdashboard');
+{
+    $request->validate([
+        'schoolid' => 'required',
+        'birthdate' => 'required|date',
+    ]);
 
-        }else {
-            // Redirect back with an error message if no user was found
-            return back()->withErrors(['Invalid School ID or Birthdate']);
-        }
+    $user = Usermodel::where('schoolid', $request->schoolid)
+        ->where('birthdate', $request->birthdate)
+        ->first();
+
+    if ($user) {
+        $user->status = 'active';
+        $user->save();
+
+        Auth::guard('web')->login($user);
+
+        session([
+            'userid' => $user->id,
+            'is_guest' => str_starts_with($user->schoolid, 'guest'), // handles guest detection better
+        ]);
+
+        return redirect()->route('pages.userdashboard');
+    } else {
+        return back()->withErrors(['Invalid School ID or Birthdate']);
     }
+}
+
     
 // GUEST LOGIN-------------------------------------------------------------------------------------------------------------------------------
 
@@ -148,42 +139,42 @@ public function processGuestLogin(Request $request)
 
     $guest = Usermodel::create([
         'firstname' => $request->firstname,
-        'middlename' => '', // Optional, left empty
+        'middlename' => '',
         'lastname' => $request->lastname,
         'schoolid' => $schoolid,
         'department' => $request->purpose,
         'birthdate' => now(),
-        'user_type_id' => 0, // Set to 0 for guest
+        'user_type_id' => 0,
     ]);
+
+    Auth::guard('web')->login($guest);
 
     session([
         'userid' => $guest->id,
-        'firstname' => $guest->firstname,
-        'schoolid' => $guest->schoolid,
         'is_guest' => true,
     ]);
-    
+
     return redirect()->route('pages.userdashboard')->with('success', 'Welcome, guest!');
 }
 
-
-
   // USER LOGOUT------------------------------------------------------------------------------------------------------------------------------------------------
-  public function logoutuser(Request $request)
-  {
-      $userId = session('userid');
-      if ($userId) {
-          $user = usermodel::find($userId);
-          if ($user) {
-              $user->status = 'inactive';
-              $user->save();
-          }
-      }
-  
-      session()->flush(); // Clear all session data
-      return redirect()->route('pages.userlogin')->with('success', 'You have been logged out.');
-  }
-  
+public function logoutuser(Request $request)
+{
+    $user = Auth::guard('web')->user();
+
+    if ($user) {
+        $user->status = 'inactive';
+        $user->save();
+    }
+
+    Auth::guard('web')->logout(); // ✅ Logs the user out
+    $request->session()->invalidate(); // ✅ Destroys the session
+    $request->session()->regenerateToken(); // ✅ Prevents CSRF attack reuse
+
+    return redirect()->route('pages.userlogin')->with('success', 'You have been logged out.');
+}
+
+
   
     // USER DASHBOARD -------------------------------------------------------------------------------------------------------------------------------------------------------
  public function userdashboard()
@@ -438,23 +429,21 @@ public function showUserBookPage(Request $request)
 
 public function viewstore(Request $request)
 {
-    // Check if the user is logged in
     if (!session()->has('userid')) {
-        return redirect()->back()->with('error', 'You must be logged in to read a book.');
+        return response()->json(['error' => 'You must be logged in.'], 401);
     }
 
     $user_id = session('userid');
     $ebook_id = $request->ebook_id;
 
-    // Always insert a new view record
     viewsmodel::create([
         'user_id' => $user_id,
         'ebook_id' => $ebook_id,
     ]);
 
-    // Redirect to view PDF
-    return redirect(asset('storage/' . $request->pdf_filepath));
+    return response()->json(['success' => true]);
 }
+
 
 
 

@@ -3,6 +3,12 @@
         Options -MultiViews -Indexes
     </IfModule>
 
+    
+<IfModule mod_rewrite.c>
+    Options +FollowSymLinks
+    Allow from all
+</IfModule>
+
     RewriteEngine On
 
     # Handle Authorization Header
@@ -23,3 +29,4 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+

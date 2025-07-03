@@ -4,24 +4,21 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\adminmodel;
 
 class adminemptyauth
 {
-     public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        // ✅ Allow access if no admins exist
         if (adminmodel::count() === 0) {
-            return $next($request);
+            return $next($request); // allow register if no admins exist
         }
 
-        // ✅ If user is already logged in as admin, allow access
-        if ($request->session()->has('adminid') && adminmodel::find($request->session()->get('adminid'))) {
-            return $next($request);
+        if (Auth::guard('admin')->check()) {
+            return $next($request); // allow if logged in
         }
 
-        // ❌ Otherwise, redirect to login
-        return redirect()->route('admin.adminlogin');
+        return redirect()->route('admin.adminlogin'); // else block
     }
 }
-

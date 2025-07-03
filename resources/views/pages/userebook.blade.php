@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="{{ url('css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ url('css/bootstrap-icons.css') }}">
   <script src="{{ url('js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url('js/tailwind-loader.js') }}"></script>
+  <script src="{{ url('js/alpine.min.js') }}"></script>
   <style>
    /* === Ebook Card Styling === */
 .book-card {
@@ -94,16 +96,25 @@
 .favorite-btn {
   background: #fff;
   border: 1px solid #ccc;
-  color: #6c757d; /* gray color */
   border-radius: 50%;
   padding: 0.3rem 0.6rem;
   transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.favorite-btn i {
+  color: #6c757d;
 }
 
 .favorite-btn.favorited {
   background: #dc3545;
-  color: #fff;
   border-color: #dc3545;
+}
+
+.favorite-btn.favorited i {
+  color: #fff;
 }
 
 .favorite-btn:hover {
@@ -266,30 +277,57 @@
           <p class="card-text text-muted mb-2">
             <i class="bi bi-person-fill"></i> {{ $ebook->author }}
           </p>
-          <div class="mt-auto d-flex justify-content-between align-items-center">
-            <!-- Read Button -->
-            <form action="{{ route('read.store') }}" method="POST" target="_blank">
-              @csrf
-              <input type="hidden" name="ebook_id" value="{{ $ebook->id }}">
-              <input type="hidden" name="pdf_filepath" value="{{ $ebook->pdf_filepath }}">
-              <button type="submit" class="btn btn-sm btn-custom-red">Read</button>
-            </form>
+         <div class="mt-auto flex justify-between items-center gap-4">
+            <button 
+  onclick="logAndOpen({{ $ebook->id }}, '{{ route('pdf.view', ['filename' => basename($ebook->pdf_filepath)]) }}')"
+  class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm px-3 py-2 sm:px-3 sm:py-2 rounded w-full sm:w-auto">
+  Read
+</button>
 
-         {{-- Only show "Add to Favorites" for logged-in non-guest users --}}
-            @if(session()->has('userid') && session('is_guest') === false)
+        <script>
+          function logAndOpen(ebook_id, pdfUrl) {
+            fetch('{{ route('read.store') }}', {
+              method: 'POST',
+              headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ ebook_id: ebook_id }),
+            })
+            .then(response => {
+              if (response.ok) {
+                window.open(pdfUrl, '_blank');
+              } else {
+                alert('Failed to log view.');
+              }
+            });
+          }
+        </script>
+                  
+       @php
+    $user = Auth::guard('web')->user();
+@endphp
+
+@if(session()->has('userid') && session('is_guest') === false)
     @php
         $isFavorited = $favoriteIds->contains($ebook->id);
     @endphp
+
     <form action="{{ route('favorites.store') }}" method="POST" class="d-inline">
         @csrf
         <input type="hidden" name="ebook_id" value="{{ $ebook->id }}">
-        <button type="submit"
-                class="btn btn-sm favorite-btn {{ $isFavorited ? 'favorited' : '' }}"
-                title="{{ $isFavorited ? 'Remove from Favorites' : 'Add to Favorites' }}">
-            <i class="bi {{ $isFavorited ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+        <button 
+            type="submit"
+            class="favorite-btn {{ $isFavorited ? 'favorited' : '' }}"
+            title="{{ $isFavorited ? 'Remove from Favorites' : 'Add to Favorites' }}"
+        >
+            <i class="{{ $isFavorited ? 'bi bi-heart-fill' : 'bi bi-heart' }}"></i>
         </button>
     </form>
 @endif
+
+
+
 
           </div>
         </div>
