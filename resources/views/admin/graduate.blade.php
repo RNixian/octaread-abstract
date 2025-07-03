@@ -54,21 +54,25 @@
         <!-- Search, Add Books, and Count Container -->
         <div class="w-full px-4 py-2 bg-white rounded shadow flex flex-col md:flex-row md:items-center md:justify-between gap-4 flex-wrap">
           <!-- Search and Buttons -->
-          <form method="GET" action="{{ url('/admin/graduate') }}" class="flex flex-1 flex-wrap items-center gap-2">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Enter..."
-              class="flex-grow shadow border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline font-bold" />
-            
-              <!--  <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Search</button> -->
-            <a href="{{ url('/admin/graduate') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Reset</a>
-          </form>
+    <form method="GET" action="{{ url('/admin/graduate') }}" class="flex flex-1 flex-wrap items-center gap-2">
+    <input type="text" name="search" value="{{ request('search') }}" placeholder="Enter..."
+        class="flex-grow shadow border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline font-bold" />
+
+    <!-- Hidden fields to preserve filters -->
+    <input type="hidden" name="out_cat" value="{{ request('out_cat') }}">
+    <input type="hidden" name="department" value="{{ request('department') }}">
+
+    <a href="{{ url('/admin/graduate') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Reset</a>
+</form>
+
       
           <!-- Add Books Button -->
           <a href="{{ url('/admin/add_new_books') }}"
             class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300">
             Add Books
           </a>
-
         </div>
+
       </div>
         <!-- Table -->
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">

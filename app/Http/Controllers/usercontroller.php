@@ -227,6 +227,7 @@ public function userebook(Request $request)
         $query->where('category', $request->category);
     }
 
+     $query->orderBy('created_at', 'desc');
     $ebooks = $query->get();
 
     // Get favorite ebook IDs using session('userid')

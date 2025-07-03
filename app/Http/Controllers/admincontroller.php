@@ -206,7 +206,8 @@ public function graduateBooks(Request $request)
     if ($request->filled('out_cat')) {
         $query->where('category', $request->out_cat);
     }
-
+    
+    $query->orderBy('created_at', 'desc');
     // Paginate results
     $books = $query->paginate(10)->withQueryString();
     $countgrads = $query->count(); // Count total matching
@@ -283,7 +284,7 @@ public function graduateBooks(Request $request)
 
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-
+/*
 //UNDERGRADUATE
     public function undergraduate_table()
     {
@@ -354,7 +355,7 @@ public function employeeBooks(Request $request)
 
 
     return view('admin.employeebook', compact('booksmodel','employeebookcount', 'departments'));
-}
+}*/
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 //SIDEBAR    
