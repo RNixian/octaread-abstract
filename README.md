@@ -66,6 +66,17 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 -----------------------------------------------------------------------------------------------------------------------------------
 
+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+
+USER: http://10.0.0.41/pages/userlogin
+ADMIN: http://10.0.0.41/admin/adminlogin
+
+IPv4 address MUST BE CHANGE, to see the address to use just do "crtl+r" then type cmd click OK, 
+then type "ipconfig" then look for the line "IPv4 address...." 
+
+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+
+
 Installing XAMPP
     //
 Go to: https://www.apachefriends.org/index.html
