@@ -387,7 +387,7 @@ ON THE PROJECT OCTAREAD
 10. follow this path: C:\Windows\System32\drivers\etc
         in hosts
             at the buttom part look for the line:
-
+            
             "120.0.0.1       localhost"
 
         a.replace the 127.0.0.1 with the "IPv4 address"

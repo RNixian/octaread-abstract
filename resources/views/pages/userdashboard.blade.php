@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="{{ url('css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ url('css/bootstrap-icons.css') }}">
   <script src="{{ url('js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url('js/lucide.min.js') }}"></script>
 
 </head>
 
@@ -180,18 +181,23 @@
       
       <!-- Service Card Template -->
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
-        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
-          <div class="text-5xl mb-6 select-none">📚</div>
-          <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Support Resources</h3>
-          <p class="text-sm text-gray-700 leading-relaxed">
-            Provides resources, workshops, and consultations for all research stages (proposal writing, methodology, data analysis, publication).
-          </p>
-        </div>
-      </div>
+  <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
+  <div class="mb-6 select-none">
+  <i class="bi bi-book text-5xl text-gray-700"></i>
+</div>
+    <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Support Resources</h3>
+    <p class="text-sm text-gray-700 leading-relaxed">
+      Provides resources, workshops, and consultations for all research stages (proposal writing, methodology, data analysis, publication).
+    </p>
+  </div>
+</div>
+
   
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
         <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
-          <div class="text-5xl mb-6 select-none">🤝</div>
+          <div class="mb-6 select-none">
+  <i class="bi bi-people text-5xl text-gray-700"></i>
+</div>
           <h3 class="text-xl font-semibold mb-3 text-gray-900">Mentorship Connections</h3>
           <p class="text-sm text-gray-700 leading-relaxed">
             Connects experienced faculty researchers with students for guidance and project development.
@@ -201,7 +207,9 @@
   
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
         <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
-          <div class="text-5xl mb-6 select-none">💰</div>
+           <div class="mb-6 select-none">
+  <i class="bi bi-cash-stack text-5xl text-gray-700"></i>
+</div>
           <h3 class="text-xl font-semibold mb-3 text-gray-900">Student Research Funding</h3>
           <p class="text-sm text-gray-700 leading-relaxed">
             Offers funding and support for outstanding student-led research projects.
@@ -211,7 +219,9 @@
   
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
         <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
-          <div class="text-5xl mb-6 select-none">🌐</div>
+           <div class="mb-6 select-none">
+  <i class="bi bi-globe text-5xl text-gray-700"></i>
+</div>
           <h3 class="text-xl font-semibold mb-3 text-gray-900">Interdisciplinary Research</h3>
           <p class="text-sm text-gray-700 leading-relaxed">
             Facilitates the creation of interdisciplinary research groups to tackle complex problems.
@@ -221,7 +231,9 @@
   
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
         <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
-          <div class="text-5xl mb-6 select-none">🎤</div>
+        <div class="mb-6 select-none">
+  <i class="bi bi-mic text-5xl text-gray-700"></i>
+</div>
           <h3 class="text-xl font-semibold mb-3 text-gray-900">Guest Researcher Lectures</h3>
           <p class="text-sm text-gray-700 leading-relaxed">
             Invites renowned researchers to present their work and foster collaboration with on-campus researchers.
@@ -231,7 +243,9 @@
   
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
         <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
-          <div class="text-5xl mb-6 select-none">🖼️</div>
+           <div class="mb-6 select-none">
+  <i class="bi bi-image text-5xl text-gray-700"></i>
+</div>
           <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Showcases</h3>
           <p class="text-sm text-gray-700 leading-relaxed">
             Provides a platform for faculty and students to showcase their research to the wider community.
@@ -241,7 +255,9 @@
   
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
         <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
-          <div class="text-5xl mb-6 select-none">📝</div>
+           <div class="mb-6 select-none">
+  <i class="bi bi-file-earmark-text text-5xl text-gray-700"></i>
+</div>
           <h3 class="text-xl font-semibold mb-3 text-gray-900">Grant Application Support</h3>
           <p class="text-sm text-gray-700 leading-relaxed">
             Offers dedicated staff support to help researchers navigate the grant application process.
@@ -251,7 +267,9 @@
   
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
         <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
-          <div class="text-5xl mb-6 select-none">🧪</div>
+         <div class="mb-6 select-none">
+  <i class="bi bi-cpu text-5xl text-gray-700"></i>
+</div>
           <h3 class="text-xl font-semibold mb-3 text-gray-900">Research Technology Access</h3>
           <p class="text-sm text-gray-700 leading-relaxed">
             Provides access to cutting-edge equipment and technologies for various research disciplines.
@@ -261,7 +279,9 @@
   
       <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2">
         <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border border-gray-200 h-full px-8 py-8">
-          <div class="text-5xl mb-6 select-none">📊</div>
+       <div class="mb-6 select-none">
+  <i class="bi bi-bar-chart-line text-5xl text-gray-700"></i>
+</div>
           <h3 class="text-xl font-semibold mb-3 text-gray-900">Data Training & Ethics</h3>
           <p class="text-sm text-gray-700 leading-relaxed">
             Offers training and support for researchers in data collection, storage, analysis, and ethical use.
