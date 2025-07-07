@@ -19,7 +19,7 @@
     border-color: #d39e00;
     color: white;
 }
-
+ 
 </style>
 
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
@@ -30,61 +30,64 @@
 
    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6 w-full max-w-6xl mx-auto">
       
-      <div class="max-w-6xl w-full mx-auto space-y-4">
-        <!-- Category and Department Filter Container -->
-      <form id="filter-form" method="GET" action="{{ route('admin.graduate') }}" class="space-y-4">
-  <input type="hidden" name="out_cat" id="out_cat" value="{{ request('out_cat', '') }}">
+   <div class="max-w-6xl w-full mx-auto space-y-4">
+  <!-- Filter Form -->
+  <form id="filter-form" method="GET" action="{{ route('admin.graduate') }}" class="space-y-4">
+    
+    <!-- Category & Department Row -->
+    <div class="flex flex-wrap gap-4">
+      <!-- Category -->
+      <div class="flex-grow min-w-[200px]">
+        <label class="block font-bold mb-1">Category</label>
+        <select name="category" id="category" class="w-full border px-2 py-1 rounded">
+          <option value="">All Category</option>
+          @foreach($res_out_cats as $category)
+            <option value="{{ $category->out_cat }}" {{ request('category') == $category->out_cat ? 'selected' : '' }}>
+              {{ $category->out_cat }}
+            </option>
+          @endforeach
+        </select>
+      </div>
 
-  <!-- Category Dropdown -->
-  <div>
-    <label class="block font-bold mb-1">Category</label>
-    <select name="category" id="category" class="w-full border px-2 py-1 rounded">
-      <option value="">All Category</option>
-      @foreach($res_out_cats as $category)
-        <option value="{{ $category->out_cat }}" {{ request('category') == $category->out_cat ? 'selected' : '' }}>
-          {{ $category->out_cat }}
-        </option>
-      @endforeach
-    </select>
-  </div>
+      <!-- Department -->
+      <div class="flex-grow min-w-[200px]">
+        <label class="block font-bold mb-1">Department</label>
+        <select name="department" id="department" class="w-full border px-2 py-1 rounded">
+          <option value="">-- Select Department --</option>
+          @if(request('out_cat') && count($preloadedDepartments))
+            @foreach($preloadedDepartments as $dept)
+              <option value="{{ $dept }}" {{ request('department') == $dept ? 'selected' : '' }}>{{ $dept }}</option>
+            @endforeach
+          @endif
+        </select>
+      </div>
+    </div>
 
-  <!-- Department Dropdown -->
-  <div>
-    <label class="block font-bold mb-1">Department</label>
-    <select name="department" id="department" class="w-full border px-2 py-1 rounded">
-      <option value="">-- Select Department --</option>
-      @if(request('out_cat') && count($preloadedDepartments))
-        @foreach($preloadedDepartments as $dept)
-          <option value="{{ $dept }}" {{ request('department') == $dept ? 'selected' : '' }}>{{ $dept }}</option>
-        @endforeach
-      @endif
-    </select>
-  </div>
-</form>
-
-        <!-- Search, Add Books, and Count Container -->
-        <div class="w-full px-4 py-2 bg-white rounded shadow flex flex-col md:flex-row md:items-center md:justify-between gap-4 flex-wrap">
-          <!-- Search and Buttons -->
-    <form method="GET" action="{{ url('/admin/graduate') }}" class="flex flex-1 flex-wrap items-center gap-2">
-    <input type="text" name="search" value="{{ request('search') }}" placeholder="Enter..."
+    <!-- Search + Buttons + Add Books -->
+    <div class="w-full px-4 py-2 bg-white rounded shadow flex flex-wrap md:flex-nowrap items-center gap-4">
+      <!-- Search Input -->
+      <input type="text" name="search" value="{{ request('search') }}" placeholder="Enter..."
         class="flex-grow shadow border rounded py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline font-bold" />
 
-    <!-- Hidden fields to preserve filters -->
-    <input type="hidden" name="out_cat" value="{{ request('out_cat') }}">
-    <input type="hidden" name="department" value="{{ request('department') }}">
+      <!-- Preserve Filters -->
+      <input type="hidden" name="out_cat" id="out_cat" value="{{ request('out_cat') }}">
 
-    <a href="{{ url('/admin/graduate') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Reset</a>
-</form>
-
-      
-          <!-- Add Books Button -->
-          <a href="{{ url('/admin/add_new_books') }}"
-            class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300">
-            Add Books
-          </a>
-        </div>
-
+      <!-- Action Buttons -->
+      <div class="flex gap-2">
+        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Search</button>
+        <a href="{{ url('/admin/graduate') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Reset</a>
       </div>
+
+      <!-- Add Books Button -->
+      <a href="{{ url('/admin/add_new_books') }}"
+        class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded focus:outline-none focus:ring-2 focus:ring-green-300 whitespace-nowrap">
+        Add Books
+      </a>
+    </div>
+  </form>
+</div>
+
+
         <!-- Table -->
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
           <div class="overflow-x-auto">
@@ -240,7 +243,7 @@
         </div>
       </div>
     </div>
-  </div>
+  
 
     <!-- JavaScript to handle modal behavior -->
     <script>
@@ -348,12 +351,13 @@ $(document).ready(function () {
         }
     }
 
-    // Trigger department load when category changes
-    $('#category').on('change', function () {
-        let selected = $(this).val();
-        $('#out_cat').val(selected); // sync hidden input
-        loadDepartments(selected);
-    });
+   // Trigger department load and submit when category changes
+$('#category').on('change', function () {
+    let selected = $(this).val();
+    $('#out_cat').val(selected); // sync hidden input
+    loadDepartments(selected);
+    $('#filter-form').submit(); // auto-submit
+});
 
     // Auto-submit when department is selected
     $('#department').on('change', function () {

@@ -39,10 +39,11 @@
     <div class="flex flex-wrap gap-4 mb-4">
       <div class="flex-grow min-w-[160px]">
         <label class="block text-gray-700 mb-1">Category</label>
-        <select name="category" class="w-full border rounded px-2 py-1">
+        <!-- Category -->
+<select name="category" id="category" class="w-full border rounded px-2 py-1">
           <option value="">All Categories</option>
           @foreach($categories as $category)
-            <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
+           <option value="{{ $category }}" {{ $selectedCategory == $category ? 'selected' : '' }}>
               {{ $category }}
             </option>
           @endforeach
@@ -51,7 +52,8 @@
 
       <div class="flex-grow min-w-[160px]">
         <label class="block text-gray-700 mb-1">Department</label>
-        <select name="department" class="w-full border rounded px-2 py-1">
+       <!-- Department -->
+<select name="department" id="department" class="w-full border rounded px-2 py-1">
           <option value="">-- Select Department --</option>
           @foreach($departments as $department)
             <option value="{{ $department }}" {{ request('department') == $department ? 'selected' : '' }}>
@@ -276,21 +278,33 @@
 
   <!-- Category to Department Dynamic Fetch -->
   <script>
-    document.getElementById('category').addEventListener('change', function () {
-      const categoryId = this.value;
-      fetch(`/get-deptgraph/${categoryId}`)
-        .then(response => response.json())
-        .then(data => {
-          const departmentSelect = document.getElementById('department');
-          departmentSelect.innerHTML = '<option value="">-- Select Department --</option>';
-          data.forEach(dep => {
-            const option = document.createElement('option');
-            option.value = dep;
-            option.textContent = dep;
-            departmentSelect.appendChild(option);
-          });
+   document.addEventListener("DOMContentLoaded", function () {
+  const categorySelect = document.getElementById('category');
+  const departmentSelect = document.getElementById('department');
+
+  function loadDepartments(categoryValue, selectedDepartment = '') {
+    fetch(`/get-deptgraph/${categoryValue}`)
+      .then(res => res.json())
+      .then(departments => {
+        departmentSelect.innerHTML = '<option value="">-- Select Department --</option>';
+        departments.forEach(dep => {
+          const selected = dep === selectedDepartment ? 'selected' : '';
+          const option = `<option value="${dep}" ${selected}>${dep}</option>`;
+          departmentSelect.insertAdjacentHTML('beforeend', option);
         });
-    });
+      });
+  }
+
+  // Trigger change on page load if category is selected (to re-populate department)
+  if (categorySelect.value) {
+    loadDepartments(categorySelect.value, "{{ $selectedDepartment }}");
+  }
+
+  categorySelect.addEventListener('change', function () {
+    loadDepartments(this.value);
+  });
+});
+
   </script>
 </body>
 </html>

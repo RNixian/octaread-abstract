@@ -46,7 +46,8 @@ Route::middleware(['admin.auth'])->group(function () {
 
 //DASHBOARD----------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/admindashboard', [AdminController::class, 'admingraphs'])->name('admin.admindashboard');
-Route::get('/get-deptgraph/{id}', [AdminController::class, 'getDeptgraph']);
+Route::get('/get-deptgraph/{category}', [AdminController::class, 'getDeptgraph']);
+
 Route::get('/get-filtered-books', [AdminController::class, 'getFilteredBooks']);
 
 

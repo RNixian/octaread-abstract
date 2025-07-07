@@ -1068,8 +1068,8 @@ public function searchMember(Request $request)
 public function admingraphs(Request $request)
 {
     // Get filter values
-    $selectedCategory = $request->input('category');
-    $selectedDepartment = $request->input('department');
+  $selectedCategory = $request->input('category');
+$selectedDepartment = $request->input('department');
   $fromDate = $request->input('from_date');
 $toDate = $request->input('to_date');
 $start = $fromDate ? Carbon::parse($fromDate)->startOfDay() : null;
@@ -1214,56 +1214,57 @@ if ($yearFrom && $yearTo) {
 }
 
 
+  public function getDeptgraph($out_cat)
+    {
+        $category = RocModel::where('out_cat', $out_cat)->first();
 
-public function getDeptgraph($out_cat)
-{
-    $category = RocModel::where('out_cat', $out_cat)->first();
-
-    if (!$category) {
-        return response()->json([]);
-    }
-
-    $departments = UnderRocModel::where('out_cat_id', $category->id)
-        ->pluck('under_roc');
-
-    return response()->json($departments);
-}
-
-
-public function getFilteredBooks(Request $request)
-{
-    $query = BooksModel::query();
-
-    if ($request->category) {
-        $category = RocModel::find($request->category);
-        if ($category) {
-            $query->where('out_cat_id', $category->id);
+        if (!$category) {
+            return response()->json([]);
         }
+
+        $departments = UnderRocModel::where('out_cat_id', $category->id)
+            ->pluck('under_roc');
+
+        return response()->json($departments);
     }
 
-    if ($request->department) {
-        $under = UnderRocModel::where('under_roc', $request->department)->first();
-        if ($under) {
-            $query->where('under_roc_id', $under->id);
+ public function getFilteredBooks(Request $request)
+    {
+        $query = BooksModel::query();
+
+        // Filter by category name (out_cat)
+        if ($request->filled('category')) {
+            $category = RocModel::where('out_cat', $request->category)->first();
+            if ($category) {
+                $query->where('out_cat_id', $category->id);
+            }
         }
+
+        // Filter by department name (under_roc)
+        if ($request->filled('department')) {
+            $under = UnderRocModel::where('under_roc', $request->department)->first();
+            if ($under) {
+                $query->where('under_roc_id', $under->id);
+            }
+        }
+
+        // Filter by created date range
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $from = Carbon::parse($request->from_date)->startOfDay();
+            $to = Carbon::parse($request->to_date)->endOfDay();
+            $query->whereBetween('created_at', [$from, $to]);
+        }
+
+        // Group by year and count
+        $results = $query->selectRaw('year, COUNT(*) as count')
+            ->groupBy('year')
+            ->pluck('count', 'year');
+
+        return response()->json([
+            'labels' => $results->keys(),
+            'values' => $results->values(),
+        ]);
     }
-
-    // ✅ Fix date range filter
-    if ($request->from_date && $request->to_date) {
-        $from = Carbon::parse($request->from_date)->startOfDay();
-        $to = Carbon::parse($request->to_date)->endOfDay();
-        $query->whereBetween('created_at', [$from, $to]);
-    }
-
-    $results = $query->selectRaw('year, COUNT(*) as count')
-        ->groupBy('year')
-        ->pluck('count', 'year');
-
-    return response()->json([
-        'labels' => $results->keys(),
-        'values' => $results->values(),
-    ]);
-}
 
 }
 
