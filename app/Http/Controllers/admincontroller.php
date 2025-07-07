@@ -172,20 +172,17 @@ public function graduate_table()
 {
     return view('admin.graduate');
 }
-
 public function graduateBooks(Request $request)
 {
-    // Fetch filters and supporting data
-    $under_res_out_cats = underrocmodel::all();
-    $res_out_cats = rocmodel::all();
-
-    // Get distinct 'out_cat' values
+    // Load categories and departments
+    $res_out_cats = rocmodel::all(); // Categories
+    $under_res_out_cats = underrocmodel::all(); // Departments
     $categories = $res_out_cats->pluck('out_cat')->unique()->values();
 
     // Main query
     $query = booksmodel::query();
 
-    // Apply search filters
+    // Search
     if ($request->filled('search')) {
         $query->where(function ($q) use ($request) {
             $q->where('title', 'like', '%' . $request->search . '%')
@@ -198,41 +195,54 @@ public function graduateBooks(Request $request)
         });
     }
 
-    // Apply department filter
+    // Filter by category
+    $preloadedDepartments = [];
+    if ($request->filled('out_cat')) {
+        $category = rocmodel::where('out_cat', $request->out_cat)->first();
+        if ($category) {
+            $preloadedDepartments = underrocmodel::where('out_cat_id', $category->id)
+                ->pluck('under_roc');
+
+            $query->where('category', $request->out_cat);
+        }
+    }
+
+    // Filter by department
     if ($request->filled('department')) {
         $query->where('department', $request->department);
     }
 
-    // Apply category filter
-    if ($request->filled('out_cat')) {
-        $query->where('category', $request->out_cat);
-    }
-    
     $query->orderBy('created_at', 'desc');
-    // Paginate results
+
     $books = $query->paginate(10)->withQueryString();
-    $countgrads = $query->count(); // Count total matching
+    $countgrads = $query->count();
 
     return view('admin.graduate', compact(
         'books',
         'countgrads',
-        'under_res_out_cats',
         'res_out_cats',
-        'categories'
+        'under_res_out_cats',
+        'categories',
+        'preloadedDepartments'
     ));
 }
 
-    
+public function gettingDepartments($out_cat)
+{
+    $category = rocmodel::where('out_cat', $out_cat)->first();
 
-    public function gettingDepartments($out_cat)
-    {
-        $departments = rocmodel::where('out_cat', $out_cat)
-                        ->distinct()
-                        ->pluck('department');
-    
-        return response()->json($departments);
+    if (!$category) {
+        return response()->json([]);
     }
-    
+
+    $departments = underrocmodel::where('out_cat_id', $category->id)
+        ->pluck('under_roc');
+
+    return response()->json($departments);
+}
+
+
+
     public function deletebook($id) {
         $book = booksmodel::find($id);
     

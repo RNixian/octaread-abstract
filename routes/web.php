@@ -61,8 +61,9 @@ Route::get('/admin/graduate', [AdminController::class, 'graduateBooks'])->name('
 Route::get('/delete-book/{id}', [admincontroller::class, 'deletebook'])->name('deletebook');
 Route::get('/edit-book/{id}', [admincontroller::class, 'editbook'])->name('editbook');
 Route::put('/update-book/{id}', [admincontroller::class, 'updatebook'])->name('updatebook');
-Route::get('/admin/graduate', [AdminController::class, 'graduateBooks'])->name('admin.graduate');
-Route::get('/getting-departments/{out_cat}', [AdminController::class, 'gettingDepartments']);
+Route::get('/get-departments/{out_cat}', [AdminController::class, 'gettingDepartments']);
+
+
 
 //SIDEBAR-------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/admin/sidebar', [admincontroller::class, 'adminsidebar'])->name('admin.sidebar');

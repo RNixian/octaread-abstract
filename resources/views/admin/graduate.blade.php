@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Graduate</title>
   <link rel="stylesheet" href="{{ url('css/tailwind.min.css') }}">
+  <script src="{{ url('js/jquery-3.6.0.min.js') }}"></script>
 </head>
 <style>
   .page-item.active .page-link {
@@ -30,36 +32,34 @@
       
       <div class="max-w-6xl w-full mx-auto space-y-4">
         <!-- Category and Department Filter Container -->
-       <form id="filter-form" method="GET" action="{{ route('admin.graduate') }}" class="space-y-4">
-    <!-- Hidden Category Input (for internal logic) -->
-    <input type="hidden" name="out_cat" id="out_cat" value="{{ request('out_cat', '') }}">
+      <form id="filter-form" method="GET" action="{{ route('admin.graduate') }}" class="space-y-4">
+  <input type="hidden" name="out_cat" id="out_cat" value="{{ request('out_cat', '') }}">
 
-    <!-- Category Dropdown -->
-    <div>
-        <label class="block text-gray-700 font-bold mb-2" for="category">Category</label>
-        <select name="category" id="category"
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            <option value="">All Category</option>
-            @foreach ($res_out_cats as $category)
-                <option value="{{ $category->out_cat }}"
-                    {{ request('category') == $category->out_cat ? 'selected' : '' }}>
-                    {{ $category->out_cat }}
-                </option>
-            @endforeach
-        </select>
-        @error('category')
-            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-        @enderror
-    </div>
+  <!-- Category Dropdown -->
+  <div>
+    <label class="block font-bold mb-1">Category</label>
+    <select name="category" id="category" class="w-full border px-2 py-1 rounded">
+      <option value="">All Category</option>
+      @foreach($res_out_cats as $category)
+        <option value="{{ $category->out_cat }}" {{ request('category') == $category->out_cat ? 'selected' : '' }}>
+          {{ $category->out_cat }}
+        </option>
+      @endforeach
+    </select>
+  </div>
 
-    <!-- Department Dropdown -->
-    <div class="w-full px-4 py-2 bg-gray-50 rounded">
-        <label class="block text-lg font-semibold text-gray-700 mb-1" for="department">Department</label>
-        <select name="department" id="department" class="w-full border px-2 py-1 rounded">
-            <option value="">-- Select Department --</option>
-            <!-- Options populated dynamically -->
-        </select>
-    </div>
+  <!-- Department Dropdown -->
+  <div>
+    <label class="block font-bold mb-1">Department</label>
+    <select name="department" id="department" class="w-full border px-2 py-1 rounded">
+      <option value="">-- Select Department --</option>
+      @if(request('out_cat') && count($preloadedDepartments))
+        @foreach($preloadedDepartments as $dept)
+          <option value="{{ $dept }}" {{ request('department') == $dept ? 'selected' : '' }}>{{ $dept }}</option>
+        @endforeach
+      @endif
+    </select>
+  </div>
 </form>
 
         <!-- Search, Add Books, and Count Container -->
@@ -241,7 +241,7 @@
       </div>
     </div>
   </div>
-<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+
     <!-- JavaScript to handle modal behavior -->
     <script>
       // Get modal elements
@@ -318,32 +318,20 @@
 <!-- Grouped Script -->
 <script>
 $(document).ready(function () {
-    const categories = @json(array_merge(
-        ['All Category'],
-        $categories->filter(fn($c) => $c !== 'All Category')->values()->toArray()
-    ));
-
-    let current = $('#out_cat').val() || "All Category";
-
-    function getCurrentCategoryIndex() {
-        return categories.indexOf(current);
-    }
-
-    function loadDepartments(out_cat) {
+    function loadDepartments(category) {
         $('#department').html('<option value="">-- Loading... --</option>');
 
-        if (out_cat && out_cat !== "All Category") {
+        if (category) {
             $.ajax({
-                url: '/get-departments/' + encodeURIComponent(out_cat),
+                url: '{{ url("/get-departments") }}/' + encodeURIComponent(category),
                 type: 'GET',
                 success: function (data) {
                     $('#department').empty().append('<option value="">-- Select Department --</option>');
                     if (Array.isArray(data)) {
-                        data.forEach(function (value) {
-                            $('#department').append('<option value="' + value + '">' + value + '</option>');
+                        data.forEach(function (dept) {
+                            $('#department').append('<option value="' + dept + '">' + dept + '</option>');
                         });
 
-                        // Restore selected department if available
                         let selected = @json(request('department'));
                         if (selected) {
                             $('#department').val(selected);
@@ -351,8 +339,8 @@ $(document).ready(function () {
                     }
                 },
                 error: function (xhr) {
-                    console.error("AJAX error:", xhr.responseText);
-                    $('#department').html('<option value="">-- Error loading departments --</option>');
+                    console.error('Department loading failed:', xhr.responseText);
+                    $('#department').html('<option value="">-- Failed to load --</option>');
                 }
             });
         } else {
@@ -360,49 +348,25 @@ $(document).ready(function () {
         }
     }
 
-    // Initial load
-    loadDepartments(current);
-
-    // Optional: Change using arrow buttons (if you have them)
-    window.changeCategory = function (direction) {
-        let index = getCurrentCategoryIndex();
-        if (index === -1) index = 0;
-        else index = (index + direction + categories.length) % categories.length;
-
-        current = categories[index];
-        $('#out_cat').val(current === "All Category" ? "" : current);
-        $('#category').val(current === "All Category" ? "" : current);
-        $('#category-display').text(current); // Optional display
-        loadDepartments(current);
-        $('#filter-form').submit();
-    };
-
-    // When dropdown changes
+    // Trigger department load when category changes
     $('#category').on('change', function () {
-        const selected = $(this).val();
-        $('#out_cat').val(selected);
-        current = selected || "All Category";
-        loadDepartments(current);
-        $('#filter-form').submit(); // Submit automatically
+        let selected = $(this).val();
+        $('#out_cat').val(selected); // sync hidden input
+        loadDepartments(selected);
     });
 
-    // Department filter auto-submit
+    // Auto-submit when department is selected
     $('#department').on('change', function () {
         $('#filter-form').submit();
     });
 
-    // Optional: Live search input (if you have a search box)
-    $('#search-input').on('input', function () {
-        clearTimeout($.data(this, 'timer'));
-        var wait = setTimeout(() => {
-            $('#filter-form').submit();
-        }, 500);
-        $(this).data('timer', wait);
-    });
+    // Initial load if category is pre-selected
+    const currentCategory = $('#category').val();
+    if (currentCategory) {
+        loadDepartments(currentCategory);
+    }
 });
 </script>
-
-
   
 </body>
 </html>
