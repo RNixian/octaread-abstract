@@ -199,12 +199,6 @@ Route::post('/pages/logoutuser', [UserController::class, 'logoutuser'])->name('p
 // DASHBOARD
 Route::get('/pages/userdashboard', [UserController::class, 'userdashboard'])->name('pages.userdashboard');
 
-//-------------------------------------------------------------------------------------------------------------------------------------------
-//PROTECTED
-//--------------------------------------------------------------------------------------------------------------------------------------
-
-// USERSLINK
-Route::middleware(['account.auth'])->group(function () {
 
     Route::get('/storage/octabooks/{filename}', function ($filename) {
     $path = storage_path('app/public/' . $filename);
@@ -215,6 +209,15 @@ Route::middleware(['account.auth'])->group(function () {
 
     return response()->file($path);
 })->name('pdf.view');
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------------
+//PROTECTED
+//--------------------------------------------------------------------------------------------------------------------------------------
+
+// USERSLINK
+Route::middleware(['account.auth'])->group(function () {
+
 
 
     // E-BOOK

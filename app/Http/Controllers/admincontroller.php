@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Guard;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\Factory;
 
 
 class admincontroller extends Controller

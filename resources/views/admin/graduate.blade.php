@@ -102,12 +102,13 @@
       <td class="text-start border-b px-1 py-0.5">{{ $data->category }}</td>
       <td class="text-start border-b px-1 py-0.5">{{ $data->department }}</td>
       <td class="text-start border-b px-1 py-0.5">
-        <a href="{{ asset('storage/' . $data->pdf_filepath) }}"
-           class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-0.5 px-1 rounded text-xs"
-           target="_blank">
-          View
-        </a>
-      </td>
+  <button 
+    onclick="logAndOpen({{ $data->id }}, '{{ route('pdf.view', ['filename' => basename($data->pdf_filepath)]) }}')"
+    class="bg-green-600 hover:bg-green-700 text-white font-bold text-xs sm:text-sm px-2 py-1 sm:px-2 sm:py-1 rounded w-full sm:w-auto">
+    View
+  </button>
+</td>
+
       <td class="hidden border-b">{{ $data->created_at }}</td>
       <td class="hidden border-b">{{ $data->updated_at }}</td>
       <td colspan="2" class="border-b px-1 py-0.5">
@@ -136,7 +137,27 @@
                
           </div>
         </div>
-        
+         <script>
+          function logAndOpen(ebook_id, pdfUrl) {
+            fetch('{{ route('read.store') }}', {
+              method: 'POST',
+              headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ ebook_id: ebook_id }),
+            })
+            .then(response => {
+              if (response.ok) {
+                window.open(pdfUrl, '_blank');
+              } else {
+                alert('Failed to log view.');
+              }
+            });
+          }
+        </script>
+
+
 <!-- Update Modal -->
 <div id="updateModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden z-50">
   <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative">

@@ -19,6 +19,7 @@ use App\Models\underrocmodel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Guard;
+use Illuminate\View\Factory;
 
 
 class usercontroller extends Controller

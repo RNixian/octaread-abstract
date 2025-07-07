@@ -17,6 +17,8 @@ use App\Models\positionmodel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Guard;
+use Illuminate\View\Factory;
+
 
 class AccountController extends Controller
 {
