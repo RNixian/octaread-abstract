@@ -30,27 +30,38 @@
       
       <div class="max-w-6xl w-full mx-auto space-y-4">
         <!-- Category and Department Filter Container -->
-        <form id="filter-form" method="GET" action="{{ route('admin.graduate') }}" class="space-y-2">
-          <input type="hidden" name="out_cat" id="out_cat" value="{{ request('out_cat', '') }}">
-          <!-- Category Header (Full Width) -->
-          <div class="w-full bg-gray-100 px-4 py-2 rounded flex justify-between items-center">
-            <button type="button" onclick="changeCategory(-1)" class="text-lg px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"><</button>
-            <span id="category-display" class="text-xl font-bold text-center flex-1">
-              {{ request('out_cat') ?: 'All Category' }}
-            </span>
-            <button type="button" onclick="changeCategory(1)" class="text-lg px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">></button>
-          </div>
-      
-          <!-- Department Header (Full Width) -->
-          <div class="w-full px-4 py-2 bg-gray-50 rounded">
-            <label class="block text-lg font-semibold text-gray-700 mb-1" for="department">Department</label>
-            <select name="department" id="department" class="w-full border px-2 py-1 rounded">
-              <option value="">-- Select Department --</option>
-              <!-- Add dynamic options here -->
-            </select>
-          </div>
-        </form>
-      
+       <form id="filter-form" method="GET" action="{{ route('admin.graduate') }}" class="space-y-4">
+    <!-- Hidden Category Input (for internal logic) -->
+    <input type="hidden" name="out_cat" id="out_cat" value="{{ request('out_cat', '') }}">
+
+    <!-- Category Dropdown -->
+    <div>
+        <label class="block text-gray-700 font-bold mb-2" for="category">Category</label>
+        <select name="category" id="category"
+            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="">All Category</option>
+            @foreach ($res_out_cats as $category)
+                <option value="{{ $category->out_cat }}"
+                    {{ request('category') == $category->out_cat ? 'selected' : '' }}>
+                    {{ $category->out_cat }}
+                </option>
+            @endforeach
+        </select>
+        @error('category')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <!-- Department Dropdown -->
+    <div class="w-full px-4 py-2 bg-gray-50 rounded">
+        <label class="block text-lg font-semibold text-gray-700 mb-1" for="department">Department</label>
+        <select name="department" id="department" class="w-full border px-2 py-1 rounded">
+            <option value="">-- Select Department --</option>
+            <!-- Options populated dynamically -->
+        </select>
+    </div>
+</form>
+
         <!-- Search, Add Books, and Count Container -->
         <div class="w-full px-4 py-2 bg-white rounded shadow flex flex-col md:flex-row md:items-center md:justify-between gap-4 flex-wrap">
           <!-- Search and Buttons -->
@@ -306,7 +317,7 @@
 
 <!-- Grouped Script -->
 <script>
-  $(document).ready(function () {
+$(document).ready(function () {
     const categories = @json(array_merge(
         ['All Category'],
         $categories->filter(fn($c) => $c !== 'All Category')->values()->toArray()
@@ -327,16 +338,16 @@
                 type: 'GET',
                 success: function (data) {
                     $('#department').empty().append('<option value="">-- Select Department --</option>');
-
                     if (Array.isArray(data)) {
                         data.forEach(function (value) {
                             $('#department').append('<option value="' + value + '">' + value + '</option>');
                         });
-                    }
 
-                    let selected = @json(request('department'));
-                    if (selected) {
-                        $('#department').val(selected);
+                        // Restore selected department if available
+                        let selected = @json(request('department'));
+                        if (selected) {
+                            $('#department').val(selected);
+                        }
                     }
                 },
                 error: function (xhr) {
@@ -348,33 +359,40 @@
             $('#department').html('<option value="">-- Select Department --</option>');
         }
     }
+
+    // Initial load
     loadDepartments(current);
+
+    // Optional: Change using arrow buttons (if you have them)
     window.changeCategory = function (direction) {
         let index = getCurrentCategoryIndex();
         if (index === -1) index = 0;
         else index = (index + direction + categories.length) % categories.length;
 
         current = categories[index];
-
         $('#out_cat').val(current === "All Category" ? "" : current);
-        $('#category-display').text(current);
-
-        // Automatically submit form on category change
+        $('#category').val(current === "All Category" ? "" : current);
+        $('#category-display').text(current); // Optional display
+        loadDepartments(current);
         $('#filter-form').submit();
     };
 
-    $('#out_cat').on('change', function () {
-        current = $(this).val() || "All Category";
+    // When dropdown changes
+    $('#category').on('change', function () {
+        const selected = $(this).val();
+        $('#out_cat').val(selected);
+        current = selected || "All Category";
         loadDepartments(current);
-        $('#filter-form').submit();  // Submit form automatically when out_cat changes
+        $('#filter-form').submit(); // Submit automatically
     });
 
+    // Department filter auto-submit
     $('#department').on('change', function () {
-        $('#filter-form').submit();  // Submit form automatically on department change
+        $('#filter-form').submit();
     });
 
+    // Optional: Live search input (if you have a search box)
     $('#search-input').on('input', function () {
-        // You can debounce this to avoid too many requests:
         clearTimeout($.data(this, 'timer'));
         var wait = setTimeout(() => {
             $('#filter-form').submit();
