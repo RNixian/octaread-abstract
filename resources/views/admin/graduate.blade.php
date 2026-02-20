@@ -117,7 +117,7 @@
       <td class="text-start border-b px-1 py-0.5">{{ $data->department }}</td>
       <td class="text-start border-b px-1 py-0.5">
   <button 
-    onclick="logAndOpen({{ $data->id }}, '{{ route('pdf.view', ['filename' => basename($data->pdf_filepath)]) }}')"
+    onclick="logAndOpen({{ $data->id }}, '{{ route('pdf.view', ['path' => $data->pdf_filepath]) }}')"
     class="bg-green-600 hover:bg-green-700 text-white font-bold text-xs sm:text-sm px-2 py-1 sm:px-2 sm:py-1 rounded w-full sm:w-auto">
     View
   </button>

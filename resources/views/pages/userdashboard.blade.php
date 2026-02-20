@@ -346,7 +346,7 @@
 
           <div class="mt-auto flex justify-between items-center">
    <button 
-  onclick="logAndOpen({{ $book->id }}, '{{ route('pdf.view', ['filename' => basename($book->pdf_filepath)]) }}')"
+  onclick="logAndOpen({{ $book->id }}, '{{ route('pdf.view', ['path' => $book->pdf_filepath]) }}')"
   class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm px-3 py-2 sm:px-3 sm:py-2 rounded w-full sm:w-auto">
   Read
 </button>

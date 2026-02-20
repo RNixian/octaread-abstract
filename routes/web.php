@@ -202,15 +202,21 @@ Route::post('/pages/logoutuser', [UserController::class, 'logoutuser'])->name('p
 Route::get('/pages/userdashboard', [UserController::class, 'userdashboard'])->name('pages.userdashboard');
 
 
-    Route::get('/storage/octabooks/{filename}', function ($filename) {
-    $path = storage_path('app/public/' . $filename);
-
-    if (!File::exists($path)) {
+   // Route
+Route::get('/pdf/view/{path}', function ($path) {
+    // Security: Prevent directory traversal
+    if (str_contains($path, '..')) {
+        abort(403);
+    }
+    
+    $fullPath = storage_path('app/public/' . $path);
+    
+    if (!file_exists($fullPath)) {
         abort(404);
     }
-
-    return response()->file($path);
-})->name('pdf.view');
+    
+    return response()->file($fullPath);
+})->where('path', '.*')->name('pdf.view');
 
 
 //-------------------------------------------------------------------------------------------------------------------------------------------

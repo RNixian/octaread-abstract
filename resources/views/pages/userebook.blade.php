@@ -279,10 +279,11 @@
           </p>
          <div class="mt-auto flex justify-between items-center gap-4">
             <button 
-  onclick="logAndOpen({{ $ebook->id }}, '{{ route('pdf.view', ['filename' => basename($ebook->pdf_filepath)]) }}')"
+  onclick="logAndOpen({{ $ebook->id }}, '{{ route('pdf.view', ['path' => $ebook->pdf_filepath]) }}')"
   class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm px-3 py-2 sm:px-3 sm:py-2 rounded w-full sm:w-auto">
   Read
 </button>
+
 
         <script>
           function logAndOpen(ebook_id, pdfUrl) {

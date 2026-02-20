@@ -127,18 +127,19 @@ public function storebooks(Request $request)
         'category' => 'required|string',
         'department' => 'required|string',
         'pdf_filepath' => 'required|file|mimes:pdf,doc,docx',
-
     ]);
 
     $file = $request->file('pdf_filepath');
-    // Save file directly without conversion
-    $path = $file->store('octabooks', 'public');
-    $validatedData['pdf_filepath'] = $path;
+
+    // Save to 'public' disk in 'octabooks' folder
+    $validatedData['pdf_filepath'] = $file->store('octabooks', 'public');
 
     booksmodel::create($validatedData);
 
     return redirect()->route('admin.graduate')->with('success', 'Book successfully added.');
 }
+
+
 
 
     public function departmentBooks(Request $request)
